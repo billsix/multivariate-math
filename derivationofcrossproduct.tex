@@ -1,0 +1,215 @@
+% --------------------------------------------------------------
+% This is all preamble stuff that you don't have to worry about.
+% Head down to where it says "Start here"
+% --------------------------------------------------------------
+
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb,scrextend,commath}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\renewcommand{\qed}{\hfill$\blacksquare$}
+\let\newproof\proof
+\renewenvironment{proof}{\begin{addmargin}[1em]{0em}\begin{newproof}}{\end{newproof}\end{addmargin}\qed}
+% \newcommand{\expl}[1]{\text{\hfill[#1]}$}
+
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\begin{document}
+
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+
+\lhead{Derivation Of the Cross Product}
+\chead{William Emerison Six}
+\rhead{\today}
+
+% \maketitle
+
+\begin{problem}{1} %You can use theorem, proposition, exercise, or reflection here.  Modify x.yz to be whatever number you are proving
+
+  Given vectors $\vec{a}$ and $\vec{b}$ in $\R^3$, find a vector in $\R^3$ that is perpendicular both to $\vec{a}$ and to $\vec{b}$.
+\end{problem}
+
+
+
+\begin{proof}
+
+\textbf{Rotate $\vec{a}$ and $\vec{b}$ so that $\vec{a}$ is on the x axis: }
+
+  Let $\vec{a} = \begin{bmatrix}
+    a_1 \\
+    a_2 \\
+    a_3 \\
+  \end{bmatrix}$ and let $\vec{b} = \begin{bmatrix}
+    b_1 \\
+    b_2 \\
+    b_3 \\
+  \end{bmatrix}$.
+
+  let $k = \sqrt{a_1^2 + a_2^2}$.
+
+  Define $\vec{f_1}(\vec{c})$ such that $\vec{f_1}(\vec{a})$ is rotated onto the $x$ axis.  Apply $\vec{f_1}$ to $\vec{b}$.
+
+\begin{flalign}
+\vec{f_1}(\vec{c}) & = \begin{bmatrix}
+     \frac{k}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
+     0 & 1  & 0 \\
+     \frac{-a_3}{\norm{a}} & 0 & \frac{k}{\norm{a}}\\
+    \end{bmatrix} * \begin{bmatrix}
+     \frac{a_1}{k} & \frac{a_2}{k} & 0 \\
+     \frac{-a_2}{k} & \frac{a_1}{k} & 0 \\
+     0 & 0 & 1 \\
+\end{bmatrix} * \vec{c} \\
+  & = \begin{bmatrix}
+     \frac{a_1}{\norm{a}} & \frac{a_2}{\norm{a}} & \frac{a_3}{\norm{a}} \\
+     \frac{-a_2}{k} & \frac{a_1}{k} & 0 \\
+     \frac{-a_1a_3}{k\norm{a}} & \frac{-a_2a_3}{k\norm{a}} & \frac{k}{\norm{a}} \\
+\end{bmatrix} * \vec{c}
+\end{flalign}
+
+\begin{flalign}
+\vec{f_1}(\vec{b}) = \begin{bmatrix}
+     \frac{a_1b_1}{\norm{a}} + \frac{a_2b_2}{\norm{a}} + \frac{a_3b_3}{\norm{a}} \\
+     \frac{-a_2b_1}{k}  + \frac{a_1b_2}{k} \\
+     \frac{-a_1a_3b_1}{k\norm{a}} + \frac{-a_2a_3b_2}{k\norm{a}} + \frac{kb_3}{\norm{a}} \\
+\end{bmatrix}
+\end{flalign}
+
+
+
+\textbf{Project $\vec{f_1}(\vec{b})$ onto the yz plane }
+
+Define $\vec{f_2}(\vec{c})$ to project any vector $c$ onto the $y-z$ plane.
+
+
+\begin{flalign}
+\vec{f_2}(\vec{c}) & = \begin{bmatrix}
+     0 & 0 & 0 \\
+     0 & 1 & 0 \\
+     0 & 0 & 1 \\
+\end{bmatrix} * \vec{c}
+\end{flalign}
+
+\begin{flalign}
+\vec{f_2}(\vec{f_1}(\vec{b})) & = \begin{bmatrix}
+     0 \\
+     \frac{-a_2b_1}{k}  + \frac{a_1b_2}{k} \\
+     \frac{-a_1a_3b_1}{k\norm{a}} + \frac{-a_2a_3b_2}{k\norm{a}} + \frac{kb_3}{\norm{a}} \\
+\end{bmatrix}
+\end{flalign}
+
+
+
+\textbf{Rotate $\vec{f_2}(\vec{f_1}(\vec{b}))$ around the x axis by 90 degrees }
+
+Define $\vec{f_3}(\vec{c})$ rotate any vector $c$ around the $x$ axis.
+
+\begin{flalign}
+\vec{f_3}(\vec{c}) & = \begin{bmatrix}
+     1 & 0 & 0 \\
+     0 & 0 & -1 \\
+     0 & 1 & 0 \\
+\end{bmatrix} * \vec{c}
+\end{flalign}
+
+\begin{flalign}
+\vec{f_3}(\vec{f_2}(\vec{f_1}(\vec{b}))) & = \begin{bmatrix}
+     0 \\
+     \frac{a_1a_3b_1}{k\norm{a}} + \frac{a_2a_3b_2}{k\norm{a}} + \frac{-kb_3}{\norm{a}} \\
+     \frac{-a_2b_1}{k}  + \frac{a_1b_2}{k} \\
+\end{bmatrix}
+\end{flalign}
+
+
+
+\textbf{Rotate the x axis back to $\vec{a}$ }
+\begin{flalign}
+\vec{f_1}^{-1}(\vec{f_3}(\vec{f_2}(\vec{f_1}(\vec{b})))) & = \begin{bmatrix}
+  \frac{a_1}{\norm{a}} & \frac{-a_2}{k} & \frac{-a_1a_3}{k\norm{a}}\\
+  \frac{a_2}{\norm{a}} & \frac{a_1}{k} & \frac{-a_2a_3}{k\norm{a}}  \\
+  \frac{a_3}{\norm{a}} & 0 & \frac{k}{\norm{a}} \\
+\end{bmatrix} * \begin{bmatrix}
+     0 \\
+     \frac{a_1a_3b_1}{k\norm{a}} + \frac{a_2a_3b_2}{k\norm{a}} + \frac{-kb_3}{\norm{a}} \\
+     \frac{-a_2b_1}{k}  + \frac{a_1b_2}{k} \\
+\end{bmatrix} \\
+& = \begin{bmatrix}
+  \frac{-a_2}{k} * (\frac{a_1a_3b_1}{k\norm{a}} + \frac{a_2a_3b_2}{k\norm{a}} + \frac{-kb_3}{\norm{a}}) + \frac{-a_1a_3}{k\norm{a}} * (\frac{-a_2b_1}{k}  + \frac{a_1b_2}{k})  \\
+  \frac{a_1}{k} * (\frac{a_1a_3b_1}{k\norm{a}} + \frac{a_2a_3b_2}{k\norm{a}} + \frac{-kb_3}{\norm{a}}) + \frac{-a_2a_3}{k\norm{a}} * (\frac{-a_2b_1}{k}  + \frac{a_1b_2}{k})  \\ \\
+  \frac{k}{\norm{a}} * (\frac{-a_2b_1}{k}  + \frac{a_1b_2}{k}) \\
+\end{bmatrix} \\
+& = \begin{bmatrix}
+  \frac{-a_1a_2a_3b_1}{k^2\norm{a}} + \frac{-a_2^2a_3b_2}{k^2\norm{a}} + \frac{a_2b_3}{\norm{a}} + \frac{a_1a_2a_3b_1}{k^2\norm{a}}  + \frac{-a_1^2a_3b_2}{k^2\norm{a}}  \\
+  \frac{a_1^2a_3b_1}{k^2\norm{a}} + \frac{a_1a_2a_3b_2}{k^2\norm{a}} + \frac{-a_1b_3}{\norm{a}} +  \frac{a_2^2a_3b_1}{k^2\norm{a}}  + \frac{-a_1a_2a_3b_2}{k^2\norm{a}}  \\ \\
+  \frac{-a_2b_1}{\norm{a}}  + \frac{a_1b_2}{\norm{a}} \\
+\end{bmatrix} \\
+& = \begin{bmatrix}
+  \frac{-a_2^2a_3b_2}{k^2\norm{a}} + \frac{a_2b_3}{\norm{a}} + \frac{-a_1^2a_3b_2}{k^2\norm{a}}  \\
+  \frac{a_1^2a_3b_1}{k^2\norm{a}} +  \frac{-a_1b_3}{\norm{a}} +  \frac{a_2^2a_3b_1}{k^2\norm{a}}   \\ \\
+  \frac{-a_2b_1}{\norm{a}}  + \frac{a_1b_2}{\norm{a}} \\
+\end{bmatrix} \\
+& = \begin{bmatrix}
+  \frac{-(a_1^2+a_2^2)a_3b_2}{k^2\norm{a}} + \frac{a_2b_3}{\norm{a}}   \\
+  \frac{(a_1^2+a_2^2)a_3b_1}{k^2\norm{a}} +  \frac{-a_1b_3}{\norm{a}}    \\ \\
+  \frac{-a_2b_1}{\norm{a}}  + \frac{a_1b_2}{\norm{a}} \\
+\end{bmatrix} \\
+& = \begin{bmatrix}
+  \frac{-k^2a_3b_2}{k^2\norm{a}} + \frac{a_2b_3}{\norm{a}}   \\
+  \frac{k^2a_3b_1}{k^2\norm{a}} +  \frac{-a_1b_3}{\norm{a}}    \\ \\
+  \frac{-a_2b_1}{\norm{a}}  + \frac{a_1b_2}{\norm{a}} \\
+\end{bmatrix} \\
+& = \begin{bmatrix}
+  \frac{-a_3b_2}{\norm{a}} + \frac{a_2b_3}{\norm{a}}   \\
+  \frac{a_3b_1}{\norm{a}} +  \frac{-a_1b_3}{\norm{a}}    \\ \\
+  \frac{-a_2b_1}{\norm{a}}  + \frac{a_1b_2}{\norm{a}} \\
+\end{bmatrix}  \\
+& = \frac{1}{\norm{a}} * \begin{bmatrix}
+  a_2b_3 -a_3b_2     \\
+  a_3b_1 +  -a_1b_3    \\ \\
+  a_1b_2 -a_2b_1 \\
+\end{bmatrix}
+\end{flalign}
+
+
+\textbf{Scale $\vec{f_1}^{-1}(\vec{f_3}(\vec{f_2}(\vec{f_1}(\vec{b}))))$ by $\norm{a}$}
+
+\begin{flalign}
+  \norm{a} * \vec{f_1}^{-1}(\vec{f_3}(\vec{f_2}(\vec{f_1}(\vec{b}))))
+  & = \norm{a} *  \frac{1}{\norm{a}} * \begin{bmatrix}
+  a_2b_3 -a_3b_2     \\
+  a_3b_1 +  -a_1b_3    \\ \\
+  a_1b_2 -a_2b_1 \\
+  \end{bmatrix} \\
+  & = \begin{bmatrix}
+  a_2b_3 -a_3b_2     \\
+  a_3b_1 +  -a_1b_3    \\ \\
+  a_1b_2 -a_2b_1 \\
+\end{bmatrix}
+\end{flalign}
+\end{proof}
+
+
+\end{document}
