@@ -1,0 +1,5 @@
+glfw==2.5.4
+imgui==1.4.1
+numpy==1.23.2
+pyMatrixStack==0.0.3
+PyOpenGL==3.1.6
