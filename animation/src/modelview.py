@@ -72,6 +72,21 @@ class Camera:
 
 camera = Camera(r=20.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
 
+vec1 = np.array([5.0, 2.0, 1.5], dtype=np.double)
+vec2 = np.array([3.0, 4.0, 2.5], dtype=np.double)
+
+draw_rotate_z_ground = False
+draw_rotate_vec1_to_natural_basis = False
+draw_rotate_vec1_to_natural_time_start = 0.0
+
+percent_comlete = 0.0
+
+draw_second_rotate_ground = False
+draw_second_rotate_to_natural_basis = False
+draw_second_rotate_to_natural_basis_time_start = 0.0
+
+percent_comlete2 = 0.0
+
 
 def handle_inputs():
     global camera
@@ -86,22 +101,44 @@ def handle_inputs():
     if glfw.get_key(window, glfw.KEY_DOWN) == glfw.PRESS:
         camera.rot_x += math.radians(1.0) % 360.0
 
+    global draw_rotate_z_ground
 
-square_vertices = np.array(
-    [[-5.0, -5.0, 0.0], [5.0, -5.0, 0.0], [5.0, 5.0, 0.0], [-5.0, 5.0, 0.0]],
-    dtype=np.float32,
-)
+    if glfw.get_key(window, glfw.KEY_1) == glfw.PRESS:
+        draw_rotate_z_ground = not draw_rotate_z_ground
+
+    global draw_rotate_vec1_to_natural_basis
+    global draw_rotate_vec1_to_natural_time_start
+    if glfw.get_key(window, glfw.KEY_2) == glfw.PRESS:
+        draw_rotate_vec1_to_natural_basis = True
+        draw_rotate_vec1_to_natural_time_start = animation_time
+
+    global draw_second_rotate_ground
+    global draw_second_rotate_to_natural_basis
+    global draw_second_rotate_to_natural_basis_time_start
+
+    if glfw.get_key(window, glfw.KEY_3) == glfw.PRESS:
+        draw_second_rotate_ground = not draw_second_rotate_ground
+    if glfw.get_key(window, glfw.KEY_4) == glfw.PRESS:
+        draw_second_rotate_to_natural_basis = True
+        draw_second_rotate_to_natural_basis_time_start = animation_time
+
+
 virtual_camera_position = np.array([-40.0, 0.0, 80.0], dtype=np.float32)
 virtual_camera_rot_y = math.radians(-30.0)
 virtual_camera_rot_x = math.radians(15.0)
 
 
-def draw_ground():
+def draw_ground(emphasize=False):
     # ascontiguousarray puts the array in column major order
     glLoadMatrixf(
         np.ascontiguousarray(ms.getCurrentMatrix(ms.MatrixStack.modelview).T)
     )
-    glColor3f(0.1, 0.1, 0.1)
+
+    if emphasize:
+        glColor3f(0.3, 0.3, 0.3)
+    else:
+        glColor3f(0.2, 0.2, 0.2)
+
     glBegin(GL_LINES)
     for x in range(-10, 10, 1):
         for z in range(-10, 10, 1):
@@ -113,28 +150,21 @@ def draw_ground():
     glEnd()
 
 
-def draw_y_axis():
+def draw_natural_basis():
+    def draw_y_axis():
 
-    # ascontiguousarray puts the array in column major order
-    glLoadMatrixf(
-        np.ascontiguousarray(ms.getCurrentMatrix(ms.MatrixStack.modelview).T)
-    )
+        # ascontiguousarray puts the array in column major order
+        glLoadMatrixf(
+            np.ascontiguousarray(
+                ms.getCurrentMatrix(ms.MatrixStack.modelview).T
+            )
+        )
 
-    glLineWidth(3.0)
-    glBegin(GL_LINES)
-    glVertex3f(0.0, 0.0, 0.0)
-    glVertex3f(0.0, 1.0, 0.0)
-
-    # arrow
-    glVertex3f(0.0, 1.0, 0.0)
-    glVertex3f(0.25, 0.75, 0.0)
-
-    glVertex3f(0.0, 1.0, 0.0)
-    glVertex3f(-0.25, 0.75, 0.0)
-    glEnd()
-
-
-def draw_axises():
+        glLineWidth(3.0)
+        glBegin(GL_LINES)
+        glVertex3f(0.0, 0.0, 0.0)
+        glVertex3f(0.0, 1.0, 0.0)
+        glEnd()
 
     with ms.push_matrix(ms.MatrixStack.model):
         ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
@@ -158,6 +188,44 @@ def draw_axises():
         # y
         glColor3f(0.0, 1.0, 0.0)  # green y
         draw_y_axis()
+
+
+def draw_vector(v):
+    def draw_y_axis():
+
+        # ascontiguousarray puts the array in column major order
+        glLoadMatrixf(
+            np.ascontiguousarray(
+                ms.getCurrentMatrix(ms.MatrixStack.modelview).T
+            )
+        )
+        magnitude = math.sqrt(v[0] ** 2 + v[1] ** 2 + v[2] ** 2)
+
+        glLineWidth(3.0)
+        glBegin(GL_LINES)
+        glVertex3f(0.0, 0.0, 0.0)
+        glVertex3f(0.0, magnitude, 0.0)
+
+        glVertex3f(0.0, magnitude, 0.0)
+        glVertex3f(0.25, magnitude - 0.25, 0.0)
+
+        glVertex3f(0.0, magnitude, 0.0)
+        glVertex3f(-0.25, magnitude - 0.25, 0.0)
+        glEnd()
+
+    with ms.push_matrix(ms.MatrixStack.model):
+        ms.rotate_y(ms.MatrixStack.model, math.atan2(v[1], v[0]))
+        ms.rotate_z(
+            ms.MatrixStack.model,
+            math.atan2(v[2], math.sqrt(v[0] ** 2 + v[1] ** 2)),
+        )
+
+        # x axis
+        with ms.push_matrix(ms.MatrixStack.model):
+            ms.rotate_z(ms.MatrixStack.model, math.radians(-90.0))
+
+            glColor3f(1.0, 1.0, 1.0)
+            draw_y_axis()
 
 
 TARGET_FRAMERATE = 60  # fps
@@ -224,6 +292,8 @@ while not glfw.window_should_close(window):
 
     glMatrixMode(GL_MODELVIEW)
 
+    # draw using math coordinate system, not opengl
+
     draw_ground()
     with ms.push_matrix(ms.MatrixStack.model):
         ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
@@ -231,7 +301,80 @@ while not glfw.window_should_close(window):
 
     glClear(GL_DEPTH_BUFFER_BIT)
 
-    draw_axises()
+    draw_natural_basis()
+
+    emphasize2 = draw_rotate_z_ground
+    if draw_second_rotate_to_natural_basis:
+        percent_comlete2 = min(
+            1.0, (animation_time - draw_second_rotate_to_natural_basis_time_start) / 5.0
+        )
+
+        emphasize2 = emphasize2 and percent_comlete2 < 1.0
+        ms.rotate_z(
+            ms.MatrixStack.model,
+            -percent_comlete2 * math.atan2(vec1[2], math.sqrt(vec1[0] ** 2 + vec1[1] ** 2))
+        )
+
+
+    emphasize1 = draw_rotate_z_ground
+    if draw_rotate_vec1_to_natural_basis:
+        percent_comlete = min(
+            1.0, (animation_time - draw_rotate_vec1_to_natural_time_start) / 5.0
+        )
+
+        emphasize1 = emphasize1 and percent_comlete < 1.0
+        ms.rotate_y(
+            ms.MatrixStack.model,
+            -percent_comlete * math.atan2(vec1[1], vec1[0]),
+        )
+
+
+
+
+
+    if draw_rotate_z_ground or draw_second_rotate_ground:
+        with ms.push_matrix(ms.MatrixStack.model):
+            ms.rotate_y(ms.MatrixStack.model, math.atan2(vec1[1], vec1[0]))
+
+            if draw_second_rotate_ground:
+                ms.setToIdentityMatrix(ms.MatrixStack.model)
+
+                ms.rotate_z(
+                    ms.MatrixStack.model,
+                    math.atan2(vec1[2], math.sqrt(vec1[0] ** 2 + vec1[1] ** 2))
+                )
+
+                if draw_second_rotate_to_natural_basis:
+                    ms.rotate_z(
+                        ms.MatrixStack.model,
+                        -percent_comlete2 * math.atan2(vec1[2], math.sqrt(vec1[0] ** 2 + vec1[1] ** 2))
+                    )
+
+                ms.rotate_x(
+                    ms.MatrixStack.model,
+                    math.radians(90.0))
+
+
+            draw_ground(emphasize1)
+            glDisable(GL_DEPTH_TEST)
+            # such crap code Bill
+            if draw_second_rotate_ground:
+                ms.rotate_x(
+                    ms.MatrixStack.model,
+                    math.radians(-90.0))
+
+
+            draw_natural_basis()
+            glEnable(GL_DEPTH_TEST)
+
+
+    glClear(GL_DEPTH_BUFFER_BIT)
+    draw_vector(vec1)
+    draw_vector(vec2)
+
+
+
+
 
     # done with frame, flush and swap buffers
     # Swap front and back buffers
