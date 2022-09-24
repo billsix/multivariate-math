@@ -46,16 +46,6 @@ if not window:
 # Make the window's context current
 glfw.make_context_current(window)
 
-# Install a key handler
-
-
-def on_key(window, key, scancode, action, mods):
-    if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
-        glfw.set_window_should_close(window, 1)
-
-
-glfw.set_key_callback(window, on_key)
-
 glClearColor(0.0, 0.0, 0.0, 1.0)
 
 glEnable(GL_DEPTH_TEST)
@@ -104,15 +94,25 @@ def handle_inputs():
     global camera
 
     move_multiple = 15.0
-    if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS:
-        camera.rot_y -= math.radians(1.0) % 360.0
-    if glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS:
-        camera.rot_y += math.radians(1.0) % 360.0
-    if glfw.get_key(window, glfw.KEY_UP) == glfw.PRESS:
-        camera.rot_x -= math.radians(1.0) % 360.0
-    if glfw.get_key(window, glfw.KEY_DOWN) == glfw.PRESS:
-        camera.rot_x += math.radians(1.0) % 360.0
+    if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.RELEASE:
+        camera.rot_y -= math.radians(1.0)
+    if glfw.get_key(window, glfw.KEY_LEFT) == glfw.RELEASE:
+        camera.rot_y += math.radians(1.0)
+    if glfw.get_key(window, glfw.KEY_UP) == glfw.RELEASE:
+        camera.rot_x -= math.radians(1.0)
+    if glfw.get_key(window, glfw.KEY_DOWN) == glfw.RELEASE:
+        camera.rot_x += math.radians(1.0)
 
+    if camera.rot_x > math.pi / 2.0:
+        camera.rot_x = math.pi / 2.0
+    if camera.rot_x < -math.pi / 2.0:
+        camera.rot_x = -math.pi / 2.0
+
+
+# Install a key handler
+def on_key(window, key, scancode, action, mods):
+    if key == glfw.KEY_ESCAPE and action == glfw.PRESS:
+        glfw.set_window_should_close(window, 1)
     global draw_rotate_z_ground
 
     if glfw.get_key(window, glfw.KEY_1) == glfw.PRESS:
@@ -154,6 +154,20 @@ def handle_inputs():
         draw_4 = not draw_4
         draw_4_animate = True
         draw_4_time_start = animation_time
+
+    if glfw.get_key(window, glfw.KEY_X) == glfw.PRESS:
+        camera.rot_x = 0.0
+        camera.rot_y = math.pi / 2.0
+    if glfw.get_key(window, glfw.KEY_Y) == glfw.PRESS:
+        camera.rot_x = 0.0
+        camera.rot_y = 0.0
+    if glfw.get_key(window, glfw.KEY_Z) == glfw.PRESS:
+        camera.rot_x = math.pi / 2.0
+        camera.rot_y = 0.0
+
+
+
+glfw.set_key_callback(window, on_key)
 
 
 virtual_camera_position = np.array([-40.0, 0.0, 80.0], dtype=np.float32)
