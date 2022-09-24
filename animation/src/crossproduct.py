@@ -90,6 +90,18 @@ draw_4_time_start = 0.0
 draw_4_percent_complete = 0.0
 
 
+draw_5 = False
+draw_5_animate = False
+draw_5_time_start = 0.0
+draw_5_percent_complete = 0.0
+
+draw_6 = False
+draw_6_animate = False
+draw_6_time_start = 0.0
+draw_6_percent_complete = 0.0
+
+
+
 def handle_inputs():
     global camera
 
@@ -155,6 +167,27 @@ def on_key(window, key, scancode, action, mods):
         draw_4_animate = True
         draw_4_time_start = animation_time
 
+    global draw_5
+    global draw_5_animate
+    global draw_5_time_start
+    global draw_5_percent_complete
+
+    if glfw.get_key(window, glfw.KEY_8) == glfw.PRESS:
+        draw_5 = not draw_5
+        draw_5_animate = True
+        draw_5_time_start = animation_time
+    global draw_6
+    global draw_6_animate
+    global draw_6_time_start
+    global draw_6_percent_complete
+
+    if glfw.get_key(window, glfw.KEY_9) == glfw.PRESS:
+        draw_6 = not draw_6
+        draw_6_animate = True
+        draw_6_time_start = animation_time
+
+
+
     if glfw.get_key(window, glfw.KEY_X) == glfw.PRESS:
         camera.rot_x = 0.0
         camera.rot_y = math.pi / 2.0
@@ -201,7 +234,9 @@ def draw_ground(emphasize=False, unit_circle=False):
     if unit_circle:
         glColor3f(1.0, 1.0, 1.0)
         glBegin(GL_LINES)
-        for x in np.linspace(0.0, 2 * np.pi, 500):
+        glVertex3f(math.cos(0), float(0.0), math.sin(0))
+        for x in np.linspace(0.0, 2 * np.pi, 20):
+            glVertex3f(math.cos(x), float(0.0), math.sin(x))
             glVertex3f(math.cos(x), float(0.0), math.sin(x))
         glEnd()
     glEnable(GL_DEPTH_TEST)
@@ -357,8 +392,44 @@ while not glfw.window_should_close(window):
 
     draw_ground(unit_circle=True)
     with ms.push_matrix(ms.MatrixStack.model):
-        ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
-        draw_ground(unit_circle=True)
+        if not draw_4_animate:
+            ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
+            draw_ground(unit_circle=True)
+        else:
+            ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
+            ms.rotate_z(ms.MatrixStack.model, math.radians(90.0))
+            draw_ground(unit_circle=True)
+
+
+    if  draw_6:
+        draw_6_percent_complete = min(
+            1.0,
+            (animation_time - draw_6_time_start )
+            / 5.0,
+        )
+
+        ms.rotate_y(
+            ms.MatrixStack.model,
+            draw_6_percent_complete * math.atan2(vec1[1], vec1[0]),
+        )
+
+
+
+
+    if  draw_5:
+        draw_5_percent_complete = min(
+            1.0,
+            (animation_time - draw_5_time_start )
+            / 5.0,
+        )
+
+        ms.rotate_z(
+            ms.MatrixStack.model,
+            draw_5_percent_complete
+            * math.atan2(vec1[2], math.sqrt(vec1[0] ** 2 + vec1[1] ** 2)),
+        )
+
+
 
     glClear(GL_DEPTH_BUFFER_BIT)
 
