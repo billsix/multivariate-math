@@ -78,6 +78,24 @@
      \frac{k}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
      0 & 1  & 0 \\
      \frac{-a_3}{\norm{a}} & 0 & \frac{k}{\norm{a}}\\
+    \end{bmatrix} * \vec{c}
+\end{flalign}
+
+
+\begin{flalign}
+\vec{f_2}(\vec{c}) & = \begin{bmatrix}
+     \frac{a_1}{k} & \frac{a_2}{k} & 0 \\
+     \frac{-a_2}{k} & \frac{a_1}{k} & 0 \\
+     0 & 0 & 1 \\
+\end{bmatrix} * \vec{c}
+\end{flalign}
+
+
+\begin{flalign}
+(\vec{f_2} \circ \vec{f_1})(\vec{c}) & = \begin{bmatrix}
+     \frac{k}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
+     0 & 1  & 0 \\
+     \frac{-a_3}{\norm{a}} & 0 & \frac{k}{\norm{a}}\\
     \end{bmatrix} * \begin{bmatrix}
      \frac{a_1}{k} & \frac{a_2}{k} & 0 \\
      \frac{-a_2}{k} & \frac{a_1}{k} & 0 \\
@@ -100,7 +118,7 @@
 
 
 
-\textbf{Project $\vec{f_1}(\vec{b})$ onto the yz plane }
+\textbf{Project $(\vec{f_2} \circ \vec{f_1})(\vec{b})$ onto the yz plane }
 
 Define $\vec{f_3}(\vec{c})$ to project any vector $c$ onto the $y-z$ plane.
 
