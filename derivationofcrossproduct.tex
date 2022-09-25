@@ -71,28 +71,30 @@
 
   let $k = \sqrt{a_1^2 + a_2^2}$.
 
-  Define $\vec{f_1}(\vec{c})$ such that $\vec{f_1}(\vec{a})$ is rotated onto the $x$ axis.  Apply $\vec{f_1}$ to $\vec{b}$.
+  Define $\vec{f_1}(\vec{x})$ such that $\vec{f_1}(\vec{a})$ is rotated onto the $e_1e_3$ plane.  Apply $\vec{f_1}$ to $\vec{b}$.
 
 \begin{flalign}
-\vec{f_1}(\vec{c}) & = \begin{bmatrix}
+\vec{f_1}(\vec{x}) & = \begin{bmatrix}
      \frac{k}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
      0 & 1  & 0 \\
      \frac{-a_3}{\norm{a}} & 0 & \frac{k}{\norm{a}}\\
-    \end{bmatrix} * \vec{c}
+    \end{bmatrix} * \vec{x}
 \end{flalign}
 
 
+  Define $\vec{f_2}(\vec{x})$ such that $(\vec{f_2} \circ \vec{f_1})(\vec{a})$ is rotated onto the $e_1$ axis.  Apply $\vec{f_1}$ to $\vec{b}$.
+
 \begin{flalign}
-\vec{f_2}(\vec{c}) & = \begin{bmatrix}
+\vec{f_2}(\vec{x}) & = \begin{bmatrix}
      \frac{a_1}{k} & \frac{a_2}{k} & 0 \\
      \frac{-a_2}{k} & \frac{a_1}{k} & 0 \\
      0 & 0 & 1 \\
-\end{bmatrix} * \vec{c}
+\end{bmatrix} * \vec{x}
 \end{flalign}
 
 
 \begin{flalign}
-(\vec{f_2} \circ \vec{f_1})(\vec{c}) & = \begin{bmatrix}
+(\vec{f_2} \circ \vec{f_1})(\vec{x}) & = \begin{bmatrix}
      \frac{k}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
      0 & 1  & 0 \\
      \frac{-a_3}{\norm{a}} & 0 & \frac{k}{\norm{a}}\\
@@ -100,16 +102,16 @@
      \frac{a_1}{k} & \frac{a_2}{k} & 0 \\
      \frac{-a_2}{k} & \frac{a_1}{k} & 0 \\
      0 & 0 & 1 \\
-\end{bmatrix} * \vec{c} \\
+\end{bmatrix} * \vec{x} \\
   & = \begin{bmatrix}
      \frac{a_1}{\norm{a}} & \frac{a_2}{\norm{a}} & \frac{a_3}{\norm{a}} \\
      \frac{-a_2}{k} & \frac{a_1}{k} & 0 \\
      \frac{-a_1a_3}{k\norm{a}} & \frac{-a_2a_3}{k\norm{a}} & \frac{k}{\norm{a}} \\
-\end{bmatrix} * \vec{c}
+\end{bmatrix} * \vec{x}
 \end{flalign}
 
 \begin{flalign}
-\vec{f_1}(\vec{b}) = \begin{bmatrix}
+(\vec{f_2} \circ \vec{f_1})(\vec{b}) = \begin{bmatrix}
      \frac{a_1b_1}{\norm{a}} + \frac{a_2b_2}{\norm{a}} + \frac{a_3b_3}{\norm{a}} \\
      \frac{-a_2b_1}{k}  + \frac{a_1b_2}{k} \\
      \frac{-a_1a_3b_1}{k\norm{a}} + \frac{-a_2a_3b_2}{k\norm{a}} + \frac{kb_3}{\norm{a}} \\
@@ -118,17 +120,17 @@
 
 
 
-\textbf{Project $(\vec{f_2} \circ \vec{f_1})(\vec{b})$ onto the yz plane }
+\textbf{Project $(\vec{f_2} \circ \vec{f_1})(\vec{b})$ onto the $e_2e_3$ plane }
 
-Define $\vec{f_3}(\vec{c})$ to project any vector $c$ onto the $y-z$ plane.
+Define $\vec{f_3}(\vec{x})$ to project any vector $x$ onto the $e_2e_3$ plane.
 
 
 \begin{flalign}
-\vec{f_3}(\vec{c}) & = \begin{bmatrix}
+\vec{f_3}(\vec{x}) & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 1 & 0 \\
      0 & 0 & 1 \\
-\end{bmatrix} * \vec{c}
+\end{bmatrix} * \vec{x}
 \end{flalign}
 
 \begin{flalign}
@@ -141,16 +143,16 @@ Define $\vec{f_3}(\vec{c})$ to project any vector $c$ onto the $y-z$ plane.
 
 
 
-\textbf{Rotate $( \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b})$ around the x axis by 90 degrees }
+\textbf{Rotate $( \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b})$ 90 degrees on the $e_2e_3$ plane.}
 
-Define $\vec{f_4}(\vec{c})$ rotate any vector $c$ around the $x$ axis.
+Define $\vec{f_4}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
 
 \begin{flalign}
-\vec{f_4}(\vec{c}) & = \begin{bmatrix}
+\vec{f_4}(\vec{x}) & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & 0 & -1 \\
      0 & 1 & 0 \\
-\end{bmatrix} * \vec{c}
+\end{bmatrix} * \vec{x}
 \end{flalign}
 
 \begin{flalign}
