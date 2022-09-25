@@ -65,6 +65,7 @@ camera = Camera(r=20.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
 vec1 = np.array([5.0, 2.0, 1.5], dtype=np.double)
 vec2 = np.array([3.0, 4.0, 2.5], dtype=np.double)
 vec2_globalspace = None
+vec2_after_projection_after_rotation = None
 
 draw_rotate_z_ground = False
 draw_rotate_vec1_to_natural_basis = False
@@ -464,6 +465,9 @@ while not glfw.window_should_close(window):
                 vec2_globalspace[1],
                 vec2_globalspace[2],
             )
+
+            vec2_after_projection_after_rotation = 0.0 ,vec2_globalspace[1],vec2_globalspace[2]
+            print(vec2_after_projection_after_rotation)
             glEnd()
 
     emphasize2 = draw_rotate_z_ground
