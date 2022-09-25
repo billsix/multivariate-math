@@ -102,6 +102,8 @@ draw_6_time_start = 0.0
 draw_6_percent_complete = 0.0
 
 
+stop_updating_globalspace = False
+
 
 def handle_inputs():
     global camera
@@ -172,17 +174,21 @@ def on_key(window, key, scancode, action, mods):
     global draw_5_animate
     global draw_5_time_start
     global draw_5_percent_complete
+    global stop_updating_globalspace
 
     if glfw.get_key(window, glfw.KEY_8) == glfw.PRESS:
+        draw_4 = False
         draw_5 = not draw_5
         draw_5_animate = True
         draw_5_time_start = animation_time
+        stop_updating_globalspace = True
     global draw_6
     global draw_6_animate
     global draw_6_time_start
     global draw_6_percent_complete
 
     if glfw.get_key(window, glfw.KEY_9) == glfw.PRESS:
+        draw_4 = False
         draw_6 = not draw_6
         draw_6_animate = True
         draw_6_time_start = animation_time
@@ -300,6 +306,7 @@ def draw_vector(v):
         glVertex3f(0.0, magnitude, 0.0)
 
         glEnd()
+
 
         global vec2_globalspace
         vec2_globalspace = ms.getCurrentMatrix(ms.MatrixStack.model) @ np.array(
@@ -436,6 +443,7 @@ while not glfw.window_should_close(window):
 
     draw_natural_basis()
 
+
     if draw_3:
         with ms.push_matrix(ms.MatrixStack.model):
 
@@ -466,8 +474,13 @@ while not glfw.window_should_close(window):
                 vec2_globalspace[2],
             )
 
-            vec2_after_projection_after_rotation = 0.0 ,vec2_globalspace[1],vec2_globalspace[2]
-            print(vec2_after_projection_after_rotation)
+
+            print("stop ", stop_updating_globalspace)
+            if not stop_updating_globalspace:
+                vec2_after_projection_after_rotation = 0.0 ,vec2_globalspace[1],vec2_globalspace[2]
+
+                print("UPDATING")
+                print(vec2_after_projection_after_rotation)
             glEnd()
 
     emphasize2 = draw_rotate_z_ground
@@ -530,10 +543,33 @@ while not glfw.window_should_close(window):
             glEnable(GL_DEPTH_TEST)
 
     glClear(GL_DEPTH_BUFFER_BIT)
+
+    if draw_4 or draw_5:
+        with ms.push_matrix(ms.MatrixStack.model):
+            ms.setToIdentityMatrix(ms.MatrixStack.model)
+
+            glLoadMatrixf(
+                np.ascontiguousarray(ms.getCurrentMatrix(ms.MatrixStack.modelview).T)
+            )
+
+            glColor3f(1.0, 1.0, 0.0)
+            glBegin(GL_LINES)
+            glVertex3f(
+                0.0, 0.0, 0.0
+            )
+            glVertex3f(
+                vec2_after_projection_after_rotation[0],
+                vec2_after_projection_after_rotation[1],
+                vec2_after_projection_after_rotation[2],
+            )
+            glEnd()
+
     glColor3f(0.0, 1.0, 1.0)
     draw_vector(vec1)
     glColor3f(1.0, 0.0, 1.0)
     draw_vector(vec2)
+
+
 
     # done with frame, flush and swap buffers
     # Swap front and back buffers
