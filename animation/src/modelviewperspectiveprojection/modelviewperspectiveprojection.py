@@ -156,6 +156,14 @@ class Ground:
 
         return np.array(verts, dtype=np.float32)
 
+    def unit_circle(self):
+        for x in np.linspace(0.0, 2 * np.pi, 20):
+            verts.append(math.cos(x))
+            verts.append(math.sin(x))
+            verts.append(float(0.0))
+        return np.array(verts, dtype=np.float32)
+
+
     def prepare_to_render(self):
         # GL_QUADS aren't available anymore, only triangles
         # need 6 vertices instead of 4
