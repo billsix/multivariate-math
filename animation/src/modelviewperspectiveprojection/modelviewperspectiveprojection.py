@@ -258,6 +258,27 @@ ground = Ground()
 ground.prepare_to_render()
 
 
+# terrible hack of a class, only because I somehow can't seem to figure
+# out how to use two vbos with a vao
+class UnitCircle(Ground) :
+    def vertices(self):
+        verts = []
+        the_range = 100
+        the_list = np.linspace(0.0, 2 * np.pi, the_range)
+
+        for x in range(the_range-1):
+            verts.append(math.cos(the_list[x]))
+            verts.append(math.sin(the_list[x]))
+            verts.append(float(0.0))
+            verts.append(math.cos(the_list[x+1]))
+            verts.append(math.sin(the_list[x+1]))
+            verts.append(float(0.0))
+        return np.array(verts, dtype=np.float32)
+
+
+unit_circle = UnitCircle()
+unit_circle.prepare_to_render()
+
 
 class Vector:
     def __init__(self, x, y, z, r, g, b):
@@ -716,6 +737,8 @@ while not glfw.window_should_close(window):
 
     ground.render(animation_time)
     ground.render(animation_time, vertical=True)
+    unit_circle.render(animation_time)
+    unit_circle.render(animation_time, vertical=True)
 
     axis.render(animation_time)
 
