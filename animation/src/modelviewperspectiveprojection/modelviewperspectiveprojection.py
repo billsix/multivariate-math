@@ -432,7 +432,7 @@ class Vector:
                 )
                 glDrawArrays(GL_LINES, 0, self.numberOfVertices)
 
-vec1 = Vector(x= 5.0, y= 2.0, z= 1.5, r=1.0, g=1.0, b=1.0)
+vec1 = Vector(x= 3.0, y= 4.0, z= 5.0, r=1.0, g=1.0, b=1.0)
 vec1.prepare_to_render()
 
 vec2 = Vector(x= 3.0, y=4.0, z=2.5, r=1.0, g=0.0, b=1.0)
@@ -799,17 +799,6 @@ while not glfw.window_should_close(window):
         label="Rotate Z", state=do_first_rotate
     )
 
-    if do_first_rotate:
-        draw_first_relative_coordinates = False
-        ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z)
-
-    if draw_first_relative_coordinates:
-        with ms.push_matrix(ms.MatrixStack.model):
-            ms.rotate_z(ms.MatrixStack.model, vec1.angle_z)
-            #  ms.rotate_y(ms.MatrixStack.model, self.angle_y)
-            ground.render(animation_time)
-            axis.render(animation_time)
-
 
     changed, draw_second_relative_coordinates = imgui.checkbox(
         label="Draw aoeuRelative Coordinates", state=draw_second_relative_coordinates
@@ -819,18 +808,30 @@ while not glfw.window_should_close(window):
         label="Rotate Y", state=do_second_rotate
     )
 
-    if do_second_rotate:
-        draw_second_relative_coordinates = False
-        ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y)
 
     if draw_second_relative_coordinates:
 
         with ms.push_matrix(ms.MatrixStack.model):
-            # undo the rotation from the previous step
-            ms.rotate_z(ms.MatrixStack.model, vec1.angle_z)
 
             ms.rotate_y(ms.MatrixStack.model, vec1.angle_y)
             ground.render(animation_time, vertical=True)
+            axis.render(animation_time)
+
+    if do_second_rotate:
+        draw_second_relative_coordinates = False
+        ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y)
+
+
+
+    if do_first_rotate:
+        draw_first_relative_coordinates = False
+        ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z)
+
+    if draw_first_relative_coordinates:
+        with ms.push_matrix(ms.MatrixStack.model):
+            ms.rotate_z(ms.MatrixStack.model, vec1.angle_z)
+            #  ms.rotate_y(ms.MatrixStack.model, self.angle_y)
+            ground.render(animation_time)
             axis.render(animation_time)
 
 
