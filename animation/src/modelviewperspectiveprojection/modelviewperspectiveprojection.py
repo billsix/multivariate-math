@@ -192,7 +192,10 @@ class Ground:
         )
 
         glBufferData(
-            GL_ARRAY_BUFFER, glfloat_size * np.size(vertices), vertices, GL_STATIC_DRAW
+            GL_ARRAY_BUFFER,
+            glfloat_size * np.size(vertices),
+            vertices,
+            GL_STATIC_DRAW,
         )
 
         # send the modelspace data to the GPU
@@ -248,7 +251,8 @@ class Ground:
                 1,
                 GL_TRUE,
                 np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.projection), dtype=np.float32
+                    ms.getCurrentMatrix(ms.MatrixStack.projection),
+                    dtype=np.float32,
                 ),
             )
             glDrawArrays(GL_LINES, 0, self.numberOfVertices)
@@ -261,18 +265,18 @@ ground.prepare_to_render()
 
 # terrible hack of a class, only because I somehow can't seem to figure
 # out how to use two vbos with a vao
-class UnitCircle(Ground) :
+class UnitCircle(Ground):
     def vertices(self):
         verts = []
         the_range = 100
         the_list = np.linspace(0.0, 2 * np.pi, the_range)
 
-        for x in range(the_range-1):
+        for x in range(the_range - 1):
             verts.append(math.cos(the_list[x]))
             verts.append(math.sin(the_list[x]))
             verts.append(float(0.0))
-            verts.append(math.cos(the_list[x+1]))
-            verts.append(math.sin(the_list[x+1]))
+            verts.append(math.cos(the_list[x + 1]))
+            verts.append(math.sin(the_list[x + 1]))
             verts.append(float(0.0))
         return np.array(verts, dtype=np.float32)
 
@@ -291,12 +295,11 @@ class Vector:
         self.b = b
 
         self.angle_z = math.atan2(self.y, self.x)
-        self.angle_y =-math.atan2(self.z, math.sqrt(self.x ** 2 + self.y ** 2))
-
+        self.angle_y = -math.atan2(self.z, math.sqrt(self.x**2 + self.y**2))
 
     def vertices(self):
 
-        magnitude = math.sqrt(self.x ** 2 + self.y ** 2 + self.z ** 2)
+        magnitude = math.sqrt(self.x**2 + self.y**2 + self.z**2)
 
         # glColor3f(0.1,0.1,0.1)
         verts = []
@@ -322,7 +325,7 @@ class Vector:
         verts.append(float(0.0))
 
         verts.append(float(-0.25))
-        verts.append(float(magnitude - 0.25 ))
+        verts.append(float(magnitude - 0.25))
         verts.append(float(0.0))
 
         return np.array(verts, dtype=np.float32)
@@ -363,7 +366,10 @@ class Vector:
         )
 
         glBufferData(
-            GL_ARRAY_BUFFER, glfloat_size * np.size(vertices), vertices, GL_STATIC_DRAW
+            GL_ARRAY_BUFFER,
+            glfloat_size * np.size(vertices),
+            vertices,
+            GL_STATIC_DRAW,
         )
 
         # send the modelspace data to the GPU
@@ -398,7 +404,6 @@ class Vector:
             ms.rotate_z(ms.MatrixStack.model, self.angle_z)
             ms.rotate_y(ms.MatrixStack.model, self.angle_y)
 
-
             # x axis
             with ms.push_matrix(ms.MatrixStack.model):
                 ms.rotate_z(ms.MatrixStack.model, math.radians(-90.0))
@@ -411,7 +416,8 @@ class Vector:
                     1,
                     GL_TRUE,
                     np.ascontiguousarray(
-                        ms.getCurrentMatrix(ms.MatrixStack.model), dtype=np.float32
+                        ms.getCurrentMatrix(ms.MatrixStack.model),
+                        dtype=np.float32,
                     ),
                 )
                 glUniformMatrix4fv(
@@ -419,7 +425,8 @@ class Vector:
                     1,
                     GL_TRUE,
                     np.ascontiguousarray(
-                        ms.getCurrentMatrix(ms.MatrixStack.view), dtype=np.float32
+                        ms.getCurrentMatrix(ms.MatrixStack.view),
+                        dtype=np.float32,
                     ),
                 )
                 glUniformMatrix4fv(
@@ -427,17 +434,18 @@ class Vector:
                     1,
                     GL_TRUE,
                     np.ascontiguousarray(
-                        ms.getCurrentMatrix(ms.MatrixStack.projection), dtype=np.float32
+                        ms.getCurrentMatrix(ms.MatrixStack.projection),
+                        dtype=np.float32,
                     ),
                 )
                 glDrawArrays(GL_LINES, 0, self.numberOfVertices)
 
-vec1 = Vector(x= 3.0, y= 4.0, z= 5.0, r=1.0, g=1.0, b=1.0)
+
+vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=1.0, b=1.0)
 vec1.prepare_to_render()
 
-vec2 = Vector(x= 3.0, y=4.0, z=2.5, r=1.0, g=0.0, b=1.0)
+vec2 = Vector(x=3.0, y=4.0, z=2.5, r=1.0, g=0.0, b=1.0)
 vec2.prepare_to_render()
-
 
 
 class Axis:
@@ -511,7 +519,10 @@ class Axis:
         )
 
         glBufferData(
-            GL_ARRAY_BUFFER, glfloat_size * np.size(vertices), vertices, GL_STATIC_DRAW
+            GL_ARRAY_BUFFER,
+            glfloat_size * np.size(vertices),
+            vertices,
+            GL_STATIC_DRAW,
         )
 
         # send the modelspace data to the GPU
@@ -557,7 +568,8 @@ class Axis:
                     1,
                     GL_TRUE,
                     np.ascontiguousarray(
-                        ms.getCurrentMatrix(ms.MatrixStack.model), dtype=np.float32
+                        ms.getCurrentMatrix(ms.MatrixStack.model),
+                        dtype=np.float32,
                     ),
                 )
                 glUniformMatrix4fv(
@@ -565,7 +577,8 @@ class Axis:
                     1,
                     GL_TRUE,
                     np.ascontiguousarray(
-                        ms.getCurrentMatrix(ms.MatrixStack.view), dtype=np.float32
+                        ms.getCurrentMatrix(ms.MatrixStack.view),
+                        dtype=np.float32,
                     ),
                 )
                 glUniformMatrix4fv(
@@ -573,7 +586,8 @@ class Axis:
                     1,
                     GL_TRUE,
                     np.ascontiguousarray(
-                        ms.getCurrentMatrix(ms.MatrixStack.projection), dtype=np.float32
+                        ms.getCurrentMatrix(ms.MatrixStack.projection),
+                        dtype=np.float32,
                     ),
                 )
                 glDrawArrays(GL_LINES, 0, self.numberOfVertices)
@@ -591,7 +605,8 @@ class Axis:
                     1,
                     GL_TRUE,
                     np.ascontiguousarray(
-                        ms.getCurrentMatrix(ms.MatrixStack.model), dtype=np.float32
+                        ms.getCurrentMatrix(ms.MatrixStack.model),
+                        dtype=np.float32,
                     ),
                 )
                 glUniformMatrix4fv(
@@ -599,7 +614,8 @@ class Axis:
                     1,
                     GL_TRUE,
                     np.ascontiguousarray(
-                        ms.getCurrentMatrix(ms.MatrixStack.view), dtype=np.float32
+                        ms.getCurrentMatrix(ms.MatrixStack.view),
+                        dtype=np.float32,
                     ),
                 )
                 glUniformMatrix4fv(
@@ -607,7 +623,8 @@ class Axis:
                     1,
                     GL_TRUE,
                     np.ascontiguousarray(
-                        ms.getCurrentMatrix(ms.MatrixStack.projection), dtype=np.float32
+                        ms.getCurrentMatrix(ms.MatrixStack.projection),
+                        dtype=np.float32,
                     ),
                 )
                 glDrawArrays(GL_LINES, 0, self.numberOfVertices)
@@ -637,7 +654,8 @@ class Axis:
                 1,
                 GL_TRUE,
                 np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.projection), dtype=np.float32
+                    ms.getCurrentMatrix(ms.MatrixStack.projection),
+                    dtype=np.float32,
                 ),
             )
             glDrawArrays(GL_LINES, 0, self.numberOfVertices)
@@ -649,7 +667,6 @@ axis = Axis()
 axis.prepare_to_render()
 
 
-
 @dataclass
 class Camera:
     r: float = 0.0
@@ -658,8 +675,6 @@ class Camera:
 
 
 camera = Camera(r=5.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
-
-
 
 
 def handle_inputs():
@@ -681,7 +696,6 @@ def handle_inputs():
         camera.rot_x = -math.pi / 2.0
 
 
-
 TARGET_FRAMERATE = 60  # fps
 
 # to try to standardize on 60 fps, compare times between frames
@@ -698,12 +712,12 @@ draw_second_relative_coordinates = False
 do_second_rotate = False
 
 
-
 # Loop until the user closes the window
 while not glfw.window_should_close(window):
     # poll the time to try to get a constant framerate
     while (
-        glfw.get_time() < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE
+        glfw.get_time()
+        < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE
     ):
         pass
     # set for comparison on the next frame
@@ -715,7 +729,6 @@ while not glfw.window_should_close(window):
     # Poll for and process events
     glfw.poll_events()
     impl.process_inputs()
-
 
     width, height = glfw.get_framebuffer_size(window)
     glViewport(0, 0, width, height)
@@ -730,7 +743,10 @@ while not glfw.window_should_close(window):
 
     # set the projection matrix to be perspective
     ms.perspective(
-        fov=45.0, aspectRatio=float(width) / float(height), nearZ=0.1, farZ=10000.0
+        fov=45.0,
+        aspectRatio=float(width) / float(height),
+        nearZ=0.1,
+        farZ=10000.0,
     )
 
     # note - opengl matricies use degrees
@@ -741,7 +757,6 @@ while not glfw.window_should_close(window):
     # do everything in math coordinate system
     ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
-
     ground.render(animation_time)
     ground.render(animation_time, vertical=True)
     unit_circle.render(animation_time)
@@ -749,12 +764,13 @@ while not glfw.window_should_close(window):
 
     axis.render(animation_time)
 
-
     imgui.new_frame()
 
     if imgui.begin_main_menu_bar():
         if imgui.begin_menu("File", True):
-            clicked_quit, selected_quit = imgui.menu_item("Quit", "Cmd+Q", False, True)
+            clicked_quit, selected_quit = imgui.menu_item(
+                "Quit", "Cmd+Q", False, True
+            )
 
             if clicked_quit:
                 exit(0)
@@ -768,13 +784,15 @@ while not glfw.window_should_close(window):
     clicked_animation_paused, animation_paused = imgui.checkbox(
         "Pause", animation_paused
     )
-    clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 20.0)
-    clicked_animation_time_multiplier, animation_time_multiplier = imgui.slider_float(
-        "Sim Speed", animation_time_multiplier, 0.1, 10.0
+    clicked_camera, camera.r = imgui.slider_float(
+        "Camera Radius", camera.r, 3, 20.0
     )
+    (
+        clicked_animation_time_multiplier,
+        animation_time_multiplier,
+    ) = imgui.slider_float("Sim Speed", animation_time_multiplier, 0.1, 10.0)
     if imgui.button("Restart"):
         animation_time = 0.0
-
 
     if imgui.button("View Down X Axis"):
         camera.rot_x = 0.0
@@ -788,9 +806,6 @@ while not glfw.window_should_close(window):
         camera.rot_x = math.pi / 2.0
         camera.rot_y = 0.0
 
-
-
-
     changed, draw_first_relative_coordinates = imgui.checkbox(
         label="Draw Relative Coordinates", state=draw_first_relative_coordinates
     )
@@ -799,15 +814,14 @@ while not glfw.window_should_close(window):
         label="Rotate Z", state=do_first_rotate
     )
 
-
     changed, draw_second_relative_coordinates = imgui.checkbox(
-        label="Draw aoeuRelative Coordinates", state=draw_second_relative_coordinates
+        label="Draw aoeuRelative Coordinates",
+        state=draw_second_relative_coordinates,
     )
     imgui.same_line()
     changed, do_second_rotate = imgui.checkbox(
         label="Rotate Y", state=do_second_rotate
     )
-
 
     if draw_second_relative_coordinates:
 
@@ -821,8 +835,6 @@ while not glfw.window_should_close(window):
         draw_second_relative_coordinates = False
         ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y)
 
-
-
     if do_first_rotate:
         draw_first_relative_coordinates = False
         ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z)
@@ -834,8 +846,6 @@ while not glfw.window_should_close(window):
             ground.render(animation_time)
             axis.render(animation_time)
 
-
-
     if imgui.button("Draw Relative Coordinates"):
         pass
     imgui.same_line()
@@ -846,14 +856,13 @@ while not glfw.window_should_close(window):
     if imgui.button("Rotate 90"):
         pass
 
-
     if imgui.tree_node(
-        "From World Space, Against Arrows, Read Bottom Up", imgui.TREE_NODE_DEFAULT_OPEN
+        "From World Space, Against Arrows, Read Bottom Up",
+        imgui.TREE_NODE_DEFAULT_OPEN,
     ):
         imgui.tree_pop()
 
     imgui.end()
-
 
     glDisable(GL_DEPTH_TEST)
 
