@@ -82,6 +82,7 @@ from dataclasses import dataclass
 
 import ctypes
 
+
 # NEW - for shader location
 pwd = os.path.dirname(os.path.abspath(__file__))
 
@@ -666,13 +667,19 @@ def handle_inputs():
 
     move_multiple = 15.0
     if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS:
-        camera.rot_y -= math.radians(1.0) % 360.0
+        camera.rot_y -= math.radians(1.0)
     if glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS:
-        camera.rot_y += math.radians(1.0) % 360.0
+        camera.rot_y += math.radians(1.0)
     if glfw.get_key(window, glfw.KEY_UP) == glfw.PRESS:
-        camera.rot_x -= math.radians(1.0) % 360.0
+        camera.rot_x -= math.radians(1.0)
     if glfw.get_key(window, glfw.KEY_DOWN) == glfw.PRESS:
-        camera.rot_x += math.radians(1.0) % 360.0
+        camera.rot_x += math.radians(1.0)
+
+    if camera.rot_x > math.pi / 2.0:
+        camera.rot_x = math.pi / 2.0
+    if camera.rot_x < -math.pi / 2.0:
+        camera.rot_x = -math.pi / 2.0
+
 
 
 TARGET_FRAMERATE = 60  # fps
@@ -767,6 +774,19 @@ while not glfw.window_should_close(window):
     )
     if imgui.button("Restart"):
         animation_time = 0.0
+
+
+    if imgui.button("View Down X Axis"):
+        camera.rot_x = 0.0
+        camera.rot_y = math.pi / 2.0
+    imgui.same_line()
+    if imgui.button("View Down Y Axis"):
+        camera.rot_x = 0.0
+        camera.rot_y = 0.0
+    imgui.same_line()
+    if imgui.button("View Down Z Axis"):
+        camera.rot_x = math.pi / 2.0
+        camera.rot_y = 0.0
 
 
 
