@@ -18,7 +18,6 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-
 import sys
 import os
 import numpy as np
@@ -69,6 +68,8 @@ from OpenGL.GL import (
     glDeleteProgram,
     glUniform3f,
 )
+
+
 import OpenGL.GL.shaders as shaders
 import glfw
 import pyMatrixStack as ms
@@ -79,6 +80,7 @@ from imgui.integrations.glfw import GlfwRenderer
 import staticlocal
 
 from dataclasses import dataclass
+
 
 import ctypes
 
@@ -441,11 +443,25 @@ class Vector:
                 glDrawArrays(GL_LINES, 0, self.numberOfVertices)
 
 
+# vec1 = Vector(x=0.0, y=0.0, z=5.0, r=1.0, g=1.0, b=1.0)
+# vec1.prepare_to_render()
+
+# vec2 = Vector(x=0.0, y=5.0, z=0.0, r=1.0, g=0.0, b=1.0)
+# vec2.prepare_to_render()
+
+# vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=1.0, b=1.0)
+# vec1.prepare_to_render()
+
+# vec2 = Vector(x=0.0, y=3.0, z=5.5, r=1.0, g=0.0, b=1.0)
+# vec2.prepare_to_render()
+
 vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=1.0, b=1.0)
 vec1.prepare_to_render()
 
-vec2 = Vector(x=3.0, y=4.0, z=2.5, r=1.0, g=0.0, b=1.0)
+vec2 = Vector(x=0.0, y=3.0, z=5.5, r=1.0, g=0.0, b=1.0)
 vec2.prepare_to_render()
+
+vec3 = None
 
 
 class Axis:
@@ -674,7 +690,7 @@ class Camera:
     rot_x: float = 0.0
 
 
-camera = Camera(r=5.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
+camera = Camera(r=22.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
 
 
 def handle_inputs():
@@ -710,14 +726,17 @@ draw_first_relative_coordinates = False
 do_first_rotate = False
 draw_second_relative_coordinates = False
 do_second_rotate = False
-
+project_onto_yz_plane = False
+rotate_yz_90 = False
+undo_rotate_z = False
+undo_rotate_y = False
+do_scale = False
 
 # Loop until the user closes the window
 while not glfw.window_should_close(window):
     # poll the time to try to get a constant framerate
     while (
-        glfw.get_time()
-        < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE
+        glfw.get_time() < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE
     ):
         pass
     # set for comparison on the next frame
@@ -768,9 +787,7 @@ while not glfw.window_should_close(window):
 
     if imgui.begin_main_menu_bar():
         if imgui.begin_menu("File", True):
-            clicked_quit, selected_quit = imgui.menu_item(
-                "Quit", "Cmd+Q", False, True
-            )
+            clicked_quit, selected_quit = imgui.menu_item("Quit", "Cmd+Q", False, True)
 
             if clicked_quit:
                 exit(0)
@@ -784,9 +801,7 @@ while not glfw.window_should_close(window):
     clicked_animation_paused, animation_paused = imgui.checkbox(
         "Pause", animation_paused
     )
-    clicked_camera, camera.r = imgui.slider_float(
-        "Camera Radius", camera.r, 3, 20.0
-    )
+    clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 100.0)
     (
         clicked_animation_time_multiplier,
         animation_time_multiplier,
@@ -810,18 +825,14 @@ while not glfw.window_should_close(window):
         label="Draw Relative Coordinates", state=draw_first_relative_coordinates
     )
     imgui.same_line()
-    changed, do_first_rotate = imgui.checkbox(
-        label="Rotate Z", state=do_first_rotate
-    )
+    changed, do_first_rotate = imgui.checkbox(label="Rotate Z", state=do_first_rotate)
 
     changed, draw_second_relative_coordinates = imgui.checkbox(
         label="Draw aoeuRelative Coordinates",
         state=draw_second_relative_coordinates,
     )
     imgui.same_line()
-    changed, do_second_rotate = imgui.checkbox(
-        label="Rotate Y", state=do_second_rotate
-    )
+    changed, do_second_rotate = imgui.checkbox(label="Rotate Y", state=do_second_rotate)
 
     if draw_second_relative_coordinates:
 
@@ -833,11 +844,13 @@ while not glfw.window_should_close(window):
 
     if do_second_rotate:
         draw_second_relative_coordinates = False
-        ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y)
+        if not undo_rotate_y:
+            ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y)
 
     if do_first_rotate:
         draw_first_relative_coordinates = False
-        ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z)
+        if not undo_rotate_z:
+            ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z)
 
     if draw_first_relative_coordinates:
         with ms.push_matrix(ms.MatrixStack.model):
@@ -846,15 +859,37 @@ while not glfw.window_should_close(window):
             ground.render(animation_time)
             axis.render(animation_time)
 
-    if imgui.button("Draw Relative Coordinates"):
-        pass
+    if imgui.button("Show Triangle"):
+        vec3_after_rotate = np.ascontiguousarray(
+            ms.getCurrentMatrix(ms.MatrixStack.model), dtype=np.float32
+        ) @ np.array([vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32)
+
+        vec3 = Vector(
+            x=0.0,
+            y=-vec3_after_rotate[2],
+            z=vec3_after_rotate[1],
+            r=0.0,
+            g=1.0,
+            b=1.0,
+        )
+        vec3.translate_amount = vec3_after_rotate[0]
+        vec3.prepare_to_render()
     imgui.same_line()
-    if imgui.button("Second rotate"):
-        pass
-    if imgui.button("Project"):
-        pass
-    if imgui.button("Rotate 90"):
-        pass
+    if imgui.button("Project onto e_2 e_3 plane"):
+        project_onto_yz_plane = True
+
+    if imgui.button("Rotate Y to Z, Z to -Y"):
+        rotate_yz_90 = True
+
+    if imgui.button("Undo Rotate Y"):
+        undo_rotate_y = True
+    imgui.same_line()
+
+    if imgui.button("Undo Rotate Z"):
+        undo_rotate_z = True
+
+    if imgui.button("Scale By Magnitude of first vector"):
+        do_scale = True
 
     if imgui.tree_node(
         "From World Space, Against Arrows, Read Bottom Up",
@@ -868,6 +903,32 @@ while not glfw.window_should_close(window):
 
     vec1.render(animation_time)
     vec2.render(animation_time)
+
+    if vec3:
+        with ms.push_matrix(ms.MatrixStack.model):
+            ms.setToIdentityMatrix(ms.MatrixStack.model)
+            ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
+
+            if do_scale:
+                magnitude = math.sqrt(vec1.x**2 + vec1.y**2 + vec1.z**2)
+
+                ms.scale(ms.MatrixStack.model, magnitude, magnitude, magnitude)
+
+            if undo_rotate_z:
+                ms.rotate_z(ms.MatrixStack.model, vec1.angle_z)
+            if undo_rotate_y:
+                ms.rotate_y(ms.MatrixStack.model, vec1.angle_y)
+
+            if project_onto_yz_plane:
+                if rotate_yz_90:
+                    with ms.push_matrix(ms.MatrixStack.model):
+                        ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
+                        vec3.render(animation_time)
+                else:
+                    vec3.render(animation_time)
+            else:
+                ms.translate(ms.MatrixStack.model, vec3.translate_amount, 0.0, 0.0)
+                vec3.render(animation_time)
 
     imgui.render()
     impl.render(imgui.get_draw_data())
