@@ -104,7 +104,7 @@ glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL_TRUE)
 
 
 window = glfw.create_window(
-    800, 800, "ModelViewProjection Demo of Coordinates", None, None
+    800, 800, "Cross Product Visualization", None, None
 )
 if not window:
     glfw.terminate()
@@ -828,7 +828,7 @@ while not glfw.window_should_close(window):
     changed, do_first_rotate = imgui.checkbox(label="Rotate Z", state=do_first_rotate)
 
     changed, draw_second_relative_coordinates = imgui.checkbox(
-        label="Draw aoeuRelative Coordinates",
+        label="Draw Second Relative Coordinates",
         state=draw_second_relative_coordinates,
     )
     imgui.same_line()
