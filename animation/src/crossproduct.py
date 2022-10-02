@@ -174,17 +174,17 @@ class Ground:
         with open(os.path.join(pwd, "ground.frag"), "r") as f:
             fs = shaders.compileShader(f.read(), GL_FRAGMENT_SHADER)
 
-        self.shader = shaders.compileProgram(vs, fs)
+        Ground.shader = shaders.compileProgram(vs, fs)
 
-        self.mMatrixLoc = glGetUniformLocation(self.shader, "mMatrix")
-        self.vMatrixLoc = glGetUniformLocation(self.shader, "vMatrix")
-        self.pMatrixLoc = glGetUniformLocation(self.shader, "pMatrix")
+        self.mMatrixLoc = glGetUniformLocation(Ground.shader, "mMatrix")
+        self.vMatrixLoc = glGetUniformLocation(Ground.shader, "vMatrix")
+        self.pMatrixLoc = glGetUniformLocation(Ground.shader, "pMatrix")
 
         # send the modelspace data to the GPU
         self.vbo = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
 
-        position = glGetAttribLocation(self.shader, "position")
+        position = glGetAttribLocation(Ground.shader, "position")
         glEnableVertexAttribArray(position)
 
         glVertexAttribPointer(
@@ -209,24 +209,24 @@ class Ground:
     def __del__(self):
         glDeleteVertexArrays(1, [self.vao])
         glDeleteBuffers(1, [self.vbo])
-        glDeleteProgram(self.shader)
+        glDeleteProgram(Ground.shader)
 
     def render(self, time, vertical=False):
 
         rotation_amount = 90.0 if vertical else 0.0
         with ms.push_matrix(ms.MatrixStack.model):
             ms.rotate_x(ms.MatrixStack.model, math.radians(rotation_amount))
-            glUseProgram(self.shader)
+            glUseProgram(Ground.shader)
             glBindVertexArray(self.vao)
 
             # pass projection parameters to the shader
-            fov_loc = glGetUniformLocation(self.shader, "fov")
+            fov_loc = glGetUniformLocation(Ground.shader, "fov")
             glUniform1f(fov_loc, 45.0)
-            aspect_loc = glGetUniformLocation(self.shader, "aspectRatio")
+            aspect_loc = glGetUniformLocation(Ground.shader, "aspectRatio")
             glUniform1f(aspect_loc, 1.0)
-            nearZ_loc = glGetUniformLocation(self.shader, "nearZ")
+            nearZ_loc = glGetUniformLocation(Ground.shader, "nearZ")
             glUniform1f(nearZ_loc, -5.0)
-            farZ_loc = glGetUniformLocation(self.shader, "farZ")
+            farZ_loc = glGetUniformLocation(Ground.shader, "farZ")
             glUniform1f(farZ_loc, -150.00)
 
             # ascontiguousarray puts the array in column major order
@@ -347,18 +347,18 @@ class Vector:
         with open(os.path.join(pwd, "axis.frag"), "r") as f:
             fs = shaders.compileShader(f.read(), GL_FRAGMENT_SHADER)
 
-        self.shader = shaders.compileProgram(vs, fs)
+        Vector.shader = shaders.compileProgram(vs, fs)
 
-        self.mMatrixLoc = glGetUniformLocation(self.shader, "mMatrix")
-        self.vMatrixLoc = glGetUniformLocation(self.shader, "vMatrix")
-        self.pMatrixLoc = glGetUniformLocation(self.shader, "pMatrix")
-        self.colorLoc = glGetUniformLocation(self.shader, "color")
+        self.mMatrixLoc = glGetUniformLocation(Vector.shader, "mMatrix")
+        self.vMatrixLoc = glGetUniformLocation(Vector.shader, "vMatrix")
+        self.pMatrixLoc = glGetUniformLocation(Vector.shader, "pMatrix")
+        self.colorLoc = glGetUniformLocation(Vector.shader, "color")
 
         # send the modelspace data to the GPU
         self.vbo = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
 
-        position = glGetAttribLocation(self.shader, "position")
+        position = glGetAttribLocation(Vector.shader, "position")
         glEnableVertexAttribArray(position)
 
         glVertexAttribPointer(
@@ -383,20 +383,20 @@ class Vector:
     def __del__(self):
         glDeleteVertexArrays(1, [self.vao])
         glDeleteBuffers(1, [self.vbo])
-        glDeleteProgram(self.shader)
+        glDeleteProgram(Vector.shader)
 
     def render(self, time, grayed_out=False):
-        glUseProgram(self.shader)
+        glUseProgram(Vector.shader)
         glBindVertexArray(self.vao)
 
         # pass projection parameters to the shader
-        fov_loc = glGetUniformLocation(self.shader, "fov")
+        fov_loc = glGetUniformLocation(Vector.shader, "fov")
         glUniform1f(fov_loc, 45.0)
-        aspect_loc = glGetUniformLocation(self.shader, "aspectRatio")
+        aspect_loc = glGetUniformLocation(Vector.shader, "aspectRatio")
         glUniform1f(aspect_loc, 1.0)
-        nearZ_loc = glGetUniformLocation(self.shader, "nearZ")
+        nearZ_loc = glGetUniformLocation(Vector.shader, "nearZ")
         glUniform1f(nearZ_loc, -5.0)
-        farZ_loc = glGetUniformLocation(self.shader, "farZ")
+        farZ_loc = glGetUniformLocation(Vector.shader, "farZ")
         glUniform1f(farZ_loc, -150.00)
         # TODO, set the color
 
@@ -514,18 +514,18 @@ class Axis:
         with open(os.path.join(pwd, "axis.frag"), "r") as f:
             fs = shaders.compileShader(f.read(), GL_FRAGMENT_SHADER)
 
-        self.shader = shaders.compileProgram(vs, fs)
+        Axis.shader = shaders.compileProgram(vs, fs)
 
-        self.mMatrixLoc = glGetUniformLocation(self.shader, "mMatrix")
-        self.vMatrixLoc = glGetUniformLocation(self.shader, "vMatrix")
-        self.pMatrixLoc = glGetUniformLocation(self.shader, "pMatrix")
-        self.colorLoc = glGetUniformLocation(self.shader, "color")
+        self.mMatrixLoc = glGetUniformLocation(Axis.shader, "mMatrix")
+        self.vMatrixLoc = glGetUniformLocation(Axis.shader, "vMatrix")
+        self.pMatrixLoc = glGetUniformLocation(Axis.shader, "pMatrix")
+        self.colorLoc = glGetUniformLocation(Axis.shader, "color")
 
         # send the modelspace data to the GPU
         self.vbo = glGenBuffers(1)
         glBindBuffer(GL_ARRAY_BUFFER, self.vbo)
 
-        position = glGetAttribLocation(self.shader, "position")
+        position = glGetAttribLocation(Axis.shader, "position")
         glEnableVertexAttribArray(position)
 
         glVertexAttribPointer(
@@ -550,21 +550,21 @@ class Axis:
     def __del__(self):
         glDeleteVertexArrays(1, [self.vao])
         glDeleteBuffers(1, [self.vbo])
-        glDeleteProgram(self.shader)
+        glDeleteProgram(Axis.shader)
 
     def render(self, time, grayed_out=False):
         glDisable(GL_DEPTH_TEST)
-        glUseProgram(self.shader)
+        glUseProgram(Axis.shader)
         glBindVertexArray(self.vao)
 
         # pass projection parameters to the shader
-        fov_loc = glGetUniformLocation(self.shader, "fov")
+        fov_loc = glGetUniformLocation(Axis.shader, "fov")
         glUniform1f(fov_loc, 45.0)
-        aspect_loc = glGetUniformLocation(self.shader, "aspectRatio")
+        aspect_loc = glGetUniformLocation(Axis.shader, "aspectRatio")
         glUniform1f(aspect_loc, 1.0)
-        nearZ_loc = glGetUniformLocation(self.shader, "nearZ")
+        nearZ_loc = glGetUniformLocation(Axis.shader, "nearZ")
         glUniform1f(nearZ_loc, -5.0)
-        farZ_loc = glGetUniformLocation(self.shader, "farZ")
+        farZ_loc = glGetUniformLocation(Axis.shader, "farZ")
         glUniform1f(farZ_loc, -150.00)
         # TODO, set the color
 
