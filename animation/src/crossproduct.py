@@ -957,5 +957,9 @@ while not glfw.window_should_close(window):
     # Swap front and back buffers
     glfw.swap_buffers(window)
 
+del vec1
+del vec2
+del axis
+del ground
 
 glfw.terminate()
