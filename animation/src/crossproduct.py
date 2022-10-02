@@ -729,6 +729,7 @@ rotate_yz_90 = False
 undo_rotate_z = False
 undo_rotate_y = False
 do_scale = False
+use_ortho = True
 
 # Loop until the user closes the window
 while not glfw.window_should_close(window):
@@ -759,16 +760,28 @@ while not glfw.window_should_close(window):
     ms.setToIdentityMatrix(ms.MatrixStack.view)
     ms.setToIdentityMatrix(ms.MatrixStack.projection)
 
-    # set the projection matrix to be perspective
-    ms.perspective(
-        fov=45.0,
-        aspectRatio=float(width) / float(height),
-        nearZ=0.1,
-        farZ=10000.0,
-    )
+    if use_ortho:
+        ms.ortho(
+            left=-10.0 * float(width) / float(height),
+            right=10.0 * float(width) / float(height),
+            back=-10.00,
+            top=10.00,
+            near=10.0,
+            far=-10.0,
+        )
 
-    # note - opengl matricies use degrees
-    ms.translate(ms.MatrixStack.view, 0.0, 0.0, -camera.r)
+    else:
+        # set the projection matrix to be perspective
+        ms.perspective(
+            fov=45.0,
+            aspectRatio=float(width) / float(height),
+            nearZ=0.1,
+            farZ=10000.0,
+        )
+
+        # note - opengl matricies use degrees
+        ms.translate(ms.MatrixStack.view, 0.0, 0.0, -camera.r)
+
     ms.rotate_x(ms.MatrixStack.view, camera.rot_x)
     ms.rotate_y(ms.MatrixStack.view, -camera.rot_y)
 
@@ -799,9 +812,7 @@ while not glfw.window_should_close(window):
     imgui.set_next_window_bg_alpha(0.05)
     imgui.begin("Time", True)
 
-    clicked_animation_paused, animation_paused = imgui.checkbox(
-        "Pause", animation_paused
-    )
+    clicked_use_ortho, use_ortho = imgui.checkbox("Orthogonal View", use_ortho)
     clicked_camera, camera.r = imgui.slider_float(
         "Camera Radius", camera.r, 3, 100.0
     )
