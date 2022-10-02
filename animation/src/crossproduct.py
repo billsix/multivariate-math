@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+
 import sys
 import os
 import numpy as np
@@ -77,7 +78,6 @@ import atexit
 import colorsys
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
-import staticlocal
 
 from dataclasses import dataclass
 
@@ -103,9 +103,7 @@ glfw.window_hint(glfw.OPENGL_PROFILE, glfw.OPENGL_CORE_PROFILE)
 glfw.window_hint(glfw.OPENGL_FORWARD_COMPAT, GL_TRUE)
 
 
-window = glfw.create_window(
-    800, 800, "Cross Product Visualization", None, None
-)
+window = glfw.create_window(800, 800, "Cross Product Visualization", None, None)
 if not window:
     glfw.terminate()
     sys.exit()
@@ -736,7 +734,8 @@ do_scale = False
 while not glfw.window_should_close(window):
     # poll the time to try to get a constant framerate
     while (
-        glfw.get_time() < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE
+        glfw.get_time()
+        < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE
     ):
         pass
     # set for comparison on the next frame
@@ -787,7 +786,9 @@ while not glfw.window_should_close(window):
 
     if imgui.begin_main_menu_bar():
         if imgui.begin_menu("File", True):
-            clicked_quit, selected_quit = imgui.menu_item("Quit", "Cmd+Q", False, True)
+            clicked_quit, selected_quit = imgui.menu_item(
+                "Quit", "Cmd+Q", False, True
+            )
 
             if clicked_quit:
                 exit(0)
@@ -801,7 +802,9 @@ while not glfw.window_should_close(window):
     clicked_animation_paused, animation_paused = imgui.checkbox(
         "Pause", animation_paused
     )
-    clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 100.0)
+    clicked_camera, camera.r = imgui.slider_float(
+        "Camera Radius", camera.r, 3, 100.0
+    )
     (
         clicked_animation_time_multiplier,
         animation_time_multiplier,
@@ -825,14 +828,18 @@ while not glfw.window_should_close(window):
         label="Draw Relative Coordinates", state=draw_first_relative_coordinates
     )
     imgui.same_line()
-    changed, do_first_rotate = imgui.checkbox(label="Rotate Z", state=do_first_rotate)
+    changed, do_first_rotate = imgui.checkbox(
+        label="Rotate Z", state=do_first_rotate
+    )
 
     changed, draw_second_relative_coordinates = imgui.checkbox(
         label="Draw Second Relative Coordinates",
         state=draw_second_relative_coordinates,
     )
     imgui.same_line()
-    changed, do_second_rotate = imgui.checkbox(label="Rotate Y", state=do_second_rotate)
+    changed, do_second_rotate = imgui.checkbox(
+        label="Rotate Y", state=do_second_rotate
+    )
 
     if draw_second_relative_coordinates:
 
@@ -927,7 +934,9 @@ while not glfw.window_should_close(window):
                 else:
                     vec3.render(animation_time)
             else:
-                ms.translate(ms.MatrixStack.model, vec3.translate_amount, 0.0, 0.0)
+                ms.translate(
+                    ms.MatrixStack.model, vec3.translate_amount, 0.0, 0.0
+                )
                 vec3.render(animation_time)
 
     imgui.render()
