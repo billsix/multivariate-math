@@ -729,7 +729,7 @@ rotate_yz_90 = False
 undo_rotate_z = False
 undo_rotate_y = False
 do_scale = False
-use_ortho = True
+use_ortho = False
 
 # Loop until the user closes the window
 while not glfw.window_should_close(window):
