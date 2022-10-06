@@ -59,25 +59,25 @@
 
 \textbf{Rotate $\vec{a}$ and $\vec{b}$ so that $\vec{a}$ is on the x axis: }
 
-  Let $\vec{a} = \begin{bmatrix}
+  Let $\vec{a} \triangleq \begin{bmatrix}
     a_1 \\
     a_2 \\
     a_3 \\
-  \end{bmatrix}$ and let $\vec{b} = \begin{bmatrix}
+  \end{bmatrix}$ and let $\vec{b} \triangleq \begin{bmatrix}
     b_1 \\
     b_2 \\
     b_3 \\
   \end{bmatrix}$.
 
-  let $k = \sqrt{a_1^2 + a_2^2}$.
+  let $k_1 \triangleq \sqrt{a_1^2 + a_2^2}$.
 
   Define $\vec{f_1}(\vec{x})$ such that $\vec{f_1}(\vec{a})$ is rotated onto the $e_1e_3$ plane.  Apply $\vec{f_1}$ to $\vec{b}$.
 
 \begin{flalign}
-\vec{f_1}(\vec{x}) & = \begin{bmatrix}
-     \frac{k}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
+\vec{f_1}(\vec{x}) & \triangleq \begin{bmatrix}
+     \frac{k_1}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
      0 & 1  & 0 \\
-     \frac{-a_3}{\norm{a}} & 0 & \frac{k}{\norm{a}}\\
+     \frac{-a_3}{\norm{a}} & 0 & \frac{k_1}{\norm{a}}\\
     \end{bmatrix} * \vec{x}
 \end{flalign}
 
@@ -85,9 +85,9 @@
   Define $\vec{f_2}(\vec{x})$ such that $(\vec{f_2} \circ \vec{f_1})(\vec{a})$ is rotated onto the $e_1$ axis.  Apply $\vec{f_1}$ to $\vec{b}$.
 
 \begin{flalign}
-\vec{f_2}(\vec{x}) & = \begin{bmatrix}
-     \frac{a_1}{k} & \frac{a_2}{k} & 0 \\
-     \frac{-a_2}{k} & \frac{a_1}{k} & 0 \\
+\vec{f_2}(\vec{x}) & \triangleq \begin{bmatrix}
+     \frac{a_1}{k_1} & \frac{a_2}{k_1} & 0 \\
+     \frac{-a_2}{k_1} & \frac{a_1}{k_1} & 0 \\
      0 & 0 & 1 \\
 \end{bmatrix} * \vec{x}
 \end{flalign}
@@ -95,38 +95,77 @@
 
 \begin{flalign}
 (\vec{f_2} \circ \vec{f_1})(\vec{x}) & = \begin{bmatrix}
-     \frac{k}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
+     \frac{k_1}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
      0 & 1  & 0 \\
-     \frac{-a_3}{\norm{a}} & 0 & \frac{k}{\norm{a}}\\
+     \frac{-a_3}{\norm{a}} & 0 & \frac{k_1}{\norm{a}}\\
     \end{bmatrix} * \begin{bmatrix}
-     \frac{a_1}{k} & \frac{a_2}{k} & 0 \\
-     \frac{-a_2}{k} & \frac{a_1}{k} & 0 \\
+     \frac{a_1}{k_1} & \frac{a_2}{k_1} & 0 \\
+     \frac{-a_2}{k_1} & \frac{a_1}{k_1} & 0 \\
      0 & 0 & 1 \\
 \end{bmatrix} * \vec{x} \\
   & = \begin{bmatrix}
      \frac{a_1}{\norm{a}} & \frac{a_2}{\norm{a}} & \frac{a_3}{\norm{a}} \\
-     \frac{-a_2}{k} & \frac{a_1}{k} & 0 \\
-     \frac{-a_1a_3}{k\norm{a}} & \frac{-a_2a_3}{k\norm{a}} & \frac{k}{\norm{a}} \\
+     \frac{-a_2}{k_1} & \frac{a_1}{k_1} & 0 \\
+     \frac{-a_1a_3}{k_1\norm{a}} & \frac{-a_2a_3}{k_1\norm{a}} & \frac{k_1}{\norm{a}} \\
 \end{bmatrix} * \vec{x}
 \end{flalign}
 
 \begin{flalign}
 (\vec{f_2} \circ \vec{f_1})(\vec{b}) = \begin{bmatrix}
      \frac{a_1b_1}{\norm{a}} + \frac{a_2b_2}{\norm{a}} + \frac{a_3b_3}{\norm{a}} \\
-     \frac{-a_2b_1}{k}  + \frac{a_1b_2}{k} \\
-     \frac{-a_1a_3b_1}{k\norm{a}} + \frac{-a_2a_3b_2}{k\norm{a}} + \frac{kb_3}{\norm{a}} \\
+     \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
+     \frac{-a_1a_3b_1}{k_1\norm{a}} + \frac{-a_2a_3b_2}{k_1\norm{a}} + \frac{k_1b_3}{\norm{a}} \\
 \end{bmatrix}
 \end{flalign}
 
 
+\textbf{Rotate $\vec{b''} \triangleq (\vec{f_2} \circ \vec{f_1})(\vec{b}) $ onto the $e_1e_2$ plane }
 
-\textbf{Project $(\vec{f_2} \circ \vec{f_1})(\vec{b})$ onto the $e_2e_3$ plane }
 
-Define $\vec{f_3}(\vec{x})$ to project any vector $x$ onto the $e_2e_3$ plane.
+  let $k_2 \triangleq \sqrt{{b''_2}^2 + {b''_3}^2}$.
+
+
+  \begin{flalign}
+            \vec{b''}  \triangleq \begin{bmatrix}
+    b''_1 \\
+    b''_2 \\
+    b''_3 \\
+            \end{bmatrix}   \triangleq
+   \begin{bmatrix}
+     \frac{a_1b_1}{\norm{a}} + \frac{a_2b_2}{\norm{a}} + \frac{a_3b_3}{\norm{a}} \\
+     \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
+     \frac{-a_1a_3b_1}{k_1\norm{a}} + \frac{-a_2a_3b_2}{k_1\norm{a}} + \frac{k_1b_3}{\norm{a}} \\
+\end{bmatrix}
+\end{flalign}
 
 
 \begin{flalign}
-\vec{f_3}(\vec{x}) & = \begin{bmatrix}
+\vec{f_3}(\vec{x}) & \triangleq \begin{bmatrix}
+     1 & 0 & 0 \\
+     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+     0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
+\end{bmatrix} * \vec{x}
+\end{flalign}
+
+
+\begin{flalign}
+( \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) & = \begin{bmatrix}
+     1 & 0 & 0 \\
+     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+     0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
+\end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b})
+\end{flalign}
+
+
+
+
+\textbf{Project $( \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b})$ onto the $e_2e_3$ plane }
+
+Define $\vec{f_4}(\vec{x})$ to project any vector $x$ onto the $e_2e_3$ plane.
+
+
+\begin{flalign}
+\vec{f_4}(\vec{x}) & \triangleq \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 1 & 0 \\
      0 & 0 & 1 \\
@@ -134,21 +173,30 @@ Define $\vec{f_3}(\vec{x})$ to project any vector $x$ onto the $e_2e_3$ plane.
 \end{flalign}
 
 \begin{flalign}
-( \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) & = \begin{bmatrix}
-     0 \\
-     \frac{-a_2b_1}{k}  + \frac{a_1b_2}{k} \\
-     \frac{-a_1a_3b_1}{k\norm{a}} + \frac{-a_2a_3b_2}{k\norm{a}} + \frac{kb_3}{\norm{a}} \\
-\end{bmatrix}
+( \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) & = \begin{bmatrix}
+     0 & 0 & 0 \\
+     0 & 1 & 0 \\
+     0 & 0 & 1 \\
+\end{bmatrix} *  \begin{bmatrix}
+     1 & 0 & 0 \\
+     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+     0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
+  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
+  & = \begin{bmatrix}
+     0 & 0 & 0 \\
+     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+     0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
+\end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b})
 \end{flalign}
 
 
 
-\textbf{Rotate $( \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b})$ 90 degrees on the $e_2e_3$ plane.}
+\textbf{Rotate $( \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) $ 90 degrees on the $e_2e_3$ plane.}
 
-Define $\vec{f_4}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
+Define $\vec{f_5}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
 
 \begin{flalign}
-\vec{f_4}(\vec{x}) & = \begin{bmatrix}
+\vec{f_5}(\vec{x}) & \triangleq \begin{bmatrix}
      1 & 0 & 0 \\
      0 & 0 & -1 \\
      0 & 1 & 0 \\
@@ -156,10 +204,63 @@ Define $\vec{f_4}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
 \end{flalign}
 
 \begin{flalign}
-( \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) & = \begin{bmatrix}
+  ( \vec{f_5} \circ \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) & = \begin{bmatrix}
+     1 & 0 & 0 \\
+     0 & 0 & -1 \\
+     0 & 1 & 0 \\
+\end{bmatrix} * \begin{bmatrix}
+     0 & 0 & 0 \\
+     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+     0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
+  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
+  & = \begin{bmatrix}
+     0 & 0 & 0 \\
+     0 & \frac{b''_3}{k_2} & \frac{-b''_2}{k_2} \\
+     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b})
+\end{flalign}
+
+
+\textbf{Apply inverse of $f_3$ to $( \vec{f_5} \circ \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b})$ }
+
+\begin{flalign}
+  ( \vec{f_3}^{-1} \circ \vec{f_5} \circ \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) & = \begin{bmatrix}
+     1 & 0 & 0 \\
+     0 & \frac{b''_2}{k_2} & \frac{-b''_3}{k_2}  \\
+     0 & \frac{b''_3}{k_2} & \frac{b''_2}{k_2}  \\
+\end{bmatrix} *  \begin{bmatrix}
+     0 & 0 & 0 \\
+     0 & \frac{b''_3}{k_2} & \frac{-b''_2}{k_2} \\
+     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
+  & = \begin{bmatrix}
+     0 & 0 & 0 \\
+     0 & 0 & \frac{-{b''_2}^2 - {b''_3}^2}{k_2^2} \\
+     0 & \frac{{b''_2}^2 + {b''_3}^2}{k_2^2}& 0 \\
+  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
+  & = \begin{bmatrix}
+     0 & 0 & 0 \\
+     0 & 0 & -1 \\
+     0 & 1 & 0 \\
+  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
+  & = \begin{bmatrix}
+     0 & 0 & 0 \\
+     0 & 0 & -1 \\
+     0 & 1 & 0 \\
+  \end{bmatrix} * \begin{bmatrix}
+    b''_1 \\
+    b''_2 \\
+    b''_3 \\
+            \end{bmatrix} \\
+  & =  \begin{bmatrix}
+    0 \\
+    -b''_3 \\
+    b''_2 \\
+  \end{bmatrix} \\
+  & =    \begin{bmatrix}
      0 \\
-     \frac{a_1a_3b_1}{k\norm{a}} + \frac{a_2a_3b_2}{k\norm{a}} + \frac{-kb_3}{\norm{a}} \\
-     \frac{-a_2b_1}{k}  + \frac{a_1b_2}{k} \\
+     \frac{a_1a_3b_1}{k_1\norm{a}} + \frac{a_2a_3b_2}{k_1\norm{a}} + \frac{-k_1b_3}{\norm{a}} \\
+     \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
 \end{bmatrix}
 \end{flalign}
 
@@ -167,38 +268,39 @@ Define $\vec{f_4}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
 
 \textbf{Rotate the x axis back to $\vec{a}$ }
 \begin{flalign}
-( \vec{f_1}^{-1} \circ \vec{f_2}^{-1} \circ \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) & = \begin{bmatrix}
-  \frac{a_1}{\norm{a}} & \frac{-a_2}{k} & \frac{-a_1a_3}{k\norm{a}}\\
-  \frac{a_2}{\norm{a}} & \frac{a_1}{k} & \frac{-a_2a_3}{k\norm{a}}  \\
-  \frac{a_3}{\norm{a}} & 0 & \frac{k}{\norm{a}} \\
+  f  & \triangleq ( \vec{f_1}^{-1} \circ \vec{f_2}^{-1} \circ \vec{f_3}^{-1} \circ \vec{f_5} \circ \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
+     & = \begin{bmatrix}
+  \frac{a_1}{\norm{a}} & \frac{-a_2}{k_1} & \frac{-a_1a_3}{k_1\norm{a}}\\
+  \frac{a_2}{\norm{a}} & \frac{a_1}{k_1} & \frac{-a_2a_3}{k_1\norm{a}}  \\
+  \frac{a_3}{\norm{a}} & 0 & \frac{k_1}{\norm{a}} \\
 \end{bmatrix} * \begin{bmatrix}
      0 \\
-     \frac{a_1a_3b_1}{k\norm{a}} + \frac{a_2a_3b_2}{k\norm{a}} + \frac{-kb_3}{\norm{a}} \\
-     \frac{-a_2b_1}{k}  + \frac{a_1b_2}{k} \\
+     \frac{a_1a_3b_1}{k_1\norm{a}} + \frac{a_2a_3b_2}{k_1\norm{a}} + \frac{-k_1b_3}{\norm{a}} \\
+     \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
 \end{bmatrix} \\
 & = \begin{bmatrix}
-  \frac{-a_2}{k} * (\frac{a_1a_3b_1}{k\norm{a}} + \frac{a_2a_3b_2}{k\norm{a}} + \frac{-kb_3}{\norm{a}}) + \frac{-a_1a_3}{k\norm{a}} * (\frac{-a_2b_1}{k}  + \frac{a_1b_2}{k})  \\
-  \frac{a_1}{k} * (\frac{a_1a_3b_1}{k\norm{a}} + \frac{a_2a_3b_2}{k\norm{a}} + \frac{-kb_3}{\norm{a}}) + \frac{-a_2a_3}{k\norm{a}} * (\frac{-a_2b_1}{k}  + \frac{a_1b_2}{k})  \\ \\
-  \frac{k}{\norm{a}} * (\frac{-a_2b_1}{k}  + \frac{a_1b_2}{k}) \\
+  \frac{-a_2}{k_1} * (\frac{a_1a_3b_1}{k_1\norm{a}} + \frac{a_2a_3b_2}{k_1\norm{a}} + \frac{-k_1b_3}{\norm{a}}) + \frac{-a_1a_3}{k_1\norm{a}} * (\frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1})  \\
+  \frac{a_1}{k_1} * (\frac{a_1a_3b_1}{k_1\norm{a}} + \frac{a_2a_3b_2}{k_1\norm{a}} + \frac{-k_1b_3}{\norm{a}}) + \frac{-a_2a_3}{k_1\norm{a}} * (\frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1})  \\ \\
+  \frac{k_1}{\norm{a}} * (\frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1}) \\
 \end{bmatrix} \\
 & = \begin{bmatrix}
-  \frac{-a_1a_2a_3b_1}{k^2\norm{a}} + \frac{-a_2^2a_3b_2}{k^2\norm{a}} + \frac{a_2b_3}{\norm{a}} + \frac{a_1a_2a_3b_1}{k^2\norm{a}}  + \frac{-a_1^2a_3b_2}{k^2\norm{a}}  \\
-  \frac{a_1^2a_3b_1}{k^2\norm{a}} + \frac{a_1a_2a_3b_2}{k^2\norm{a}} + \frac{-a_1b_3}{\norm{a}} +  \frac{a_2^2a_3b_1}{k^2\norm{a}}  + \frac{-a_1a_2a_3b_2}{k^2\norm{a}}  \\ \\
+  \frac{-a_1a_2a_3b_1}{k_1^2\norm{a}} + \frac{-a_2^2a_3b_2}{k_1^2\norm{a}} + \frac{a_2b_3}{\norm{a}} + \frac{a_1a_2a_3b_1}{k_1^2\norm{a}}  + \frac{-a_1^2a_3b_2}{k_1^2\norm{a}}  \\
+  \frac{a_1^2a_3b_1}{k_1^2\norm{a}} + \frac{a_1a_2a_3b_2}{k_1^2\norm{a}} + \frac{-a_1b_3}{\norm{a}} +  \frac{a_2^2a_3b_1}{k_1^2\norm{a}}  + \frac{-a_1a_2a_3b_2}{k_1^2\norm{a}}  \\ \\
   \frac{-a_2b_1}{\norm{a}}  + \frac{a_1b_2}{\norm{a}} \\
 \end{bmatrix} \\
 & = \begin{bmatrix}
-  \frac{-a_2^2a_3b_2}{k^2\norm{a}} + \frac{a_2b_3}{\norm{a}} + \frac{-a_1^2a_3b_2}{k^2\norm{a}}  \\
-  \frac{a_1^2a_3b_1}{k^2\norm{a}} +  \frac{-a_1b_3}{\norm{a}} +  \frac{a_2^2a_3b_1}{k^2\norm{a}}   \\ \\
+  \frac{-a_2^2a_3b_2}{k_1^2\norm{a}} + \frac{a_2b_3}{\norm{a}} + \frac{-a_1^2a_3b_2}{k_1^2\norm{a}}  \\
+  \frac{a_1^2a_3b_1}{k_1^2\norm{a}} +  \frac{-a_1b_3}{\norm{a}} +  \frac{a_2^2a_3b_1}{k_1^2\norm{a}}   \\ \\
   \frac{-a_2b_1}{\norm{a}}  + \frac{a_1b_2}{\norm{a}} \\
 \end{bmatrix} \\
 & = \begin{bmatrix}
-  \frac{-(a_1^2+a_2^2)a_3b_2}{k^2\norm{a}} + \frac{a_2b_3}{\norm{a}}   \\
-  \frac{(a_1^2+a_2^2)a_3b_1}{k^2\norm{a}} +  \frac{-a_1b_3}{\norm{a}}    \\ \\
+  \frac{-(a_1^2+a_2^2)a_3b_2}{k_1^2\norm{a}} + \frac{a_2b_3}{\norm{a}}   \\
+  \frac{(a_1^2+a_2^2)a_3b_1}{k_1^2\norm{a}} +  \frac{-a_1b_3}{\norm{a}}    \\ \\
   \frac{-a_2b_1}{\norm{a}}  + \frac{a_1b_2}{\norm{a}} \\
 \end{bmatrix} \\
 & = \begin{bmatrix}
-  \frac{-k^2a_3b_2}{k^2\norm{a}} + \frac{a_2b_3}{\norm{a}}   \\
-  \frac{k^2a_3b_1}{k^2\norm{a}} +  \frac{-a_1b_3}{\norm{a}}    \\ \\
+  \frac{-k_1^2a_3b_2}{k_1^2\norm{a}} + \frac{a_2b_3}{\norm{a}}   \\
+  \frac{k_1^2a_3b_1}{k_1^2\norm{a}} +  \frac{-a_1b_3}{\norm{a}}    \\ \\
   \frac{-a_2b_1}{\norm{a}}  + \frac{a_1b_2}{\norm{a}} \\
 \end{bmatrix} \\
 & = \begin{bmatrix}
@@ -214,10 +316,10 @@ Define $\vec{f_4}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
 \end{flalign}
 
 
-\textbf{Scale ( $\vec{f_1}^{-1} \circ \vec{f_2}^{-1} \circ \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b})$ by $\norm{a}$}
+\textbf{Scale $\vec{f} (\vec{b})$ by $\norm{a}$}
 
 \begin{flalign}
-  \norm{a} * ( \vec{f_1}^{-1} \circ \vec{f_2}^{-1} \circ \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b})
+  \norm{a} * \vec{f} (\vec{b})
   & = \norm{a} *  \frac{1}{\norm{a}} * \begin{bmatrix}
   a_2b_3 -a_3b_2     \\
   a_3b_1 +  -a_1b_3    \\ \\
@@ -227,7 +329,8 @@ Define $\vec{f_4}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
   a_2b_3 -a_3b_2     \\
   a_3b_1 +  -a_1b_3    \\ \\
   a_1b_2 -a_2b_1 \\
-\end{bmatrix}
+  \end{bmatrix} \\
+  & = a \times b
 \end{flalign}
 \end{proof}
 
