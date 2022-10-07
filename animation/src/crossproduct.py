@@ -218,7 +218,6 @@ class Ground:
                 pass
             elif yz:
                 ms.rotate_y(ms.MatrixStack.model, math.radians(90.0))
-                print("aoeuaoeuaoeu")
             elif zx:
                 ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
                 pass
