@@ -211,11 +211,17 @@ class Ground:
         glDeleteBuffers(1, [self.vbo])
         glDeleteProgram(Ground.shader)
 
-    def render(self, time, vertical=False):
+    def render(self, time, xy=True, yz=False, zx=False):
 
-        rotation_amount = 90.0 if vertical else 0.0
         with ms.push_matrix(ms.MatrixStack.model):
-            ms.rotate_x(ms.MatrixStack.model, math.radians(rotation_amount))
+            if xy:
+                pass
+            elif yz:
+                ms.rotate_y(ms.MatrixStack.model, math.radians(90.0))
+                print("aoeuaoeuaoeu")
+            elif zx:
+                ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
+                pass
             glUseProgram(Ground.shader)
             glBindVertexArray(self.vao)
 
@@ -724,12 +730,19 @@ draw_first_relative_coordinates = False
 do_first_rotate = False
 draw_second_relative_coordinates = False
 do_second_rotate = False
+draw_third_relative_coordinates = False
+do_third_rotate = False
 project_onto_yz_plane = False
 rotate_yz_90 = False
 undo_rotate_z = False
 undo_rotate_y = False
+undo_rotate_x = False
 do_scale = False
 use_ortho = False
+
+new_b = None
+angle_x = None
+
 
 # Loop until the user closes the window
 while not glfw.window_should_close(window):
@@ -789,9 +802,9 @@ while not glfw.window_should_close(window):
     ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
     ground.render(animation_time)
-    ground.render(animation_time, vertical=True)
+    ground.render(animation_time, xy=False, zx=True)
     unit_circle.render(animation_time)
-    unit_circle.render(animation_time, vertical=True)
+    unit_circle.render(animation_time, xy=False, zx=True)
 
     axis.render(animation_time)
 
@@ -852,12 +865,40 @@ while not glfw.window_should_close(window):
         label="Rotate Y", state=do_second_rotate
     )
 
+
+    changed, draw_third_relative_coordinates = imgui.checkbox(
+        label="Draw Third Relative Coordinates",
+        state=draw_third_relative_coordinates,
+    )
+    imgui.same_line()
+    changed, do_third_rotate = imgui.checkbox(
+        label="Rotate X", state=do_third_rotate
+    )
+
+    if new_b is not None:
+        angle_x = math.atan2(new_b[2], new_b[1])
+
+
+    if draw_third_relative_coordinates:
+        with ms.push_matrix(ms.MatrixStack.model):
+            ms.rotate_x(ms.MatrixStack.model, angle_x)
+            ground.render(animation_time, xy=False, yz=True)
+            axis.render(animation_time)
+
+            pass
+
+    if do_third_rotate:
+        draw_third_relative_coordinates = False
+        if not undo_rotate_x:
+            ms.rotate_x(ms.MatrixStack.model, -angle_x)
+
+
     if draw_second_relative_coordinates:
 
         with ms.push_matrix(ms.MatrixStack.model):
 
             ms.rotate_y(ms.MatrixStack.model, vec1.angle_y)
-            ground.render(animation_time, vertical=True)
+            ground.render(animation_time, xy=False, zx=True)
             axis.render(animation_time)
 
     if do_second_rotate:
@@ -899,6 +940,10 @@ while not glfw.window_should_close(window):
     if imgui.button("Rotate Y to Z, Z to -Y"):
         rotate_yz_90 = True
 
+    if imgui.button("Undo Rotate X"):
+        undo_rotate_x = True
+    imgui.same_line()
+
     if imgui.button("Undo Rotate Y"):
         undo_rotate_y = True
     imgui.same_line()
@@ -917,10 +962,21 @@ while not glfw.window_should_close(window):
 
     imgui.end()
 
-    glDisable(GL_DEPTH_TEST)
 
-    vec1.render(animation_time)
-    vec2.render(animation_time)
+
+    if do_second_rotate:
+        if new_b is None:
+            new_b = np.ascontiguousarray(
+                ms.getCurrentMatrix(ms.MatrixStack.model), dtype=np.float32
+            ) @ np.array([vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32)
+
+            # because we need to use math coordinate system
+            y = - new_b[2]
+            z = new_b[1]
+
+            new_b[1] = y
+            new_b[2] = z
+
 
     if vec3:
         with ms.push_matrix(ms.MatrixStack.model):
@@ -936,6 +992,11 @@ while not glfw.window_should_close(window):
                 ms.rotate_z(ms.MatrixStack.model, vec1.angle_z)
             if undo_rotate_y:
                 ms.rotate_y(ms.MatrixStack.model, vec1.angle_y)
+            if undo_rotate_x:
+                ms.rotate_x(ms.MatrixStack.model, angle_x)
+                ground.render(animation_time)
+
+
 
             if project_onto_yz_plane:
                 if rotate_yz_90:
@@ -949,6 +1010,12 @@ while not glfw.window_should_close(window):
                     ms.MatrixStack.model, vec3.translate_amount, 0.0, 0.0
                 )
                 vec3.render(animation_time)
+
+    glDisable(GL_DEPTH_TEST)
+
+    vec1.render(animation_time)
+    vec2.render(animation_time)
+
 
     imgui.render()
     impl.render(imgui.get_draw_data())
