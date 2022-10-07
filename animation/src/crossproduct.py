@@ -983,10 +983,7 @@ while not glfw.window_should_close(window):
             ms.setToIdentityMatrix(ms.MatrixStack.model)
             ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
-            if do_scale:
-                magnitude = math.sqrt(vec1.x**2 + vec1.y**2 + vec1.z**2)
 
-                ms.scale(ms.MatrixStack.model, magnitude, magnitude, magnitude)
 
             if undo_rotate_z:
                 ms.rotate_z(ms.MatrixStack.model, vec1.angle_z)
@@ -995,6 +992,14 @@ while not glfw.window_should_close(window):
             if undo_rotate_x:
                 ms.rotate_x(ms.MatrixStack.model, angle_x)
                 ground.render(animation_time)
+
+
+
+
+            if do_scale:
+                magnitude = math.sqrt(vec1.x**2 + vec1.y**2 + vec1.z**2)
+
+                ms.scale(ms.MatrixStack.model, magnitude, magnitude, magnitude)
 
 
 
