@@ -173,14 +173,14 @@
 
 \textbf{Project $( \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b})$ onto the $e_2e_3$ plane }
 
-Define $\vec{f_4}(\vec{x})$ to project any vector $x$ onto the $e_2e_3$ plane.
+Define $\vec{f_4}(\vec{x})$ to project any vector $x$ onto the $e_2$.
 
 
 \begin{flalign}
 \vec{f_4}(\vec{x}) & \triangleq \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 1 & 0 \\
-     0 & 0 & 1 \\
+     0 & 0 & 0 \\
 \end{bmatrix} * \vec{x}
 \end{flalign}
 
@@ -188,7 +188,7 @@ Define $\vec{f_4}(\vec{x})$ to project any vector $x$ onto the $e_2e_3$ plane.
 ( \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 1 & 0 \\
-     0 & 0 & 1 \\
+     0 & 0 & 0 \\
 \end{bmatrix} *  \begin{bmatrix}
      1 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
@@ -197,7 +197,7 @@ Define $\vec{f_4}(\vec{x})$ to project any vector $x$ onto the $e_2e_3$ plane.
   & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
-     0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
+     0 & 0 & 0 \\
 \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b})
 \end{flalign}
 
@@ -223,13 +223,32 @@ Define $\vec{f_5}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
 \end{bmatrix} * \begin{bmatrix}
      0 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
-     0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
+     0 & 0 & 0 \\
   \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
   & = \begin{bmatrix}
      0 & 0 & 0 \\
-     0 & \frac{b''_3}{k_2} & \frac{-b''_2}{k_2} \\
+     0 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
-  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b})
+  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
+  & = \begin{bmatrix}
+     0 & 0 & 0 \\
+     0 & 0 & 0 \\
+     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+  \end{bmatrix} *  \begin{bmatrix}
+    b''_1 \\
+    b''_2 \\
+    b''_3 \\
+            \end{bmatrix} \\
+  & =  \begin{bmatrix}
+    0 \\
+    0 \\
+    \frac{{b''_2}^2 + {b''_3}^2}{\sqrt{{b''_2}^2 + {b''_3}^2}} \\
+            \end{bmatrix} \\
+  & =  \begin{bmatrix}
+    0 \\
+    0 \\
+    k_2 \\
+            \end{bmatrix}
 \end{flalign}
 
 
@@ -240,36 +259,17 @@ Define $\vec{f_5}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
      1 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{-b''_3}{k_2}  \\
      0 & \frac{b''_3}{k_2} & \frac{b''_2}{k_2}  \\
-\end{bmatrix} *  \begin{bmatrix}
-     0 & 0 & 0 \\
-     0 & \frac{b''_3}{k_2} & \frac{-b''_2}{k_2} \\
-     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
-  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
-  & = \begin{bmatrix}
-     0 & 0 & 0 \\
-     0 & 0 & \frac{-{b''_2}^2 - {b''_3}^2}{k_2^2} \\
-     0 & \frac{{b''_2}^2 + {b''_3}^2}{k_2^2}& 0 \\
-  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
-  & = \begin{bmatrix}
-     0 & 0 & 0 \\
-     0 & 0 & -1 \\
-     0 & 1 & 0 \\
-  \end{bmatrix} * (\vec{f_2} \circ \vec{f_1}) (\vec{b}) \\
-  & = \begin{bmatrix}
-     0 & 0 & 0 \\
-     0 & 0 & -1 \\
-     0 & 1 & 0 \\
-  \end{bmatrix} * \begin{bmatrix}
-    b''_1 \\
-    b''_2 \\
-    b''_3 \\
+\end{bmatrix} *   \begin{bmatrix}
+    0 \\
+    0 \\
+    k_2 \\
             \end{bmatrix} \\
-  & =  \begin{bmatrix}
+  & = \begin{bmatrix}
     0 \\
     -b''_3 \\
     b''_2 \\
   \end{bmatrix} \\
-  & =    \begin{bmatrix}
+  & = \begin{bmatrix}
      0 \\
      \frac{a_1a_3b_1}{k_1\norm{a}} + \frac{a_2a_3b_2}{k_1\norm{a}} + \frac{-k_1b_3}{\norm{a}} \\
      \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
