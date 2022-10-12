@@ -19,8 +19,6 @@
 # SOFTWARE.
 
 
-
-import sys
 import os
 import numpy as np
 import math
@@ -365,7 +363,6 @@ def do_draw_vector(shader, v, time):
             glDrawArrays(GL_LINES, 0, numberOfVertices)
     glDeleteVertexArrays(1, [vao])
     glDeleteBuffers(1, [vbo])
-
 
 
 def do_draw_axis(shader):

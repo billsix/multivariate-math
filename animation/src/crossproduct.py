@@ -66,7 +66,16 @@ import pyMatrixStack as ms
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 
-from renderer import do_draw_axis, do_draw_lines, do_draw_vector, Vector, Camera
+from renderer import (
+    do_draw_axis,
+    do_draw_lines,
+    do_draw_vector,
+    Vector,
+    Camera,
+    compile_shader,
+    ground_vertices,
+    unit_circle_vertices,
+)
 
 
 if not glfw.init():
@@ -164,7 +173,9 @@ new_b = None
 angle_x = None
 
 
-with compile_shader("ground.vert", "ground.frag") as lines_shader, compile_shader(
+with compile_shader(
+    "ground.vert", "ground.frag"
+) as lines_shader, compile_shader(
     "vector.vert", "vector.frag"
 ) as vector_shader:
 
@@ -262,14 +273,18 @@ with compile_shader("ground.vert", "ground.frag") as lines_shader, compile_shade
         imgui.set_next_window_bg_alpha(0.05)
         imgui.begin("Time", True)
 
-        clicked_use_ortho, use_ortho = imgui.checkbox("Orthogonal View", use_ortho)
+        clicked_use_ortho, use_ortho = imgui.checkbox(
+            "Orthogonal View", use_ortho
+        )
         clicked_camera, camera.r = imgui.slider_float(
             "Camera Radius", camera.r, 3, 100.0
         )
         (
             clicked_animation_time_multiplier,
             animation_time_multiplier,
-        ) = imgui.slider_float("Sim Speed", animation_time_multiplier, 0.1, 10.0)
+        ) = imgui.slider_float(
+            "Sim Speed", animation_time_multiplier, 0.1, 10.0
+        )
         if imgui.button("Restart"):
             animation_time = 0.0
 
@@ -422,19 +437,27 @@ with compile_shader("ground.vert", "ground.frag") as lines_shader, compile_shade
                     draw_ground(animation_time)
 
                 if do_scale:
-                    magnitude = math.sqrt(vec1.x**2 + vec1.y**2 + vec1.z**2)
+                    magnitude = math.sqrt(
+                        vec1.x**2 + vec1.y**2 + vec1.z**2
+                    )
 
-                    ms.scale(ms.MatrixStack.model, magnitude, magnitude, magnitude)
+                    ms.scale(
+                        ms.MatrixStack.model, magnitude, magnitude, magnitude
+                    )
 
                 if project_onto_yz_plane:
                     if rotate_yz_90:
                         with ms.push_matrix(ms.MatrixStack.model):
-                            ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
+                            ms.rotate_x(
+                                ms.MatrixStack.model, math.radians(90.0)
+                            )
                             draw_vector(vec3, animation_time)
                     else:
                         draw_vector(vec3, animation_time)
                 else:
-                    ms.translate(ms.MatrixStack.model, vec3.translate_amount, 0.0, 0.0)
+                    ms.translate(
+                        ms.MatrixStack.model, vec3.translate_amount, 0.0, 0.0
+                    )
                     draw_vector(vec3, animation_time)
 
         glDisable(GL_DEPTH_TEST)
