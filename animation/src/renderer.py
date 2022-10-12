@@ -23,15 +23,8 @@ import os
 import numpy as np
 import math
 from OpenGL.GL import (
-    glClear,
-    GL_COLOR_BUFFER_BIT,
-    GL_DEPTH_BUFFER_BIT,
-    glViewport,
-    glClearColor,
     glEnable,
     glDisable,
-    glClearDepth,
-    glDepthFunc,
     GL_DEPTH_TEST,
     GL_TRUE,
     glGenVertexArrays,
@@ -53,7 +46,6 @@ from OpenGL.GL import (
     glUniformMatrix4fv,
     glDrawArrays,
     GL_LINES,
-    GL_LESS,
     glDeleteVertexArrays,
     glDeleteBuffers,
     glDeleteProgram,
@@ -167,7 +159,6 @@ def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
             ms.rotate_y(ms.MatrixStack.model, math.radians(90.0))
         elif zx:
             ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
-            pass
         glUseProgram(shader)
         glBindVertexArray(vao)
 
