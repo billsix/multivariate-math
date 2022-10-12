@@ -172,7 +172,7 @@ def unit_circle_vertices():
     return np.array(verts, dtype=np.float32)
 
 
-def draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
+def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
 
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
@@ -677,10 +677,10 @@ with compile_shader(
 ) as vector_shader:
 
     def draw_ground(time, xy=True, yz=False, zx=False):
-        draw_lines(lines_shader, ground_vertices(), time, xy, yz, zx)
+        do_draw_lines(lines_shader, ground_vertices(), time, xy, yz, zx)
 
     def draw_unit_circle(time, xy=True, yz=False, zx=False):
-        draw_lines(lines_shader, unit_circle_vertices(), time, xy, yz, zx)
+        do_draw_lines(lines_shader, unit_circle_vertices(), time, xy, yz, zx)
 
     def draw_vector(v, time):
         do_draw_vector(vector_shader, v, time)
