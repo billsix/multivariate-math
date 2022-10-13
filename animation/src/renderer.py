@@ -46,10 +46,10 @@ from OpenGL.GL import (
     glUniformMatrix4fv,
     glDrawArrays,
     GL_LINES,
-    glDeleteVertexArrays,
     glDeleteBuffers,
     glDeleteProgram,
     glUniform3f,
+    glDeleteVertexArrays,
 )
 
 
@@ -90,6 +90,7 @@ def compile_shader(vert, frag):
         yield shader
     finally:
         glDeleteProgram(shader)
+        glDeleteVertexArrays(1, [vao])
 
 
 def ground_vertices():
@@ -264,7 +265,6 @@ def do_draw_vector(shader, v, time):
     vertices = vertices_of_arrow()
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
-
     mMatrixLoc = glGetUniformLocation(shader, "mMatrix")
     vMatrixLoc = glGetUniformLocation(shader, "vMatrix")
     pMatrixLoc = glGetUniformLocation(shader, "pMatrix")
@@ -291,9 +291,7 @@ def do_draw_vector(shader, v, time):
     # send the modelspace data to the GPU
     # TODO, send color to the shader
 
-
     # do rendering
-
 
     # pass projection parameters to the shader
     fov_loc = glGetUniformLocation(shader, "fov")
@@ -388,7 +386,6 @@ def do_draw_axis(shader):
     vertices = vertices_of_axis()
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
-
     mMatrixLoc = glGetUniformLocation(shader, "mMatrix")
     vMatrixLoc = glGetUniformLocation(shader, "vMatrix")
     pMatrixLoc = glGetUniformLocation(shader, "pMatrix")
@@ -414,7 +411,6 @@ def do_draw_axis(shader):
 
     # send the modelspace data to the GPU
     # TODO, send color to the shader
-
 
     # do rendering
 
