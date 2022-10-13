@@ -228,10 +228,11 @@ with compile_shader(
         # do everything in math coordinate system
         ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
-        draw_ground(animation_time)
-        draw_ground(animation_time, xy=False, zx=True)
-        draw_unit_circle(animation_time)
-        draw_unit_circle(animation_time, xy=False, zx=True)
+        if not undo_rotate_x:
+            draw_ground(animation_time)
+            draw_ground(animation_time, xy=False, zx=True)
+            draw_unit_circle(animation_time)
+            draw_unit_circle(animation_time, xy=False, zx=True)
 
         draw_axis()
 
