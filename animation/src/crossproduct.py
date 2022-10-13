@@ -274,7 +274,6 @@ with compile_shader(
             camera.rot_x = math.pi / 2.0
             camera.rot_y = 0.0
 
-
         imgui.end()
 
         imgui.set_next_window_bg_alpha(0.05)
@@ -289,7 +288,6 @@ with compile_shader(
         if imgui.button("Restart"):
             animation_time = 0.0
             step_number = 0
-
 
         if step_number == 0:
             changed, draw_first_relative_coordinates = imgui.checkbox(
@@ -393,7 +391,6 @@ with compile_shader(
                 rotate_yz_90 = True
                 step_number = 5
 
-
         if step_number == 5:
             if imgui.button("Undo Rotate X"):
                 undo_rotate_x = True
@@ -412,7 +409,6 @@ with compile_shader(
         if step_number == 8:
             if imgui.button("Scale By Magnitude of first vector"):
                 do_scale = True
-
 
         imgui.end()
 
