@@ -81,6 +81,9 @@ def compile_shader(vert, frag):
     with open(os.path.join(pwd, frag), "r") as f:
         fs = shaders.compileShader(f.read(), GL_FRAGMENT_SHADER)
 
+    vao = glGenVertexArrays(1)
+    glBindVertexArray(vao)
+
     shader = shaders.compileProgram(vs, fs)
 
     try:
@@ -127,8 +130,7 @@ def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
 
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
-    vao = glGenVertexArrays(1)
-    glBindVertexArray(vao)
+    glUseProgram(shader)
 
     mMatrixLoc = glGetUniformLocation(shader, "mMatrix")
     vMatrixLoc = glGetUniformLocation(shader, "vMatrix")
@@ -159,8 +161,6 @@ def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
             ms.rotate_y(ms.MatrixStack.model, math.radians(90.0))
         elif zx:
             ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
-        glUseProgram(shader)
-        glBindVertexArray(vao)
 
         # pass projection parameters to the shader
         fov_loc = glGetUniformLocation(shader, "fov")
@@ -200,10 +200,8 @@ def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
         )
         glDrawArrays(GL_LINES, 0, numberOfVertices)
 
-    glDeleteVertexArrays(1, [vao])
     glDeleteBuffers(1, [vbo])
     # reset VAO/VBO to default
-    glBindVertexArray(0)
     glBindBuffer(GL_ARRAY_BUFFER, 0)
 
 
@@ -226,6 +224,8 @@ class Vector:
 
 
 def do_draw_vector(shader, v, time):
+
+    glUseProgram(shader)
 
     magnitude = math.sqrt(v.x**2 + v.y**2 + v.z**2)
 
@@ -264,8 +264,6 @@ def do_draw_vector(shader, v, time):
     vertices = vertices_of_arrow()
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
-    vao = glGenVertexArrays(1)
-    glBindVertexArray(vao)
 
     mMatrixLoc = glGetUniformLocation(shader, "mMatrix")
     vMatrixLoc = glGetUniformLocation(shader, "vMatrix")
@@ -293,14 +291,9 @@ def do_draw_vector(shader, v, time):
     # send the modelspace data to the GPU
     # TODO, send color to the shader
 
-    # reset VAO/VBO to default
-    glBindVertexArray(0)
-    glBindBuffer(GL_ARRAY_BUFFER, 0)
 
     # do rendering
 
-    glUseProgram(shader)
-    glBindVertexArray(vao)
 
     # pass projection parameters to the shader
     fov_loc = glGetUniformLocation(shader, "fov")
@@ -352,11 +345,13 @@ def do_draw_vector(shader, v, time):
                 ),
             )
             glDrawArrays(GL_LINES, 0, numberOfVertices)
-    glDeleteVertexArrays(1, [vao])
     glDeleteBuffers(1, [vbo])
 
 
 def do_draw_axis(shader):
+
+    glUseProgram(shader)
+
     def vertices_of_axis():
 
         # glColor3f(0.1,0.1,0.1)
@@ -393,8 +388,6 @@ def do_draw_axis(shader):
     vertices = vertices_of_axis()
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
-    vao = glGenVertexArrays(1)
-    glBindVertexArray(vao)
 
     mMatrixLoc = glGetUniformLocation(shader, "mMatrix")
     vMatrixLoc = glGetUniformLocation(shader, "vMatrix")
@@ -422,15 +415,10 @@ def do_draw_axis(shader):
     # send the modelspace data to the GPU
     # TODO, send color to the shader
 
-    # reset VAO/VBO to default
-    glBindVertexArray(0)
-    glBindBuffer(GL_ARRAY_BUFFER, 0)
 
     # do rendering
 
     glDisable(GL_DEPTH_TEST)
-    glUseProgram(shader)
-    glBindVertexArray(vao)
 
     # pass projection parameters to the shader
     fov_loc = glGetUniformLocation(shader, "fov")
@@ -548,12 +536,10 @@ def do_draw_axis(shader):
             ),
         )
         glDrawArrays(GL_LINES, 0, numberOfVertices)
-        glBindVertexArray(0)
     glEnable(GL_DEPTH_TEST)
 
     # clean up
 
-    glDeleteVertexArrays(1, [vao])
     glDeleteBuffers(1, [vbo])
 
 
