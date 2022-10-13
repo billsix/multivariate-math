@@ -149,6 +149,8 @@ use_ortho = False
 new_b = None
 angle_x = None
 
+step_number = 0
+
 
 with compile_shader(
     "ground.vert", "ground.frag"
@@ -248,22 +250,17 @@ with compile_shader(
             imgui.end_main_menu_bar()
 
         imgui.set_next_window_bg_alpha(0.05)
-        imgui.begin("Time", True)
+        imgui.begin("Camera", True)
 
         clicked_use_ortho, use_ortho = imgui.checkbox(
             "Orthogonal View", use_ortho
         )
+
+        imgui.same_line()
+
         clicked_camera, camera.r = imgui.slider_float(
             "Camera Radius", camera.r, 3, 100.0
         )
-        (
-            clicked_animation_time_multiplier,
-            animation_time_multiplier,
-        ) = imgui.slider_float(
-            "Sim Speed", animation_time_multiplier, 0.1, 10.0
-        )
-        if imgui.button("Restart"):
-            animation_time = 0.0
 
         if imgui.button("View Down X Axis"):
             camera.rot_x = 0.0
@@ -277,32 +274,58 @@ with compile_shader(
             camera.rot_x = math.pi / 2.0
             camera.rot_y = 0.0
 
-        changed, draw_first_relative_coordinates = imgui.checkbox(
-            label="Draw Relative Coordinates",
-            state=draw_first_relative_coordinates,
-        )
-        imgui.same_line()
-        changed, do_first_rotate = imgui.checkbox(
-            label="Rotate Z", state=do_first_rotate
-        )
 
-        changed, draw_second_relative_coordinates = imgui.checkbox(
-            label="Draw Second Relative Coordinates",
-            state=draw_second_relative_coordinates,
-        )
-        imgui.same_line()
-        changed, do_second_rotate = imgui.checkbox(
-            label="Rotate Y", state=do_second_rotate
-        )
+        imgui.end()
 
-        changed, draw_third_relative_coordinates = imgui.checkbox(
-            label="Draw Third Relative Coordinates",
-            state=draw_third_relative_coordinates,
+        imgui.set_next_window_bg_alpha(0.05)
+        imgui.begin("Time", True)
+
+        (
+            clicked_animation_time_multiplier,
+            animation_time_multiplier,
+        ) = imgui.slider_float(
+            "Sim Speed", animation_time_multiplier, 0.1, 10.0
         )
-        imgui.same_line()
-        changed, do_third_rotate = imgui.checkbox(
-            label="Rotate X", state=do_third_rotate
-        )
+        if imgui.button("Restart"):
+            animation_time = 0.0
+            step_number = 0
+
+
+        if step_number == 0:
+            changed, draw_first_relative_coordinates = imgui.checkbox(
+                label="Draw Relative Coordinates",
+                state=draw_first_relative_coordinates,
+            )
+            imgui.same_line()
+            changed, do_first_rotate = imgui.checkbox(
+                label="Rotate Z", state=do_first_rotate
+            )
+            if changed:
+                step_number = 1
+
+        if step_number == 1:
+            changed, draw_second_relative_coordinates = imgui.checkbox(
+                label="Draw Second Relative Coordinates",
+                state=draw_second_relative_coordinates,
+            )
+            imgui.same_line()
+            changed, do_second_rotate = imgui.checkbox(
+                label="Rotate Y", state=do_second_rotate
+            )
+            if changed:
+                step_number = 2
+
+        if step_number == 2:
+            changed, draw_third_relative_coordinates = imgui.checkbox(
+                label="Draw Third Relative Coordinates",
+                state=draw_third_relative_coordinates,
+            )
+            imgui.same_line()
+            changed, do_third_rotate = imgui.checkbox(
+                label="Rotate X", state=do_third_rotate
+            )
+            if changed:
+                step_number = 3
 
         if new_b is not None:
             angle_x = math.atan2(new_b[2], new_b[1])
@@ -343,47 +366,53 @@ with compile_shader(
                 draw_ground(animation_time)
                 draw_axis()
 
-        if imgui.button("Show Triangle"):
-            vec3_after_rotate = np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.model), dtype=np.float32
-            ) @ np.array([vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32)
+        if step_number == 3:
+            if imgui.button("Show Triangle"):
+                vec3_after_rotate = np.ascontiguousarray(
+                    ms.getCurrentMatrix(ms.MatrixStack.model), dtype=np.float32
+                ) @ np.array([vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32)
 
-            vec3 = Vector(
-                x=0.0,
-                y=-vec3_after_rotate[2],
-                z=vec3_after_rotate[1],
-                r=0.0,
-                g=1.0,
-                b=1.0,
-            )
-            vec3.translate_amount = vec3_after_rotate[0]
+                vec3 = Vector(
+                    x=0.0,
+                    y=-vec3_after_rotate[2],
+                    z=vec3_after_rotate[1],
+                    r=0.0,
+                    g=1.0,
+                    b=1.0,
+                )
+                vec3.translate_amount = vec3_after_rotate[0]
 
-        imgui.same_line()
-        if imgui.button("Project onto e_2 e_3 plane"):
-            project_onto_yz_plane = True
+            imgui.same_line()
+            if imgui.button("Project onto e_2 e_3 plane"):
+                project_onto_yz_plane = True
+                step_number = 4
 
-        if imgui.button("Rotate Y to Z, Z to -Y"):
-            rotate_yz_90 = True
+        if step_number == 4:
 
-        if imgui.button("Undo Rotate X"):
-            undo_rotate_x = True
-        imgui.same_line()
+            if imgui.button("Rotate Y to Z, Z to -Y"):
+                rotate_yz_90 = True
+                step_number = 5
 
-        if imgui.button("Undo Rotate Y"):
-            undo_rotate_y = True
-        imgui.same_line()
 
-        if imgui.button("Undo Rotate Z"):
-            undo_rotate_z = True
+        if step_number == 5:
+            if imgui.button("Undo Rotate X"):
+                undo_rotate_x = True
+                step_number = 6
 
-        if imgui.button("Scale By Magnitude of first vector"):
-            do_scale = True
+        if step_number == 6:
+            if imgui.button("Undo Rotate Y"):
+                undo_rotate_y = True
+                step_number = 7
 
-        if imgui.tree_node(
-            "From World Space, Against Arrows, Read Bottom Up",
-            imgui.TREE_NODE_DEFAULT_OPEN,
-        ):
-            imgui.tree_pop()
+        if step_number == 7:
+            if imgui.button("Undo Rotate Z"):
+                undo_rotate_z = True
+                step_number = 8
+
+        if step_number == 8:
+            if imgui.button("Scale By Magnitude of first vector"):
+                do_scale = True
+
 
         imgui.end()
 
