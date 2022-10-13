@@ -42,7 +42,6 @@ from OpenGL.GL import (
     GL_STATIC_DRAW,
     glUseProgram,
     glGetUniformLocation,
-    glUniform1f,
     glUniformMatrix4fv,
     glDrawArrays,
     GL_LINES,
@@ -61,6 +60,8 @@ from dataclasses import dataclass
 from contextlib import contextmanager
 
 import ctypes
+
+import functools
 
 
 # NEW - for shader location
@@ -93,6 +94,7 @@ def compile_shader(vert, frag):
         glDeleteVertexArrays(1, [vao])
 
 
+@functools.cache
 def ground_vertices():
     verts = []
     for x in range(-10, 11, 1):
@@ -112,6 +114,7 @@ def ground_vertices():
     return np.array(verts, dtype=np.float32)
 
 
+@functools.cache
 def unit_circle_vertices():
     verts = []
     the_range = 100
@@ -135,7 +138,6 @@ def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
 
     mvpMatrixLoc = glGetUniformLocation(shader, "mvpMatrix")
     colorLoc = glGetUniformLocation(shader, "color")
-
 
     # send the modelspace data to the GPU
     vbo = glGenBuffers(1)
@@ -169,7 +171,8 @@ def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
             1,
             GL_TRUE,
             np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection), dtype=np.float32
+                ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                dtype=np.float32,
             ),
         )
 
@@ -266,7 +269,6 @@ def do_draw_vector(shader, v, time):
     # TODO, send color to the shader
 
     # do rendering
-
 
     with ms.push_matrix(ms.MatrixStack.model):
         ms.rotate_z(ms.MatrixStack.model, v.angle_z)
@@ -409,7 +411,8 @@ def do_draw_axis(shader):
             1,
             GL_TRUE,
             np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection), dtype=np.float32
+                ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                dtype=np.float32,
             ),
         )
         glDrawArrays(GL_LINES, 0, numberOfVertices)

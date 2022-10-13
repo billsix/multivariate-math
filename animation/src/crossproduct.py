@@ -152,9 +152,7 @@ angle_x = None
 step_number = 0
 
 
-with compile_shader(
-    "lines.vert", "lines.frag"
-) as lines_shader:
+with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
     def draw_ground(time, xy=True, yz=False, zx=False):
         do_draw_lines(lines_shader, ground_vertices(), time, xy, yz, zx)
