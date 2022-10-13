@@ -18,16 +18,21 @@
 //OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //SOFTWARE.
 
-
 #version 330 core
 
-out vec4 color;
+layout (location = 0) in vec3 position;
 
-in VS_OUT {
+uniform mat4 mvpMatrix;
+uniform vec3 color;
+
+out VS_OUT {
   vec4 color;
-} fs_in;
+} vs_out;
+
+
 
 void main()
 {
-   color = fs_in.color;
+  gl_Position = mvpMatrix * vec4(position,1.0);
+  vs_out.color = vec4(color,1.0);
 }

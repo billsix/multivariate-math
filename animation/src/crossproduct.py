@@ -153,10 +153,8 @@ step_number = 0
 
 
 with compile_shader(
-    "ground.vert", "ground.frag"
-) as lines_shader, compile_shader(
-    "vector.vert", "vector.frag"
-) as vector_shader:
+    "lines.vert", "lines.frag"
+) as lines_shader:
 
     def draw_ground(time, xy=True, yz=False, zx=False):
         do_draw_lines(lines_shader, ground_vertices(), time, xy, yz, zx)
@@ -165,10 +163,10 @@ with compile_shader(
         do_draw_lines(lines_shader, unit_circle_vertices(), time, xy, yz, zx)
 
     def draw_vector(v, time):
-        do_draw_vector(vector_shader, v, time)
+        do_draw_vector(lines_shader, v, time)
 
     def draw_axis():
-        do_draw_axis(vector_shader)
+        do_draw_axis(lines_shader)
 
     # Loop until the user closes the window
     while not glfw.window_should_close(window):

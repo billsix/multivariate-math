@@ -133,9 +133,9 @@ def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
 
     glUseProgram(shader)
 
-    mMatrixLoc = glGetUniformLocation(shader, "mMatrix")
-    vMatrixLoc = glGetUniformLocation(shader, "vMatrix")
-    pMatrixLoc = glGetUniformLocation(shader, "pMatrix")
+    mvpMatrixLoc = glGetUniformLocation(shader, "mvpMatrix")
+    colorLoc = glGetUniformLocation(shader, "color")
+
 
     # send the modelspace data to the GPU
     vbo = glGenBuffers(1)
@@ -163,42 +163,18 @@ def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
         elif zx:
             ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
 
-        # pass projection parameters to the shader
-        fov_loc = glGetUniformLocation(shader, "fov")
-        glUniform1f(fov_loc, 45.0)
-        aspect_loc = glGetUniformLocation(shader, "aspectRatio")
-        glUniform1f(aspect_loc, 1.0)
-        nearZ_loc = glGetUniformLocation(shader, "nearZ")
-        glUniform1f(nearZ_loc, -5.0)
-        farZ_loc = glGetUniformLocation(shader, "farZ")
-        glUniform1f(farZ_loc, -150.00)
-
         # ascontiguousarray puts the array in column major order
         glUniformMatrix4fv(
-            mMatrixLoc,
+            mvpMatrixLoc,
             1,
             GL_TRUE,
             np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.model), dtype=np.float32
+                ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection), dtype=np.float32
             ),
         )
-        glUniformMatrix4fv(
-            vMatrixLoc,
-            1,
-            GL_TRUE,
-            np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.view), dtype=np.float32
-            ),
-        )
-        glUniformMatrix4fv(
-            pMatrixLoc,
-            1,
-            GL_TRUE,
-            np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.projection),
-                dtype=np.float32,
-            ),
-        )
+
+        glUniform3f(colorLoc, 0.3, 0.3, 0.3)
+
         glDrawArrays(GL_LINES, 0, numberOfVertices)
 
     glDeleteBuffers(1, [vbo])
@@ -265,9 +241,7 @@ def do_draw_vector(shader, v, time):
     vertices = vertices_of_arrow()
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
-    mMatrixLoc = glGetUniformLocation(shader, "mMatrix")
-    vMatrixLoc = glGetUniformLocation(shader, "vMatrix")
-    pMatrixLoc = glGetUniformLocation(shader, "pMatrix")
+    mvpMatrixLoc = glGetUniformLocation(shader, "mvpMatrix")
     colorLoc = glGetUniformLocation(shader, "color")
 
     # send the modelspace data to the GPU
@@ -293,16 +267,6 @@ def do_draw_vector(shader, v, time):
 
     # do rendering
 
-    # pass projection parameters to the shader
-    fov_loc = glGetUniformLocation(shader, "fov")
-    glUniform1f(fov_loc, 45.0)
-    aspect_loc = glGetUniformLocation(shader, "aspectRatio")
-    glUniform1f(aspect_loc, 1.0)
-    nearZ_loc = glGetUniformLocation(shader, "nearZ")
-    glUniform1f(nearZ_loc, -5.0)
-    farZ_loc = glGetUniformLocation(shader, "farZ")
-    glUniform1f(farZ_loc, -150.00)
-    # TODO, set the color
 
     with ms.push_matrix(ms.MatrixStack.model):
         ms.rotate_z(ms.MatrixStack.model, v.angle_z)
@@ -316,32 +280,15 @@ def do_draw_vector(shader, v, time):
 
             # ascontiguousarray puts the array in column major order
             glUniformMatrix4fv(
-                mMatrixLoc,
+                mvpMatrixLoc,
                 1,
                 GL_TRUE,
                 np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.model),
+                    ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
                     dtype=np.float32,
                 ),
             )
-            glUniformMatrix4fv(
-                vMatrixLoc,
-                1,
-                GL_TRUE,
-                np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.view),
-                    dtype=np.float32,
-                ),
-            )
-            glUniformMatrix4fv(
-                pMatrixLoc,
-                1,
-                GL_TRUE,
-                np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.projection),
-                    dtype=np.float32,
-                ),
-            )
+
             glDrawArrays(GL_LINES, 0, numberOfVertices)
     glDeleteBuffers(1, [vbo])
 
@@ -386,9 +333,7 @@ def do_draw_axis(shader):
     vertices = vertices_of_axis()
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
-    mMatrixLoc = glGetUniformLocation(shader, "mMatrix")
-    vMatrixLoc = glGetUniformLocation(shader, "vMatrix")
-    pMatrixLoc = glGetUniformLocation(shader, "pMatrix")
+    mvpMatrixLoc = glGetUniformLocation(shader, "mvpMatrix")
     colorLoc = glGetUniformLocation(shader, "color")
 
     # send the modelspace data to the GPU
@@ -416,17 +361,6 @@ def do_draw_axis(shader):
 
     glDisable(GL_DEPTH_TEST)
 
-    # pass projection parameters to the shader
-    fov_loc = glGetUniformLocation(shader, "fov")
-    glUniform1f(fov_loc, 45.0)
-    aspect_loc = glGetUniformLocation(shader, "aspectRatio")
-    glUniform1f(aspect_loc, 1.0)
-    nearZ_loc = glGetUniformLocation(shader, "nearZ")
-    glUniform1f(nearZ_loc, -5.0)
-    farZ_loc = glGetUniformLocation(shader, "farZ")
-    glUniform1f(farZ_loc, -150.00)
-    # TODO, set the color
-
     with ms.push_matrix(ms.MatrixStack.model):
 
         # x axis
@@ -437,29 +371,11 @@ def do_draw_axis(shader):
 
             # ascontiguousarray puts the array in column major order
             glUniformMatrix4fv(
-                mMatrixLoc,
+                mvpMatrixLoc,
                 1,
                 GL_TRUE,
                 np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.model),
-                    dtype=np.float32,
-                ),
-            )
-            glUniformMatrix4fv(
-                vMatrixLoc,
-                1,
-                GL_TRUE,
-                np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.view),
-                    dtype=np.float32,
-                ),
-            )
-            glUniformMatrix4fv(
-                pMatrixLoc,
-                1,
-                GL_TRUE,
-                np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.projection),
+                    ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
                     dtype=np.float32,
                 ),
             )
@@ -474,29 +390,11 @@ def do_draw_axis(shader):
             glUniform3f(colorLoc, 0.0, 0.0, 1.0)
             # ascontiguousarray puts the array in column major order
             glUniformMatrix4fv(
-                mMatrixLoc,
+                mvpMatrixLoc,
                 1,
                 GL_TRUE,
                 np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.model),
-                    dtype=np.float32,
-                ),
-            )
-            glUniformMatrix4fv(
-                vMatrixLoc,
-                1,
-                GL_TRUE,
-                np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.view),
-                    dtype=np.float32,
-                ),
-            )
-            glUniformMatrix4fv(
-                pMatrixLoc,
-                1,
-                GL_TRUE,
-                np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.projection),
+                    ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
                     dtype=np.float32,
                 ),
             )
@@ -507,28 +405,11 @@ def do_draw_axis(shader):
         # glColor3f(0.0,1.0,0.0) # green y
         # ascontiguousarray puts the array in column major order
         glUniformMatrix4fv(
-            mMatrixLoc,
+            mvpMatrixLoc,
             1,
             GL_TRUE,
             np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.model), dtype=np.float32
-            ),
-        )
-        glUniformMatrix4fv(
-            vMatrixLoc,
-            1,
-            GL_TRUE,
-            np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.view), dtype=np.float32
-            ),
-        )
-        glUniformMatrix4fv(
-            pMatrixLoc,
-            1,
-            GL_TRUE,
-            np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.projection),
-                dtype=np.float32,
+                ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection), dtype=np.float32
             ),
         )
         glDrawArrays(GL_LINES, 0, numberOfVertices)
