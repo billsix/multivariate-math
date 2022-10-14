@@ -61,8 +61,6 @@ from contextlib import contextmanager
 
 import ctypes
 
-import functools
-
 
 # NEW - for shader location
 pwd = os.path.dirname(os.path.abspath(__file__))
@@ -92,42 +90,6 @@ def compile_shader(vert, frag):
     finally:
         glDeleteProgram(shader)
         glDeleteVertexArrays(1, [vao])
-
-
-@functools.cache
-def ground_vertices():
-    verts = []
-    for x in range(-10, 11, 1):
-        for y in range(-10, 11, 1):
-            verts.append(float(-x))
-            verts.append(float(y))
-            verts.append(float(0.0))
-            verts.append(float(x))
-            verts.append(float(y))
-            verts.append(float(0.0))
-            verts.append(float(x))
-            verts.append(float(-y))
-            verts.append(float(0.0))
-            verts.append(float(x))
-            verts.append(float(y))
-            verts.append(float(0.0))
-    return np.array(verts, dtype=np.float32)
-
-
-@functools.cache
-def unit_circle_vertices():
-    verts = []
-    the_range = 100
-    the_list = np.linspace(0.0, 2 * np.pi, the_range)
-
-    for x in range(the_range - 1):
-        verts.append(math.cos(the_list[x]))
-        verts.append(math.sin(the_list[x]))
-        verts.append(float(0.0))
-        verts.append(math.cos(the_list[x + 1]))
-        verts.append(math.sin(the_list[x + 1]))
-        verts.append(float(0.0))
-    return np.array(verts, dtype=np.float32)
 
 
 def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):

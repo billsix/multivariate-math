@@ -43,6 +43,9 @@ import pyMatrixStack as ms
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 
+import functools
+
+
 from renderer import (
     do_draw_axis,
     do_draw_lines,
@@ -50,8 +53,6 @@ from renderer import (
     Vector,
     Camera,
     compile_shader,
-    ground_vertices,
-    unit_circle_vertices,
 )
 
 
@@ -92,6 +93,42 @@ glClearColor(0.0, 0.0, 0.0, 1.0)
 glClearDepth(1.0)
 glDepthFunc(GL_LESS)
 glEnable(GL_DEPTH_TEST)
+
+
+@functools.cache
+def ground_vertices():
+    verts = []
+    for x in range(-10, 11, 1):
+        for y in range(-10, 11, 1):
+            verts.append(float(-x))
+            verts.append(float(y))
+            verts.append(float(0.0))
+            verts.append(float(x))
+            verts.append(float(y))
+            verts.append(float(0.0))
+            verts.append(float(x))
+            verts.append(float(-y))
+            verts.append(float(0.0))
+            verts.append(float(x))
+            verts.append(float(y))
+            verts.append(float(0.0))
+    return np.array(verts, dtype=np.float32)
+
+
+@functools.cache
+def unit_circle_vertices():
+    verts = []
+    the_range = 100
+    the_list = np.linspace(0.0, 2 * np.pi, the_range)
+
+    for x in range(the_range - 1):
+        verts.append(math.cos(the_list[x]))
+        verts.append(math.sin(the_list[x]))
+        verts.append(float(0.0))
+        verts.append(math.cos(the_list[x + 1]))
+        verts.append(math.sin(the_list[x + 1]))
+        verts.append(float(0.0))
+    return np.array(verts, dtype=np.float32)
 
 
 vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=1.0, b=1.0)
@@ -151,7 +188,6 @@ draw_coordinate_system_of_natural_basis = None
 step_number = None
 
 
-
 def restart():
     global animation_time
     animation_time = 0.0
@@ -195,6 +231,7 @@ def restart():
     draw_coordinate_system_of_natural_basis = True
     global step_number
     step_number = 0
+
 
 # initiliaze
 restart()
