@@ -127,8 +127,77 @@ TARGET_FRAMERATE = 60  # fps
 # to try to standardize on 60 fps, compare times between frames
 time_at_beginning_of_previous_frame = glfw.get_time()
 
-animation_time = 0.0
-current_animation_start_time = 0.0
+
+animation_time = None
+current_animation_start_time = None
+animation_time_multiplier = None
+animation_paused = None
+draw_first_relative_coordinates = None
+do_first_rotate = None
+draw_second_relative_coordinates = None
+do_second_rotate = None
+draw_third_relative_coordinates = None
+do_third_rotate = None
+project_onto_yz_plane = None
+rotate_yz_90 = None
+undo_rotate_z = None
+undo_rotate_y = None
+undo_rotate_x = None
+do_scale = None
+use_ortho = None
+new_b = None
+angle_x = None
+draw_coordinate_system_of_natural_basis = None
+step_number = None
+
+
+
+def restart():
+    global animation_time
+    animation_time = 0.0
+    global current_animation_start_time
+    current_animation_start_time = 0.0
+    global animation_time_multiplier
+    animation_time_multiplier = 1.0
+    global animation_paused
+    animation_paused = False
+    global draw_first_relative_coordinates
+    draw_first_relative_coordinates = False
+    global do_first_rotate
+    do_first_rotate = False
+    global draw_second_relative_coordinates
+    draw_second_relative_coordinates = False
+    global do_second_rotate
+    do_second_rotate = False
+    global draw_third_relative_coordinates
+    draw_third_relative_coordinates = False
+    global do_third_rotate
+    do_third_rotate = False
+    global project_onto_yz_plane
+    project_onto_yz_plane = False
+    global rotate_yz_90
+    rotate_yz_90 = False
+    global undo_rotate_z
+    undo_rotate_z = False
+    global undo_rotate_y
+    undo_rotate_y = False
+    global undo_rotate_x
+    undo_rotate_x = False
+    global do_scale
+    do_scale = False
+    global use_ortho
+    use_ortho = False
+    global new_b
+    new_b = None
+    global angle_x
+    angle_x = None
+    global draw_coordinate_system_of_natural_basis
+    draw_coordinate_system_of_natural_basis = True
+    global step_number
+    step_number = 0
+
+# initiliaze
+restart()
 
 
 def current_animation_ratio():
@@ -136,31 +205,6 @@ def current_animation_ratio():
         return 0.0
     return min(1.0, (animation_time - current_animation_start_time) / 2.0)
 
-
-animation_time_multiplier = 1.0
-animation_paused = False
-
-
-draw_first_relative_coordinates = False
-do_first_rotate = False
-draw_second_relative_coordinates = False
-do_second_rotate = False
-draw_third_relative_coordinates = False
-do_third_rotate = False
-project_onto_yz_plane = False
-rotate_yz_90 = False
-undo_rotate_z = False
-undo_rotate_y = False
-undo_rotate_x = False
-do_scale = False
-use_ortho = False
-
-new_b = None
-angle_x = None
-
-draw_coordinate_system_of_natural_basis = True
-
-step_number = 0
 
 with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
@@ -333,9 +377,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             "Sim Speed", animation_time_multiplier, 0.1, 10.0
         )
         if imgui.button("Restart"):
-            animation_time = 0.0
-            step_number = 0
-
+            restart()
         if step_number == 0:
             changed, draw_first_relative_coordinates = imgui.checkbox(
                 label="Draw Relative Coordinates",
