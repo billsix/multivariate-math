@@ -535,7 +535,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         imgui.end()
 
-        if vec3:
+        if vec3 and (step_number >= 4):
             with ms.push_matrix(ms.MatrixStack.model):
                 ms.setToIdentityMatrix(ms.MatrixStack.model)
                 ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
