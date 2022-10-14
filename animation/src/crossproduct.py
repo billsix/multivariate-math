@@ -96,7 +96,7 @@ glEnable(GL_DEPTH_TEST)
 
 vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=1.0, b=1.0)
 
-vec2 = Vector(x=0.0, y=3.0, z=5.5, r=1.0, g=0.0, b=1.0)
+vec2 = Vector(x=0.3, y=3.0, z=5.5, r=1.0, g=0.0, b=1.0)
 
 vec3 = None
 
