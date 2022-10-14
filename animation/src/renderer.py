@@ -203,7 +203,7 @@ class Vector:
         return math.atan2(self.y, self.x)
 
 
-def do_draw_vector(shader, v, time):
+def do_draw_vector(shader, v):
 
     glUseProgram(shader)
 
