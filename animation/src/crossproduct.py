@@ -244,8 +244,6 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         draw_axis()
 
-
-
         imgui.new_frame()
 
         if imgui.begin_main_menu_bar():
@@ -260,15 +258,10 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 imgui.end_menu()
             imgui.end_main_menu_bar()
 
-
         imgui.set_next_window_bg_alpha(0.05)
         imgui.begin("Input Vectors", True)
 
-        changed, (
-            vec1.x,
-            vec1.y,
-            vec1.z,
-        ) = imgui.input_float3(
+        changed, (vec1.x, vec1.y, vec1.z,) = imgui.input_float3(
             label="vec A",
             value0=vec1.x,
             value1=vec1.y,
@@ -279,12 +272,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             animation_time = 0.0
             step_number = 0
 
-
-        changed, (
-            vec2.x,
-            vec2.y,
-            vec2.z,
-        ) = imgui.input_float3(
+        changed, (vec2.x, vec2.y, vec2.z,) = imgui.input_float3(
             label="vec B",
             value0=vec2.x,
             value1=vec2.y,
@@ -324,9 +312,14 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             camera.rot_x = math.pi / 2.0
             camera.rot_y = 0.0
 
-        if imgui.button("Draw Coordinate System Of Natural Basis" if not draw_coordinate_system_of_natural_basis else "Don't Draw Coordinate System Of Natural Basis"):
-            draw_coordinate_system_of_natural_basis = not draw_coordinate_system_of_natural_basis
-
+        if imgui.button(
+            "Draw Coordinate System Of Natural Basis"
+            if not draw_coordinate_system_of_natural_basis
+            else "Don't Draw Coordinate System Of Natural Basis"
+        ):
+            draw_coordinate_system_of_natural_basis = (
+                not draw_coordinate_system_of_natural_basis
+            )
 
         imgui.end()
 
@@ -405,9 +398,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         if do_third_rotate:
             if not undo_rotate_x:
-                ratio = (
-                    current_animation_ratio() if step_number == 3 else 1.0
-                )
+                ratio = current_animation_ratio() if step_number == 3 else 1.0
                 ms.rotate_x(ms.MatrixStack.model, -angle_x * ratio)
 
                 if ratio > 0.9999:
@@ -415,9 +406,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         if draw_third_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = (
-                    current_animation_ratio() if step_number == 4 else 1.0
-                )
+                ratio = current_animation_ratio() if step_number == 4 else 1.0
                 ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
 
                 draw_ground(animation_time, xy=False, yz=True)
@@ -425,9 +414,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         if do_second_rotate:
             if not undo_rotate_y:
-                ratio = (
-                    current_animation_ratio() if step_number == 2 else 1.0
-                )
+                ratio = current_animation_ratio() if step_number == 2 else 1.0
                 ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y * ratio)
                 if ratio > 0.99:
                     draw_second_relative_coordinates = False
@@ -436,27 +423,21 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
             with ms.push_matrix(ms.MatrixStack.model):
 
-                ratio = (
-                    current_animation_ratio() if step_number == 3 else 1.0
-                )
+                ratio = current_animation_ratio() if step_number == 3 else 1.0
                 ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
                 draw_ground(animation_time, xy=False, zx=True)
                 draw_axis()
 
         if do_first_rotate:
             if not undo_rotate_z:
-                ratio = (
-                    current_animation_ratio() if step_number == 1 else 1.0
-                )
+                ratio = current_animation_ratio() if step_number == 1 else 1.0
                 ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z * ratio)
                 if ratio > 0.99:
                     draw_first_relative_coordinates = False
 
         if draw_first_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = (
-                    current_animation_ratio() if step_number == 2 else 1.0
-                )
+                ratio = current_animation_ratio() if step_number == 2 else 1.0
                 ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
                 draw_ground(animation_time)
                 draw_axis()
@@ -466,9 +447,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 vec3_after_rotate = np.ascontiguousarray(
                     ms.getCurrentMatrix(ms.MatrixStack.model),
                     dtype=np.float32,
-                ) @ np.array(
-                    [vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32
-                )
+                ) @ np.array([vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32)
 
                 vec3 = Vector(
                     x=0.0,
@@ -540,9 +519,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                     )
 
                 glDisable(GL_DEPTH_TEST)
-                ratio = (
-                    current_animation_ratio() if step_number >= 5 else 0.0
-                )
+                ratio = current_animation_ratio() if step_number >= 5 else 0.0
                 ms.translate(
                     ms.MatrixStack.model,
                     vec3.translate_amount * (1.0 - ratio),
@@ -551,9 +528,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 )
                 if rotate_yz_90:
                     with ms.push_matrix(ms.MatrixStack.model):
-                        ms.rotate_x(
-                            ms.MatrixStack.model, math.radians(90.0)
-                        )
+                        ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
                         draw_vector(vec3)
                 else:
                     draw_vector(vec3)
@@ -563,7 +538,6 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         draw_vector(vec1)
         draw_vector(vec2)
-
 
         imgui.render()
         impl.render(imgui.get_draw_data())
