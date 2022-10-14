@@ -158,6 +158,8 @@ use_ortho = False
 new_b = None
 angle_x = None
 
+draw_coordinate_system_of_natural_basis = True
+
 step_number = 0
 
 with compile_shader("lines.vert", "lines.frag") as lines_shader:
@@ -234,292 +236,334 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         # do everything in math coordinate system
         ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
-        if not undo_rotate_x:
+        if draw_coordinate_system_of_natural_basis:
             draw_ground(animation_time)
             draw_ground(animation_time, xy=False, zx=True)
             draw_unit_circle(animation_time)
             draw_unit_circle(animation_time, xy=False, zx=True)
 
-        with ms.push_matrix(ms.MatrixStack.model):
-
-            imgui.new_frame()
-
-            if imgui.begin_main_menu_bar():
-                if imgui.begin_menu("File", True):
-                    clicked_quit, selected_quit = imgui.menu_item(
-                        "Quit", "Cmd+Q", False, True
-                    )
-
-                    if clicked_quit:
-                        exit(0)
-
-                    imgui.end_menu()
-                imgui.end_main_menu_bar()
-
-            imgui.set_next_window_bg_alpha(0.05)
-            imgui.begin("Camera", True)
-
-            clicked = imgui.button(
-                "Perspective View" if use_ortho else "Orthogonal View"
-            )
-            if clicked:
-                use_ortho = not use_ortho
-
-            imgui.same_line()
-
-            clicked_camera, camera.r = imgui.slider_float(
-                "Camera Radius", camera.r, 3, 100.0
-            )
-
-            if imgui.button("View Down X Axis"):
-                camera.rot_x = 0.0
-                camera.rot_y = math.pi / 2.0
-            imgui.same_line()
-            if imgui.button("View Down Negative Y Axis"):
-                camera.rot_x = 0.0
-                camera.rot_y = 0.0
-            imgui.same_line()
-            if imgui.button("View Down Z Axis"):
-                camera.rot_x = math.pi / 2.0
-                camera.rot_y = 0.0
-
-            imgui.end()
-
-            imgui.set_next_window_bg_alpha(0.05)
-            imgui.begin("Time", True)
-
-            (
-                clicked_animation_time_multiplier,
-                animation_time_multiplier,
-            ) = imgui.slider_float(
-                "Sim Speed", animation_time_multiplier, 0.1, 10.0
-            )
-            if imgui.button("Restart"):
-                animation_time = 0.0
-                step_number = 0
-
-            if step_number == 0:
-                changed, draw_first_relative_coordinates = imgui.checkbox(
-                    label="Draw Relative Coordinates",
-                    state=draw_first_relative_coordinates,
-                )
-                imgui.same_line()
-                changed, do_first_rotate = imgui.checkbox(
-                    label="Rotate Z", state=do_first_rotate
-                )
-                if changed:
-                    current_animation_start_time = animation_time
-                    step_number = 1
-
-                    def calc_angle_x():
-                        a1 = vec1.x
-                        a2 = vec1.y
-                        a3 = vec1.z
-                        mag_a = np.sqrt(a1**2 + a2**2 + a3**2)
-                        b1 = vec2.x
-                        b2 = vec2.y
-                        b3 = vec2.z
-                        k1 = np.sqrt(a1**2 + a2**2)
-
-                        b_doubleprime_2 = (-a2 * b1) / k1 + (a1 * b2) / k1
-                        b_doubleprime_3 = (
-                            (-a1 * a3 * b1) / (k1 * mag_a)
-                            + (-a2 * a3 * b2) / (k1 * mag_a)
-                            + (k1 * b3) / mag_a
-                        )
-                        return math.atan2(b_doubleprime_3, b_doubleprime_2)
-
-                    angle_x = calc_angle_x()
-                    print(angle_x)
-
-            if step_number == 1:
-                changed, draw_second_relative_coordinates = imgui.checkbox(
-                    label="Draw Second Relative Coordinates",
-                    state=draw_second_relative_coordinates,
-                )
-                imgui.same_line()
-                changed, do_second_rotate = imgui.checkbox(
-                    label="Rotate Y", state=do_second_rotate
-                )
-                if changed:
-                    step_number = 2
-                    current_animation_start_time = animation_time
-
-            if step_number == 2:
-                changed, draw_third_relative_coordinates = imgui.checkbox(
-                    label="Draw Third Relative Coordinates",
-                    state=draw_third_relative_coordinates,
-                )
-                imgui.same_line()
-                changed, do_third_rotate = imgui.checkbox(
-                    label="Rotate X", state=do_third_rotate
-                )
-                if changed:
-                    step_number = 3
-                    current_animation_start_time = animation_time
-
-            if do_third_rotate:
-                if not undo_rotate_x:
-                    ratio = (
-                        current_animation_ratio() if step_number == 3 else 1.0
-                    )
-                    ms.rotate_x(ms.MatrixStack.model, -angle_x * ratio)
-
-                    if ratio > 0.9999:
-                        draw_third_relative_coordinates = False
-
-            if draw_third_relative_coordinates:
-                with ms.push_matrix(ms.MatrixStack.model):
-                    ratio = (
-                        current_animation_ratio() if step_number == 4 else 1.0
-                    )
-                    ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
-
-                    draw_ground(animation_time, xy=False, yz=True)
-                    draw_axis()
-
-            if do_second_rotate:
-                if not undo_rotate_y:
-                    ratio = (
-                        current_animation_ratio() if step_number == 2 else 1.0
-                    )
-                    ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y * ratio)
-                    if ratio > 0.99:
-                        draw_second_relative_coordinates = False
-
-            if draw_second_relative_coordinates:
-
-                with ms.push_matrix(ms.MatrixStack.model):
-
-                    ratio = (
-                        current_animation_ratio() if step_number == 3 else 1.0
-                    )
-                    ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
-                    draw_ground(animation_time, xy=False, zx=True)
-                    draw_axis()
-
-            if do_first_rotate:
-                if not undo_rotate_z:
-                    ratio = (
-                        current_animation_ratio() if step_number == 1 else 1.0
-                    )
-                    ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z * ratio)
-                    if ratio > 0.99:
-                        draw_first_relative_coordinates = False
-
-            if draw_first_relative_coordinates:
-                with ms.push_matrix(ms.MatrixStack.model):
-                    ratio = (
-                        current_animation_ratio() if step_number == 2 else 1.0
-                    )
-                    ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
-                    draw_ground(animation_time)
-                    draw_axis()
-
-            if step_number == 3 or step_number == 4:
-                if imgui.button("Show Triangle"):
-                    vec3_after_rotate = np.ascontiguousarray(
-                        ms.getCurrentMatrix(ms.MatrixStack.model),
-                        dtype=np.float32,
-                    ) @ np.array(
-                        [vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32
-                    )
-
-                    vec3 = Vector(
-                        x=0.0,
-                        y=-vec3_after_rotate[2],
-                        z=vec3_after_rotate[1],
-                        r=0.0,
-                        g=1.0,
-                        b=1.0,
-                    )
-                    vec3.translate_amount = vec3_after_rotate[0]
-                    step_number = 4
-
-                imgui.same_line()
-                if imgui.button("Project onto e_2 e_3 plane"):
-                    project_onto_yz_plane = True
-                    step_number = 5
-                    current_animation_start_time = animation_time
-
-            if step_number == 5:
-
-                if imgui.button("Rotate Y to Z, Z to -Y"):
-                    rotate_yz_90 = True
-                    step_number = 6
-
-            if step_number == 6:
-                if imgui.button("Undo Rotate X"):
-                    undo_rotate_x = True
-                    step_number = 7
-
-            if step_number == 7:
-                if imgui.button("Undo Rotate Y"):
-                    undo_rotate_y = True
-                    step_number = 8
-
-            if step_number == 8:
-                if imgui.button("Undo Rotate Z"):
-                    undo_rotate_z = True
-                    step_number = 9
-
-            if step_number == 9:
-                if imgui.button("Scale By Magnitude of first vector"):
-                    do_scale = True
-
-            imgui.end()
-
-            if vec3:
-                with ms.push_matrix(ms.MatrixStack.model):
-                    ms.setToIdentityMatrix(ms.MatrixStack.model)
-                    ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
-
-                    if undo_rotate_z:
-                        ms.rotate_z(ms.MatrixStack.model, vec1.angle_z)
-                    if undo_rotate_y:
-                        ms.rotate_y(ms.MatrixStack.model, vec1.angle_y)
-                    if undo_rotate_x:
-                        ms.rotate_x(ms.MatrixStack.model, angle_x)
-                        draw_ground(animation_time)
-
-                    if do_scale:
-                        magnitude = math.sqrt(
-                            vec1.x**2 + vec1.y**2 + vec1.z**2
-                        )
-
-                        ms.scale(
-                            ms.MatrixStack.model,
-                            magnitude,
-                            magnitude,
-                            magnitude,
-                        )
-
-                    glDisable(GL_DEPTH_TEST)
-                    ratio = (
-                        current_animation_ratio() if step_number >= 5 else 0.0
-                    )
-                    ms.translate(
-                        ms.MatrixStack.model,
-                        vec3.translate_amount * (1.0 - ratio),
-                        0.0,
-                        0.0,
-                    )
-                    if rotate_yz_90:
-                        with ms.push_matrix(ms.MatrixStack.model):
-                            ms.rotate_x(
-                                ms.MatrixStack.model, math.radians(90.0)
-                            )
-                            draw_vector(vec3)
-                    else:
-                        draw_vector(vec3)
-                    glEnable(GL_DEPTH_TEST)
-
-            glDisable(GL_DEPTH_TEST)
-
-            draw_vector(vec1)
-            draw_vector(vec2)
-
         draw_axis()
+
+
+
+        imgui.new_frame()
+
+        if imgui.begin_main_menu_bar():
+            if imgui.begin_menu("File", True):
+                clicked_quit, selected_quit = imgui.menu_item(
+                    "Quit", "Cmd+Q", False, True
+                )
+
+                if clicked_quit:
+                    exit(0)
+
+                imgui.end_menu()
+            imgui.end_main_menu_bar()
+
+
+        imgui.set_next_window_bg_alpha(0.05)
+        imgui.begin("Input Vectors", True)
+
+        changed, (
+            vec1.x,
+            vec1.y,
+            vec1.z,
+        ) = imgui.input_float3(
+            label="vec A",
+            value0=vec1.x,
+            value1=vec1.y,
+            value2=vec1.z,
+        )
+
+        if changed:
+            animation_time = 0.0
+            step_number = 0
+
+
+        changed, (
+            vec2.x,
+            vec2.y,
+            vec2.z,
+        ) = imgui.input_float3(
+            label="vec B",
+            value0=vec2.x,
+            value1=vec2.y,
+            value2=vec2.z,
+        )
+
+        if changed:
+            animation_time = 0.0
+            step_number = 0
+
+        imgui.end()
+
+        imgui.set_next_window_bg_alpha(0.05)
+        imgui.begin("Camera", True)
+
+        clicked = imgui.button(
+            "Perspective View" if use_ortho else "Orthogonal View"
+        )
+        if clicked:
+            use_ortho = not use_ortho
+
+        imgui.same_line()
+
+        clicked_camera, camera.r = imgui.slider_float(
+            "Camera Radius", camera.r, 3, 100.0
+        )
+
+        if imgui.button("View Down X Axis"):
+            camera.rot_x = 0.0
+            camera.rot_y = math.pi / 2.0
+        imgui.same_line()
+        if imgui.button("View Down Negative Y Axis"):
+            camera.rot_x = 0.0
+            camera.rot_y = 0.0
+        imgui.same_line()
+        if imgui.button("View Down Z Axis"):
+            camera.rot_x = math.pi / 2.0
+            camera.rot_y = 0.0
+
+        if imgui.button("Draw Coordinate System Of Natural Basis" if not draw_coordinate_system_of_natural_basis else "Don't Draw Coordinate System Of Natural Basis"):
+            draw_coordinate_system_of_natural_basis = not draw_coordinate_system_of_natural_basis
+
+
+        imgui.end()
+
+        imgui.set_next_window_bg_alpha(0.05)
+        imgui.begin("Time", True)
+
+        (
+            clicked_animation_time_multiplier,
+            animation_time_multiplier,
+        ) = imgui.slider_float(
+            "Sim Speed", animation_time_multiplier, 0.1, 10.0
+        )
+        if imgui.button("Restart"):
+            animation_time = 0.0
+            step_number = 0
+
+        if step_number == 0:
+            changed, draw_first_relative_coordinates = imgui.checkbox(
+                label="Draw Relative Coordinates",
+                state=draw_first_relative_coordinates,
+            )
+            imgui.same_line()
+            changed, do_first_rotate = imgui.checkbox(
+                label="Rotate Z", state=do_first_rotate
+            )
+            if changed:
+                current_animation_start_time = animation_time
+                step_number = 1
+
+                def calc_angle_x():
+                    a1 = vec1.x
+                    a2 = vec1.y
+                    a3 = vec1.z
+                    mag_a = np.sqrt(a1**2 + a2**2 + a3**2)
+                    b1 = vec2.x
+                    b2 = vec2.y
+                    b3 = vec2.z
+                    k1 = np.sqrt(a1**2 + a2**2)
+
+                    b_doubleprime_2 = (-a2 * b1) / k1 + (a1 * b2) / k1
+                    b_doubleprime_3 = (
+                        (-a1 * a3 * b1) / (k1 * mag_a)
+                        + (-a2 * a3 * b2) / (k1 * mag_a)
+                        + (k1 * b3) / mag_a
+                    )
+                    return math.atan2(b_doubleprime_3, b_doubleprime_2)
+
+                angle_x = calc_angle_x()
+                print(angle_x)
+
+        if step_number == 1:
+            changed, draw_second_relative_coordinates = imgui.checkbox(
+                label="Draw Second Relative Coordinates",
+                state=draw_second_relative_coordinates,
+            )
+            imgui.same_line()
+            changed, do_second_rotate = imgui.checkbox(
+                label="Rotate Y", state=do_second_rotate
+            )
+            if changed:
+                step_number = 2
+                current_animation_start_time = animation_time
+
+        if step_number == 2:
+            changed, draw_third_relative_coordinates = imgui.checkbox(
+                label="Draw Third Relative Coordinates",
+                state=draw_third_relative_coordinates,
+            )
+            imgui.same_line()
+            changed, do_third_rotate = imgui.checkbox(
+                label="Rotate X", state=do_third_rotate
+            )
+            if changed:
+                step_number = 3
+                current_animation_start_time = animation_time
+
+        if do_third_rotate:
+            if not undo_rotate_x:
+                ratio = (
+                    current_animation_ratio() if step_number == 3 else 1.0
+                )
+                ms.rotate_x(ms.MatrixStack.model, -angle_x * ratio)
+
+                if ratio > 0.9999:
+                    draw_third_relative_coordinates = False
+
+        if draw_third_relative_coordinates:
+            with ms.push_matrix(ms.MatrixStack.model):
+                ratio = (
+                    current_animation_ratio() if step_number == 4 else 1.0
+                )
+                ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
+
+                draw_ground(animation_time, xy=False, yz=True)
+                draw_axis()
+
+        if do_second_rotate:
+            if not undo_rotate_y:
+                ratio = (
+                    current_animation_ratio() if step_number == 2 else 1.0
+                )
+                ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y * ratio)
+                if ratio > 0.99:
+                    draw_second_relative_coordinates = False
+
+        if draw_second_relative_coordinates:
+
+            with ms.push_matrix(ms.MatrixStack.model):
+
+                ratio = (
+                    current_animation_ratio() if step_number == 3 else 1.0
+                )
+                ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
+                draw_ground(animation_time, xy=False, zx=True)
+                draw_axis()
+
+        if do_first_rotate:
+            if not undo_rotate_z:
+                ratio = (
+                    current_animation_ratio() if step_number == 1 else 1.0
+                )
+                ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z * ratio)
+                if ratio > 0.99:
+                    draw_first_relative_coordinates = False
+
+        if draw_first_relative_coordinates:
+            with ms.push_matrix(ms.MatrixStack.model):
+                ratio = (
+                    current_animation_ratio() if step_number == 2 else 1.0
+                )
+                ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
+                draw_ground(animation_time)
+                draw_axis()
+
+        if step_number == 3 or step_number == 4:
+            if imgui.button("Show Triangle"):
+                vec3_after_rotate = np.ascontiguousarray(
+                    ms.getCurrentMatrix(ms.MatrixStack.model),
+                    dtype=np.float32,
+                ) @ np.array(
+                    [vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32
+                )
+
+                vec3 = Vector(
+                    x=0.0,
+                    y=-vec3_after_rotate[2],
+                    z=vec3_after_rotate[1],
+                    r=0.0,
+                    g=1.0,
+                    b=1.0,
+                )
+                vec3.translate_amount = vec3_after_rotate[0]
+                step_number = 4
+
+            imgui.same_line()
+            if imgui.button("Project onto e_2 e_3 plane"):
+                project_onto_yz_plane = True
+                step_number = 5
+                current_animation_start_time = animation_time
+
+        if step_number == 5:
+
+            if imgui.button("Rotate Y to Z, Z to -Y"):
+                rotate_yz_90 = True
+                step_number = 6
+
+        if step_number == 6:
+            if imgui.button("Undo Rotate X"):
+                undo_rotate_x = True
+                step_number = 7
+
+        if step_number == 7:
+            if imgui.button("Undo Rotate Y"):
+                undo_rotate_y = True
+                step_number = 8
+
+        if step_number == 8:
+            if imgui.button("Undo Rotate Z"):
+                undo_rotate_z = True
+                step_number = 9
+
+        if step_number == 9:
+            if imgui.button("Scale By Magnitude of first vector"):
+                do_scale = True
+
+        imgui.end()
+
+        if vec3:
+            with ms.push_matrix(ms.MatrixStack.model):
+                ms.setToIdentityMatrix(ms.MatrixStack.model)
+                ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
+
+                if undo_rotate_z:
+                    ms.rotate_z(ms.MatrixStack.model, vec1.angle_z)
+                if undo_rotate_y:
+                    ms.rotate_y(ms.MatrixStack.model, vec1.angle_y)
+                if undo_rotate_x:
+                    ms.rotate_x(ms.MatrixStack.model, angle_x)
+                    draw_ground(animation_time)
+
+                if do_scale:
+                    magnitude = math.sqrt(
+                        vec1.x**2 + vec1.y**2 + vec1.z**2
+                    )
+
+                    ms.scale(
+                        ms.MatrixStack.model,
+                        magnitude,
+                        magnitude,
+                        magnitude,
+                    )
+
+                glDisable(GL_DEPTH_TEST)
+                ratio = (
+                    current_animation_ratio() if step_number >= 5 else 0.0
+                )
+                ms.translate(
+                    ms.MatrixStack.model,
+                    vec3.translate_amount * (1.0 - ratio),
+                    0.0,
+                    0.0,
+                )
+                if rotate_yz_90:
+                    with ms.push_matrix(ms.MatrixStack.model):
+                        ms.rotate_x(
+                            ms.MatrixStack.model, math.radians(90.0)
+                        )
+                        draw_vector(vec3)
+                else:
+                    draw_vector(vec3)
+                glEnable(GL_DEPTH_TEST)
+
+        glDisable(GL_DEPTH_TEST)
+
+        draw_vector(vec1)
+        draw_vector(vec2)
+
 
         imgui.render()
         impl.render(imgui.get_draw_data())
