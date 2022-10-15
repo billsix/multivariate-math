@@ -340,6 +340,8 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             imgui.end_main_menu_bar()
 
         imgui.set_next_window_bg_alpha(0.05)
+        imgui.set_next_window_size(400, 100)
+        imgui.set_next_window_position(0,0, imgui.FIRST_USE_EVER)
         imgui.begin("Input Vectors", True)
 
         changed, (vec1.x, vec1.y, vec1.z,) = imgui.input_float3(
@@ -367,6 +369,8 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         imgui.end()
 
         imgui.set_next_window_bg_alpha(0.05)
+        imgui.set_next_window_size(400, 100)
+        imgui.set_next_window_position(0,100, imgui.FIRST_USE_EVER)
         imgui.begin("Camera", True)
 
         clicked = imgui.button(
@@ -404,6 +408,8 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         imgui.end()
 
+        imgui.set_next_window_position(0,200, imgui.FIRST_USE_EVER)
+        imgui.set_next_window_size(400, 100)
         imgui.set_next_window_bg_alpha(0.05)
         imgui.begin("Time", True)
 
@@ -444,7 +450,9 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                         + (-a2 * a3 * b2) / (k1 * mag_a)
                         + (k1 * b3) / mag_a
                     )
-                    return math.atan2(b_doubleprime_3, b_doubleprime_2)
+
+                    angle = math.atan2(b_doubleprime_3, b_doubleprime_2)
+                    return angle if angle > 0.0 else angle + 2 * np.pi
 
                 angle_x = calc_angle_x()
                 print(angle_x)
