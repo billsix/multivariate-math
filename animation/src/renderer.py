@@ -131,7 +131,7 @@ def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
             1,
             GL_TRUE,
             np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                ms.get_current_matrix(ms.MatrixStack.modelviewprojection),
                 dtype=np.float32,
             ),
         )
@@ -244,7 +244,7 @@ def do_draw_vector(shader, v):
                 1,
                 GL_TRUE,
                 np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                    ms.get_current_matrix(ms.MatrixStack.modelviewprojection),
                     dtype=np.float32,
                 ),
             )
@@ -333,7 +333,7 @@ def do_draw_axis(shader):
                 1,
                 GL_TRUE,
                 np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                    ms.get_current_matrix(ms.MatrixStack.modelviewprojection),
                     dtype=np.float32,
                 ),
             )
@@ -352,7 +352,7 @@ def do_draw_axis(shader):
                 1,
                 GL_TRUE,
                 np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                    ms.get_current_matrix(ms.MatrixStack.modelviewprojection),
                     dtype=np.float32,
                 ),
             )
@@ -367,7 +367,7 @@ def do_draw_axis(shader):
             1,
             GL_TRUE,
             np.ascontiguousarray(
-                ms.getCurrentMatrix(ms.MatrixStack.modelviewprojection),
+                ms.get_current_matrix(ms.MatrixStack.modelviewprojection),
                 dtype=np.float32,
             ),
         )

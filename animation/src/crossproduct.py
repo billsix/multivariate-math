@@ -282,15 +282,15 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         # render scene
         handle_inputs()
 
-        ms.setToIdentityMatrix(ms.MatrixStack.model)
-        ms.setToIdentityMatrix(ms.MatrixStack.view)
-        ms.setToIdentityMatrix(ms.MatrixStack.projection)
+        ms.set_to_identity_matrix(ms.MatrixStack.model)
+        ms.set_to_identity_matrix(ms.MatrixStack.view)
+        ms.set_to_identity_matrix(ms.MatrixStack.projection)
 
         if use_ortho:
             ms.ortho(
                 left=-10.0 * float(width) / float(height),
                 right=10.0 * float(width) / float(height),
-                back=-10.00,
+                bottom=-10.00,
                 top=10.00,
                 near=10.0,
                 far=-10.0,
@@ -511,7 +511,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         if step_number == 3 or step_number == 4:
             if imgui.button("Show Triangle"):
                 vec3_after_rotate = np.ascontiguousarray(
-                    ms.getCurrentMatrix(ms.MatrixStack.model),
+                    ms.get_current_matrix(ms.MatrixStack.model),
                     dtype=np.float32,
                 ) @ np.array([vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32)
 
@@ -561,7 +561,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         if vec3 and (step_number >= 4):
             with ms.push_matrix(ms.MatrixStack.model):
-                ms.setToIdentityMatrix(ms.MatrixStack.model)
+                ms.set_to_identity_matrix(ms.MatrixStack.model)
                 ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
                 if undo_rotate_z:
