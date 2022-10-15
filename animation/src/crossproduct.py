@@ -261,10 +261,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
     while not glfw.window_should_close(window):
 
         # poll the time to try to get a constant framerate
-        while (
-            glfw.get_time()
-            < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE
-        ):
+        while glfw.get_time() < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE:
             pass
         # set for comparison on the next frame
         time_at_beginning_of_previous_frame = glfw.get_time()
@@ -329,9 +326,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
-                clicked_quit, selected_quit = imgui.menu_item(
-                    "Quit", "Cmd+Q", False, True
-                )
+                clicked_quit, selected_quit = imgui.menu_item("Quit", "Cmd+Q", False, True)
 
                 if clicked_quit:
                     exit(0)
@@ -373,17 +368,13 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         imgui.set_next_window_position(0, 100, imgui.FIRST_USE_EVER)
         imgui.begin("Camera", True)
 
-        clicked = imgui.button(
-            "Perspective View" if use_ortho else "Orthogonal View"
-        )
+        clicked = imgui.button("Perspective View" if use_ortho else "Orthogonal View")
         if clicked:
             use_ortho = not use_ortho
 
         imgui.same_line()
 
-        clicked_camera, camera.r = imgui.slider_float(
-            "Camera Radius", camera.r, 3, 100.0
-        )
+        clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 100.0)
 
         if imgui.button("View Down X Axis"):
             camera.rot_x = 0.0
@@ -402,9 +393,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             if not draw_coordinate_system_of_natural_basis
             else "Don't Draw Coordinate System Of Natural Basis"
         ):
-            draw_coordinate_system_of_natural_basis = (
-                not draw_coordinate_system_of_natural_basis
-            )
+            draw_coordinate_system_of_natural_basis = not draw_coordinate_system_of_natural_basis
 
         imgui.end()
 
@@ -416,9 +405,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         (
             clicked_animation_time_multiplier,
             animation_time_multiplier,
-        ) = imgui.slider_float(
-            "Sim Speed", animation_time_multiplier, 0.1, 10.0
-        )
+        ) = imgui.slider_float("Sim Speed", animation_time_multiplier, 0.1, 10.0)
         if imgui.button("Restart"):
             restart()
         if step_number == 0:
@@ -427,9 +414,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 state=draw_first_relative_coordinates,
             )
             imgui.same_line()
-            changed, do_first_rotate = imgui.checkbox(
-                label="Rotate Z", state=do_first_rotate
-            )
+            changed, do_first_rotate = imgui.checkbox(label="Rotate Z", state=do_first_rotate)
             if changed:
                 current_animation_start_time = animation_time
                 step_number = 1
@@ -446,9 +431,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
                     b_doubleprime_2 = (-a2 * b1) / k1 + (a1 * b2) / k1
                     b_doubleprime_3 = (
-                        (-a1 * a3 * b1) / (k1 * mag_a)
-                        + (-a2 * a3 * b2) / (k1 * mag_a)
-                        + (k1 * b3) / mag_a
+                        (-a1 * a3 * b1) / (k1 * mag_a) + (-a2 * a3 * b2) / (k1 * mag_a) + (k1 * b3) / mag_a
                     )
 
                     angle = math.atan2(b_doubleprime_3, b_doubleprime_2)
@@ -463,9 +446,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 state=draw_second_relative_coordinates,
             )
             imgui.same_line()
-            changed, do_second_rotate = imgui.checkbox(
-                label="Rotate Y", state=do_second_rotate
-            )
+            changed, do_second_rotate = imgui.checkbox(label="Rotate Y", state=do_second_rotate)
             if changed:
                 step_number = 2
                 current_animation_start_time = animation_time
@@ -476,9 +457,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 state=draw_third_relative_coordinates,
             )
             imgui.same_line()
-            changed, do_third_rotate = imgui.checkbox(
-                label="Rotate X", state=do_third_rotate
-            )
+            changed, do_third_rotate = imgui.checkbox(label="Rotate X", state=do_third_rotate)
             if changed:
                 step_number = 3
                 current_animation_start_time = animation_time
@@ -594,9 +573,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                     draw_ground(animation_time)
 
                 if do_scale:
-                    magnitude = math.sqrt(
-                        vec1.x**2 + vec1.y**2 + vec1.z**2
-                    )
+                    magnitude = math.sqrt(vec1.x**2 + vec1.y**2 + vec1.z**2)
 
                     ms.scale(
                         ms.MatrixStack.model,
