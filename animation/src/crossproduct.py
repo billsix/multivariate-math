@@ -537,6 +537,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             if imgui.button("Rotate Y to Z, Z to -Y"):
                 rotate_yz_90 = True
                 step_number = 6
+                current_animation_start_time = animation_time
 
         if step_number == 6:
             if imgui.button("Undo Rotate X"):
@@ -583,7 +584,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                     )
 
                 glDisable(GL_DEPTH_TEST)
-                ratio = current_animation_ratio() if step_number >= 5 else 0.0
+                ratio = current_animation_ratio() if step_number == 5 else 0.0 if step_number <= 5 else 1.0
                 ms.translate(
                     ms.MatrixStack.model,
                     vec3.translate_amount * (1.0 - ratio),
@@ -592,7 +593,8 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 )
                 if rotate_yz_90:
                     with ms.push_matrix(ms.MatrixStack.model):
-                        ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
+                        ratio = current_animation_ratio() if step_number >= 6 else 1.0
+                        ms.rotate_x(ms.MatrixStack.model, math.radians(90.0 * ratio))
                         draw_vector(vec3)
                 else:
                     draw_vector(vec3)
