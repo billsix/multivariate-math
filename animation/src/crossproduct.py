@@ -229,6 +229,8 @@ def restart():
     angle_x = None
     global draw_coordinate_system_of_natural_basis
     draw_coordinate_system_of_natural_basis = True
+    global do_remove_ground
+    do_remove_ground = False
     global step_number
     step_number = 0
 
@@ -315,10 +317,11 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
         if draw_coordinate_system_of_natural_basis:
-            draw_ground(animation_time)
-            draw_ground(animation_time, xy=False, zx=True)
-            draw_unit_circle(animation_time)
-            draw_unit_circle(animation_time, xy=False, zx=True)
+            if not do_remove_ground:
+                draw_ground(animation_time)
+                draw_ground(animation_time, xy=False, zx=True)
+                draw_unit_circle(animation_time)
+                draw_unit_circle(animation_time, xy=False, zx=True)
 
         draw_axis()
 
@@ -463,12 +466,12 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 current_animation_start_time = animation_time
 
         if do_third_rotate:
-            if not undo_rotate_x:
-                ratio = current_animation_ratio() if step_number == 3 else 1.0
-                ms.rotate_x(ms.MatrixStack.model, -angle_x * ratio)
-
-                if ratio > 0.9999:
-                    draw_third_relative_coordinates = False
+            ratio = current_animation_ratio() if step_number == 3 else 1.0
+            ms.rotate_x(ms.MatrixStack.model, -angle_x * ratio)
+            if ratio > 0.9999:
+                draw_third_relative_coordinates = False
+            ratio = current_animation_ratio() if step_number == 7 else 0.0 if step_number < 7 else 1.0
+            ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
 
         if draw_third_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
@@ -479,11 +482,12 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 draw_axis()
 
         if do_second_rotate:
-            if not undo_rotate_y:
-                ratio = current_animation_ratio() if step_number == 2 else 1.0
-                ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y * ratio)
-                if ratio > 0.99:
-                    draw_second_relative_coordinates = False
+            ratio = current_animation_ratio() if step_number == 2 else 1.0
+            ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y * ratio)
+            if ratio > 0.99:
+                draw_second_relative_coordinates = False
+            ratio = current_animation_ratio() if step_number == 8 else 0.0 if step_number < 8 else 1.0
+            ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
 
         if draw_second_relative_coordinates:
 
@@ -495,11 +499,12 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 draw_axis()
 
         if do_first_rotate:
-            if not undo_rotate_z:
-                ratio = current_animation_ratio() if step_number == 1 else 1.0
-                ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z * ratio)
-                if ratio > 0.99:
-                    draw_first_relative_coordinates = False
+            ratio = current_animation_ratio() if step_number == 1 else 1.0
+            ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z * ratio)
+            if ratio > 0.99:
+                draw_first_relative_coordinates = False
+            ratio = current_animation_ratio() if step_number == 9 else 0.0 if step_number < 9 else 1.0
+            ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
 
         if draw_first_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
@@ -543,20 +548,28 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             if imgui.button("Undo Rotate X"):
                 undo_rotate_x = True
                 step_number = 7
+                current_animation_start_time = animation_time
 
         if step_number == 7:
             if imgui.button("Undo Rotate Y"):
                 undo_rotate_y = True
                 step_number = 8
+                current_animation_start_time = animation_time
 
         if step_number == 8:
             if imgui.button("Undo Rotate Z"):
                 undo_rotate_z = True
                 step_number = 9
+                current_animation_start_time = animation_time
 
         if step_number == 9:
             if imgui.button("Scale By Magnitude of first vector"):
                 do_scale = True
+                step_number = 10
+
+        if step_number == 10:
+            if imgui.button("Show Plane spanned by vec a and vec b"):
+                do_remove_ground = True
 
         imgui.end()
 
@@ -566,14 +579,19 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
                 if undo_rotate_z:
-                    ms.rotate_z(ms.MatrixStack.model, vec1.angle_z)
+                    ratio = current_animation_ratio() if step_number == 9 else 0.0 if step_number < 9 else 1.0
+                    ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
                 if undo_rotate_y:
-                    ms.rotate_y(ms.MatrixStack.model, vec1.angle_y)
+                    ratio = current_animation_ratio() if step_number == 8 else 0.0 if step_number < 8 else 1.0
+                    ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
                 if undo_rotate_x:
-                    ms.rotate_x(ms.MatrixStack.model, angle_x)
-                    draw_ground(animation_time)
+                    ratio = current_animation_ratio() if step_number == 7 else 0.0 if step_number < 7 else 1.0
+                    ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
 
                 if do_scale:
+                    if do_remove_ground:
+                        draw_ground(animation_time)
+
                     magnitude = math.sqrt(vec1.x**2 + vec1.y**2 + vec1.z**2)
 
                     ms.scale(
@@ -593,7 +611,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 )
                 if rotate_yz_90:
                     with ms.push_matrix(ms.MatrixStack.model):
-                        ratio = current_animation_ratio() if step_number >= 6 else 1.0
+                        ratio = current_animation_ratio() if step_number == 6 else 1.0 if step_number > 6 else 0.0
                         ms.rotate_x(ms.MatrixStack.model, math.radians(90.0 * ratio))
                         draw_vector(vec3)
                 else:
