@@ -482,7 +482,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 draw_third_relative_coordinates = False
             ratio = current_animation_ratio() if step_number == 7 else 0.0 if step_number < 7 else 1.0
             ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
-            if draw_undo_rotate_x_relative_coordinates:
+            if draw_undo_rotate_x_relative_coordinates and not do_remove_ground:
                 draw_ground(animation_time, xy=False, yz=True)
                 draw_axis()
 
@@ -501,7 +501,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 draw_second_relative_coordinates = False
             ratio = current_animation_ratio() if step_number == 8 else 0.0 if step_number < 8 else 1.0
             ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
-            if draw_undo_rotate_y_relative_coordinates:
+            if draw_undo_rotate_y_relative_coordinates and not do_remove_ground:
                 draw_ground(animation_time, xy=False, zx=True)
                 draw_axis()
 
@@ -521,7 +521,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 draw_first_relative_coordinates = False
             ratio = current_animation_ratio() if step_number == 9 else 0.0 if step_number < 9 else 1.0
             ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
-            if draw_undo_rotate_z_relative_coordinates:
+            if draw_undo_rotate_z_relative_coordinates and not do_remove_ground:
                 draw_ground(animation_time)
                 draw_axis()
 
