@@ -144,14 +144,20 @@ camera = Camera(r=22.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
 def handle_inputs():
     global camera
 
+    global use_ortho
+
     if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS:
         camera.rot_y -= math.radians(1.0)
+        use_ortho = False
     if glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS:
         camera.rot_y += math.radians(1.0)
+        use_ortho = False
     if glfw.get_key(window, glfw.KEY_UP) == glfw.PRESS:
         camera.rot_x -= math.radians(1.0)
+        use_ortho = False
     if glfw.get_key(window, glfw.KEY_DOWN) == glfw.PRESS:
         camera.rot_x += math.radians(1.0)
+        use_ortho = False
 
     if camera.rot_x > math.pi / 2.0:
         camera.rot_x = math.pi / 2.0
@@ -381,25 +387,23 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         imgui.set_next_window_position(0, 100, imgui.FIRST_USE_EVER)
         imgui.begin("Camera", True)
 
-        clicked = imgui.button("Perspective View" if use_ortho else "Orthogonal View")
-        if clicked:
-            use_ortho = not use_ortho
-
-        imgui.same_line()
-
-        clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 100.0)
+        if not use_ortho:
+            clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 100.0)
 
         if imgui.button("View Down X Axis"):
             camera.rot_x = 0.0
             camera.rot_y = math.pi / 2.0
+            use_ortho = True
         imgui.same_line()
         if imgui.button("View Down Negative Y Axis"):
             camera.rot_x = 0.0
             camera.rot_y = 0.0
+            use_ortho = True
         imgui.same_line()
         if imgui.button("View Down Z Axis"):
             camera.rot_x = math.pi / 2.0
             camera.rot_y = 0.0
+            use_ortho = True
 
         if imgui.button(
             "Draw Coordinate System Of Natural Basis"
