@@ -195,6 +195,7 @@ new_b = None
 angle_x = None
 draw_coordinate_system_of_natural_basis = None
 step_number = None
+auto_rotate_camera = False
 
 
 def restart():
@@ -249,6 +250,9 @@ def restart():
     draw_undo_rotate_y_relative_coordinates = False
     global draw_undo_rotate_z_relative_coordinates
     draw_undo_rotate_z_relative_coordinates = False
+
+    global auto_rotate_camera
+    auto_rotate_camera = False
 
 
 # initiliaze
@@ -387,6 +391,11 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         imgui.set_next_window_position(0, 100, imgui.FIRST_USE_EVER)
         imgui.begin("Camera", True)
 
+        changed, auto_rotate_camera = imgui.checkbox(label="Auto Rotate Camera", state=auto_rotate_camera)
+
+        if auto_rotate_camera:
+            camera.rot_y += math.radians(0.1)
+
         if not use_ortho:
             clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 100.0)
 
@@ -419,10 +428,6 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         imgui.set_next_window_bg_alpha(0.05)
         imgui.begin("Time", True)
 
-        (
-            clicked_animation_time_multiplier,
-            animation_time_multiplier,
-        ) = imgui.slider_float("Sim Speed", animation_time_multiplier, 0.1, 10.0)
         if imgui.button("Restart"):
             restart()
         if step_number == 0:
