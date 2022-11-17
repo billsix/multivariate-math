@@ -358,7 +358,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             imgui.end_main_menu_bar()
 
         imgui.set_next_window_bg_alpha(0.05)
-        imgui.set_next_window_size(400, 100)
+        imgui.set_next_window_size(400, 100, imgui.FIRST_USE_EVER)
         imgui.set_next_window_position(0, 0, imgui.FIRST_USE_EVER)
         imgui.begin("Input Vectors", True)
 
@@ -387,7 +387,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         imgui.end()
 
         imgui.set_next_window_bg_alpha(0.05)
-        imgui.set_next_window_size(400, 100)
+        imgui.set_next_window_size(400, 100, imgui.FIRST_USE_EVER)
         imgui.set_next_window_position(0, 100, imgui.FIRST_USE_EVER)
         imgui.begin("Camera", True)
 
@@ -424,7 +424,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         imgui.end()
 
         imgui.set_next_window_position(0, 200, imgui.FIRST_USE_EVER)
-        imgui.set_next_window_size(400, 100)
+        imgui.set_next_window_size(400, 100, imgui.FIRST_USE_EVER)
         imgui.set_next_window_bg_alpha(0.05)
         imgui.begin("Time", True)
 
