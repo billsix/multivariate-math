@@ -131,9 +131,9 @@ def unit_circle_vertices():
     return np.array(verts, dtype=np.float32)
 
 
-vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=1.0, b=1.0)
+vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=0.0, b=0.0, highlight=False)
 
-vec2 = Vector(x=0.3, y=3.0, z=5.5, r=1.0, g=0.0, b=1.0)
+vec2 = Vector(x=0.3, y=3.0, z=5.5, r=0.0, g=1.0, b=0.0, highlight=False)
 
 vec3 = None
 
@@ -368,10 +368,15 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             value1=vec1.y,
             value2=vec1.z,
         )
+        imgui.same_line()
 
         if changed:
             animation_time = 0.0
             step_number = 0
+
+        if imgui.button("Highlight Vec 1"):
+            vec1.highlight = not vec1.highlight
+            vec2.highlight = False
 
         changed, (vec2.x, vec2.y, vec2.z,) = imgui.input_float3(
             label="vec B",
@@ -384,6 +389,11 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             animation_time = 0.0
             step_number = 0
 
+        imgui.same_line()
+
+        if imgui.button("Highlight Vec 2"):
+            vec2.highlight = not vec2.highlight
+            vec1.highlight = False
         imgui.end()
 
         imgui.set_next_window_bg_alpha(0.05)

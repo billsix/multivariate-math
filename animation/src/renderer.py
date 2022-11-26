@@ -153,6 +153,7 @@ class Vector:
     r: float
     g: float
     b: float
+    highlight: bool = False
 
     @property
     def angle_y(self):
@@ -236,8 +237,10 @@ def do_draw_vector(shader, v):
         with ms.push_matrix(ms.MatrixStack.model):
             ms.rotate_z(ms.MatrixStack.model, math.radians(-90.0))
 
-            glUniform3f(colorLoc, v.r, v.g, v.b)
-
+            if v.highlight:
+                glUniform3f(colorLoc, 1.0, 1.0, 1.0)
+            else:
+                glUniform3f(colorLoc, v.r, v.g, v.b)
             # ascontiguousarray puts the array in column major order
             glUniformMatrix4fv(
                 mvpMatrixLoc,
