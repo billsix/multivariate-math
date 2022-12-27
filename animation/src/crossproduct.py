@@ -385,6 +385,14 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             value2=vec2.z,
         )
 
+        clicked = imgui.button("Swap vectors")
+        if clicked:
+            temp_vec = vec2
+            vec2 = vec1
+            vec1 = temp_vec
+
+
+
         if changed:
             animation_time = 0.0
             step_number = 0
