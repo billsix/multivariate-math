@@ -4,7 +4,7 @@
 % --------------------------------------------------------------
 
 
-%% \copyright 2022 William Emerison Six
+%% \copyright 2022-2023 William Emerison Six
 
 %% Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -58,7 +58,7 @@
 
 % \maketitle
 
-\copyright 2022 William Emerison Six, licensed under the MIT License (at end of this document)
+\copyright 2022-2023 William Emerison Six, licensed under the MIT License (at end of this document)
 
 \begin{problem}{1} %You can use theorem, proposition, exercise, or reflection here.  Modify x.yz to be whatever number you are proving
 
@@ -83,43 +83,43 @@
 
   let $k_1 \triangleq \sqrt{a_1^2 + a_2^2}$.
 
-  Define $\vec{f_1}(\vec{x})$ such that $\vec{f_1}(\vec{a})$ is rotated onto the $e_1e_3$ plane.  Apply $\vec{f_1}$ to $\vec{b}$.
+  Define $\vec{f_1}(\vec{v})$ such that $\vec{f_1}(\vec{a})$ is rotated onto the $xz$ plane.  
 
 \begin{flalign}
-\vec{f_1}(\vec{x}) & \triangleq \begin{bmatrix}
+\vec{f_1}(\vec{v}) & \triangleq \begin{bmatrix}
      \frac{k_1}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
      0 & 1  & 0 \\
      \frac{-a_3}{\norm{a}} & 0 & \frac{k_1}{\norm{a}}\\
-    \end{bmatrix} * \vec{x}
+    \end{bmatrix} * \vec{v}
 \end{flalign}
 
 
-  Define $\vec{f_2}(\vec{x})$ such that $(\vec{f_2} \circ \vec{f_1})(\vec{a})$ is rotated onto the $e_1$ axis.  Apply $\vec{f_1}$ to $\vec{b}$.
+  Define $\vec{f_2}(\vec{v})$ such that $(\vec{f_2} \circ \vec{f_1})(\vec{a})$ is rotated onto the $x$ axis.  
 
 \begin{flalign}
-\vec{f_2}(\vec{x}) & \triangleq \begin{bmatrix}
+\vec{f_2}(\vec{v}) & \triangleq \begin{bmatrix}
      \frac{a_1}{k_1} & \frac{a_2}{k_1} & 0 \\
      \frac{-a_2}{k_1} & \frac{a_1}{k_1} & 0 \\
      0 & 0 & 1 \\
-\end{bmatrix} * \vec{x}
+\end{bmatrix} * \vec{v}
 \end{flalign}
 
 
 \begin{flalign}
-(\vec{f_2} \circ \vec{f_1})(\vec{x}) & = \begin{bmatrix}
+(\vec{f_2} \circ \vec{f_1})(\vec{v}) & = \begin{bmatrix}
      \frac{k_1}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
      0 & 1  & 0 \\
      \frac{-a_3}{\norm{a}} & 0 & \frac{k_1}{\norm{a}}\\
-    \end{bmatrix} * \begin{bmatrix}
+    \end{bmatrix} * (\begin{bmatrix}
      \frac{a_1}{k_1} & \frac{a_2}{k_1} & 0 \\
      \frac{-a_2}{k_1} & \frac{a_1}{k_1} & 0 \\
      0 & 0 & 1 \\
-\end{bmatrix} * \vec{x} \\
+\end{bmatrix} * \vec{v}) \\
   & = \begin{bmatrix}
      \frac{a_1}{\norm{a}} & \frac{a_2}{\norm{a}} & \frac{a_3}{\norm{a}} \\
      \frac{-a_2}{k_1} & \frac{a_1}{k_1} & 0 \\
      \frac{-a_1a_3}{k_1\norm{a}} & \frac{-a_2a_3}{k_1\norm{a}} & \frac{k_1}{\norm{a}} \\
-\end{bmatrix} * \vec{x}
+\end{bmatrix} * \vec{v}
 \end{flalign}
 
 \begin{flalign}
@@ -131,7 +131,7 @@
 \end{flalign}
 
 
-\textbf{Rotate $\vec{b''} \triangleq (\vec{f_2} \circ \vec{f_1})(\vec{b}) $ onto the $e_1e_2$ plane }
+\textbf{Rotate $\vec{b''} \triangleq (\vec{f_2} \circ \vec{f_1})(\vec{b}) $ onto the $xy$ plane }
 
 
   let $k_2 \triangleq \sqrt{{b''_2}^2 + {b''_3}^2}$.
@@ -152,11 +152,11 @@
 
 
 \begin{flalign}
-\vec{f_3}(\vec{x}) & \triangleq \begin{bmatrix}
+\vec{f_3}(\vec{v}) & \triangleq \begin{bmatrix}
      1 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
      0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
-\end{bmatrix} * \vec{x}
+\end{bmatrix} * \vec{v}
 \end{flalign}
 
 
@@ -171,17 +171,17 @@
 
 
 
-\textbf{Project $( \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b})$ onto the $e_2e_3$ plane }
+\textbf{Project $( \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b})$ onto the $yz$ plane }
 
-Define $\vec{f_4}(\vec{x})$ to project any vector $x$ onto the $e_2$.
+Define $\vec{f_4}(\vec{v})$ to project any vector $v$ onto the $y$.
 
 
 \begin{flalign}
-\vec{f_4}(\vec{x}) & \triangleq \begin{bmatrix}
+\vec{f_4}(\vec{v}) & \triangleq \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 1 & 0 \\
      0 & 0 & 0 \\
-\end{bmatrix} * \vec{x}
+\end{bmatrix} * \vec{v}
 \end{flalign}
 
 \begin{flalign}
@@ -203,16 +203,16 @@ Define $\vec{f_4}(\vec{x})$ to project any vector $x$ onto the $e_2$.
 
 
 
-\textbf{Rotate $( \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) $ 90 degrees on the $e_2e_3$ plane.}
+\textbf{Rotate $( \vec{f_4} \circ \vec{f_3} \circ \vec{f_2} \circ \vec{f_1}) (\vec{b}) $ 90 degrees on the $yz$ plane.}
 
-Define $\vec{f_5}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
+Define $\vec{f_5}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 
 \begin{flalign}
-\vec{f_5}(\vec{x}) & \triangleq \begin{bmatrix}
+\vec{f_5}(\vec{v}) & \triangleq \begin{bmatrix}
      1 & 0 & 0 \\
      0 & 0 & -1 \\
      0 & 1 & 0 \\
-\end{bmatrix} * \vec{x}
+\end{bmatrix} * \vec{v}
 \end{flalign}
 
 \begin{flalign}
@@ -350,7 +350,7 @@ Define $\vec{f_5}(\vec{x})$ rotate any vector $x$ around the $e_2e_3$ plane.
 
 \textbf{License of proof }
 
-\copyright 2022 William Emerison Six
+\copyright 2022-2023 William Emerison Six
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
