@@ -131,12 +131,26 @@ def unit_circle_vertices():
     return np.array(verts, dtype=np.float32)
 
 
-vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=0.0, b=0.0, highlight=False)
+swap = False
 
-vec2 = Vector(x=0.3, y=3.0, z=5.5, r=0.0, g=1.0, b=0.0, highlight=False)
 
-vec3 = None
+def initiliaze_vecs():
+    global vec1
+    global vec2
+    global vec3
+    global swap
 
+    if not swap:
+        vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=0.0, b=0.0, highlight=False)
+        vec2 = Vector(x=-1.0, y=2.0, z=2.0, r=0.5, g=0.5, b=0.0, highlight=False)
+    else:
+        vec1 = Vector(x=-1.0, y=2.0, z=2.0, r=1.0, g=0.0, b=0.0, highlight=False)
+        vec2 = Vector(x=3.0, y=4.0, z=5.0, r=0.5, g=0.5, b=0.0, highlight=False)
+
+    vec3 = None
+
+
+initiliaze_vecs()
 
 camera = Camera(r=22.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
 
@@ -281,7 +295,6 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
     # Loop until the user closes the window
     while not glfw.window_should_close(window):
-
         # poll the time to try to get a constant framerate
         while glfw.get_time() < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE:
             pass
@@ -362,7 +375,11 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         imgui.set_next_window_position(0, 0, imgui.FIRST_USE_EVER)
         imgui.begin("Input Vectors", True)
 
-        changed, (vec1.x, vec1.y, vec1.z,) = imgui.input_float3(
+        changed, (
+            vec1.x,
+            vec1.y,
+            vec1.z,
+        ) = imgui.input_float3(
             label="vec A",
             value0=vec1.x,
             value1=vec1.y,
@@ -378,30 +395,32 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             vec1.highlight = not vec1.highlight
             vec2.highlight = False
 
-        changed, (vec2.x, vec2.y, vec2.z,) = imgui.input_float3(
+        changed, (
+            vec2.x,
+            vec2.y,
+            vec2.z,
+        ) = imgui.input_float3(
             label="vec B",
             value0=vec2.x,
             value1=vec2.y,
             value2=vec2.z,
         )
 
-        clicked = imgui.button("Swap vectors")
-        if clicked:
-            temp_vec = vec2
-            vec2 = vec1
-            vec1 = temp_vec
-
-
-
-        if changed:
-            animation_time = 0.0
-            step_number = 0
-
         imgui.same_line()
 
         if imgui.button("Highlight Vec 2"):
             vec2.highlight = not vec2.highlight
             vec1.highlight = False
+
+        clicked = imgui.button("Swap vectors")
+        if clicked:
+            swap = not swap
+            initiliaze_vecs()
+
+        if changed:
+            animation_time = 0.0
+            step_number = 0
+
         imgui.end()
 
         imgui.set_next_window_bg_alpha(0.05)
@@ -415,7 +434,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             camera.rot_y += math.radians(0.1)
 
         if not use_ortho:
-            clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 100.0)
+            clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 130.0)
 
         if imgui.button("View Down X Axis"):
             camera.rot_x = 0.0
@@ -454,8 +473,9 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 state=draw_first_relative_coordinates,
             )
             imgui.same_line()
-            changed, do_first_rotate = imgui.checkbox(label="Rotate Z", state=do_first_rotate)
-            if changed:
+
+            if imgui.button("Rotate Z"):
+                do_first_rotate = True
                 current_animation_start_time = animation_time
                 step_number = 1
 
@@ -478,7 +498,6 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                     return angle if angle > 0.0 else angle + 2 * np.pi
 
                 angle_x = calc_angle_x()
-                print(angle_x)
 
         if step_number == 1:
             changed, draw_second_relative_coordinates = imgui.checkbox(
@@ -486,8 +505,8 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 state=draw_second_relative_coordinates,
             )
             imgui.same_line()
-            changed, do_second_rotate = imgui.checkbox(label="Rotate Y", state=do_second_rotate)
-            if changed:
+            if imgui.button("Rotate Y"):
+                do_second_rotate = True
                 step_number = 2
                 current_animation_start_time = animation_time
 
@@ -497,8 +516,8 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 state=draw_third_relative_coordinates,
             )
             imgui.same_line()
-            changed, do_third_rotate = imgui.checkbox(label="Rotate X", state=do_third_rotate)
-            if changed:
+            if imgui.button("Rotate X"):
+                do_third_rotate = True
                 step_number = 3
                 current_animation_start_time = animation_time
 
@@ -533,9 +552,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 draw_axis()
 
         if draw_second_relative_coordinates:
-
             with ms.push_matrix(ms.MatrixStack.model):
-
                 ratio = current_animation_ratio() if step_number == 3 else 1.0
                 ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
                 draw_ground(animation_time, xy=False, zx=True)
@@ -572,7 +589,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                     z=vec3_after_rotate[1],
                     r=0.0,
                     g=1.0,
-                    b=1.0,
+                    b=0.0,
                 )
                 vec3.translate_amount = vec3_after_rotate[0]
                 step_number = 4
@@ -584,7 +601,6 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 current_animation_start_time = animation_time
 
         if step_number == 5:
-
             if imgui.button("Rotate Y to Z, Z to -Y"):
                 rotate_yz_90 = True
                 step_number = 6
@@ -673,6 +689,10 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 if rotate_yz_90:
                     with ms.push_matrix(ms.MatrixStack.model):
                         ratio = current_animation_ratio() if step_number == 6 else 1.0 if step_number > 6 else 0.0
+
+                        vec3.r = 0.0 * (1.0 - ratio)
+                        vec3.g = 1.0 * (1.0 - ratio)
+                        vec3.b = 1.0 * ratio
                         ms.rotate_x(ms.MatrixStack.model, math.radians(90.0 * ratio))
                         draw_vector(vec3)
                 else:

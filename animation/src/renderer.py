@@ -93,7 +93,6 @@ def compile_shader(vert, frag):
 
 
 def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
-
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
     glUseProgram(shader)
@@ -165,7 +164,6 @@ class Vector:
 
 
 def do_draw_vector(shader, v):
-
     glUseProgram(shader)
 
     magnitude = math.sqrt(v.x**2 + v.y**2 + v.z**2)
@@ -257,11 +255,9 @@ def do_draw_vector(shader, v):
 
 
 def do_draw_axis(shader):
-
     glUseProgram(shader)
 
     def vertices_of_axis():
-
         # glColor3f(0.1,0.1,0.1)
         verts = []
         verts.append(float(0.0))
@@ -323,7 +319,6 @@ def do_draw_axis(shader):
     glDisable(GL_DEPTH_TEST)
 
     with ms.push_matrix(ms.MatrixStack.model):
-
         # x axis
         with ms.push_matrix(ms.MatrixStack.model):
             ms.rotate_z(ms.MatrixStack.model, math.radians(-90.0))
