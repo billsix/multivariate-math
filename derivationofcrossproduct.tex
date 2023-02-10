@@ -123,11 +123,25 @@
 \end{flalign}
 
 \begin{flalign}
+(\vec{f_2} \circ \vec{f_1})(\vec{a}) & = \begin{bmatrix}
+     \frac{a_1^2}{\norm{a}} + \frac{a_2^2}{\norm{a}} + \frac{a_3^2}{\norm{a}}  \\
+     \frac{-a_2a_1}{k_1}  + \frac{a_1a_2}{k_1} \\
+     \frac{-a_1^2a_3}{k_1\norm{a}} + \frac{-a_2^2a_3}{k_1\norm{a}} + \frac{k_1a_3}{\norm{a}} \\
+\end{bmatrix} \\
+  & = \begin{bmatrix}
+     \frac{a_1^2 + a_2^2 + a_3^2}{\norm{a}} \\
+     0 \\
+     \frac{-a_1^2a_3}{\norm{a}} + \frac{-a_2^2a_3}{\norm{a}} + \frac{k_1^2a_3}{\norm{a}} \\
+\end{bmatrix}
+\end{flalign}
+
+
+\begin{flalign}
 (\vec{f_2} \circ \vec{f_1})(\vec{b}) = \begin{bmatrix}
      \frac{a_1b_1}{\norm{a}} + \frac{a_2b_2}{\norm{a}} + \frac{a_3b_3}{\norm{a}} \\
      \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
      \frac{-a_1a_3b_1}{k_1\norm{a}} + \frac{-a_2a_3b_2}{k_1\norm{a}} + \frac{k_1b_3}{\norm{a}} \\
-\end{bmatrix}
+\end{bmatrix} 
 \end{flalign}
 
 
