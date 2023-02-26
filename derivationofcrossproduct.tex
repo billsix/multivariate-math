@@ -83,18 +83,34 @@
 
   let $k_1 \triangleq \sqrt{a_1^2 + a_2^2}$.
 
-  Define $\vec{f_1}(\vec{v})$ such that $\vec{f_1}(\vec{a})$ is rotated onto the $xz$ plane.  
+  Define $\vec{f_1}(\vec{v})$ such that $\vec{f_1}(\vec{a})$ is rotated onto the $xz$ plane.
 
 \begin{flalign}
-\vec{f_1}(\vec{v}) & \triangleq \begin{bmatrix}
-     \frac{k_1}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
-     0 & 1  & 0 \\
-     \frac{-a_3}{\norm{a}} & 0 & \frac{k_1}{\norm{a}}\\
-    \end{bmatrix} * \vec{v}
+\vec{f_1}(\begin{bmatrix}
+     {v_1} \\
+     {v_2} \\
+     {v_3} \\
+\end{bmatrix}
+) & \triangleq     \begin{bmatrix}
+     \frac{k_1}{\norm{a}} \\
+     0 \\
+     \frac{-a_3}{\norm{a}} \\
+    \end{bmatrix}
+* {v_1} +
+    \begin{bmatrix}
+     0   \\
+     1  \\
+     0 \\
+    \end{bmatrix} * {v_2} +
+    \begin{bmatrix}
+     \frac{a_3}{\norm{a}} \\
+     0 \\
+     \frac{k_1}{\norm{a}}\\
+    \end{bmatrix}  * {v_3}
 \end{flalign}
 
 
-  Define $\vec{f_2}(\vec{v})$ such that $(\vec{f_2} \circ \vec{f_1})(\vec{a})$ is rotated onto the $x$ axis.  
+  Define $\vec{f_2}(\vec{v})$ such that $(\vec{f_2} \circ \vec{f_1})(\vec{a})$ is rotated onto the $x$ axis.
 
 \begin{flalign}
 \vec{f_2}(\vec{v}) & \triangleq \begin{bmatrix}
@@ -156,7 +172,7 @@
      \frac{a_1b_1}{\norm{a}} + \frac{a_2b_2}{\norm{a}} + \frac{a_3b_3}{\norm{a}} \\
      \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
      \frac{-a_1a_3b_1}{k_1\norm{a}} + \frac{-a_2a_3b_2}{k_1\norm{a}} + \frac{k_1b_3}{\norm{a}} \\
-\end{bmatrix} 
+\end{bmatrix}
 \end{flalign}
 
 
