@@ -198,7 +198,7 @@
 
 
 \begin{flalign}
-\vec{f}_b^{xy}(\vec{v}) & \triangleq \begin{bmatrix}
+\vec{f}_{b''}^{xy}(\vec{v}) & \triangleq \begin{bmatrix}
      1 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
      0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
@@ -207,7 +207,7 @@
 
 
 \begin{flalign}
-( \vec{f}_b^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
+( \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
      0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
@@ -217,13 +217,13 @@
 
 
 
-\textbf{Project $( \vec{f}_b^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b})$ onto the $yz$ plane }
+\textbf{Project $( \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b})$ onto the $yz$ plane }
 
-Define $\vec{f_4}(\vec{v})$ to project any vector $v$ onto the $y$.
+Define $\vec{f}_{b'''}^{y}(\vec{v})$ to project any vector $v$ onto the $y$ axis.
 
 
 \begin{flalign}
-\vec{f_4}(\vec{v}) & \triangleq \begin{bmatrix}
+\vec{f}_{b'''}^{y}(\vec{v}) & \triangleq \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 1 & 0 \\
      0 & 0 & 0 \\
@@ -231,7 +231,7 @@ Define $\vec{f_4}(\vec{v})$ to project any vector $v$ onto the $y$.
 \end{flalign}
 
 \begin{flalign}
-( \vec{f_4} \circ \vec{f}_b^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
+( \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 1 & 0 \\
      0 & 0 & 0 \\
@@ -249,12 +249,12 @@ Define $\vec{f_4}(\vec{v})$ to project any vector $v$ onto the $y$.
 
 
 
-\textbf{Rotate $( \vec{f_4} \circ \vec{f}_b^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) $ 90 degrees on the $yz$ plane.}
+\textbf{Rotate $( \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) $ 90 degrees on the $yz$ plane.}
 
-Define $\vec{f_5}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
+Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 
 \begin{flalign}
-\vec{f_5}(\vec{v}) & \triangleq \begin{bmatrix}
+\vec{f}_y^{z}(\vec{v}) & \triangleq \begin{bmatrix}
      1 & 0 & 0 \\
      0 & 0 & -1 \\
      0 & 1 & 0 \\
@@ -262,7 +262,7 @@ Define $\vec{f_5}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 \end{flalign}
 
 \begin{flalign}
-  ( \vec{f_5} \circ \vec{f_4} \circ \vec{f}_b^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
+  ( \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & 0 & -1 \\
      0 & 1 & 0 \\
@@ -298,10 +298,10 @@ Define $\vec{f_5}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 \end{flalign}
 
 
-\textbf{Apply inverse of $\vec{f}_b^{xy}$ to $( \vec{f_5} \circ \vec{f_4} \circ \vec{f}_b^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b})$ }
+\textbf{Apply inverse of $\vec{f}_{b''}^{xy}$ to $( \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b})$ }
 
 \begin{flalign}
-  ( (\vec{f}_b^{xy})^{-1} \circ \vec{f_5} \circ \vec{f_4} \circ \vec{f}_b^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
+  ( (\vec{f}_{b''}^{xy})^{-1} \circ \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{-b''_3}{k_2}  \\
      0 & \frac{b''_3}{k_2} & \frac{b''_2}{k_2}  \\
@@ -331,7 +331,7 @@ Define $\vec{f_5}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 
 \textbf{Rotate the x axis back to $\vec{a}$ }
 \begin{flalign}
-  f  & \triangleq ( (\vec{f}_a^{zx})^{-1} \circ (\vec{f}_{zx}^x)^{-1} \circ (\vec{f}_b^{xy})^{-1} \circ \vec{f_5} \circ \vec{f_4} \circ \vec{f}_b^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
+  f  & \triangleq ( (\vec{f}_a^{zx})^{-1} \circ (\vec{f}_{zx}^x)^{-1} \circ (\vec{f}_{b''}^{xy})^{-1} \circ \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
      & = \begin{bmatrix}
   \frac{a_1}{\norm{a}} & \frac{-a_2}{k_1} & \frac{-a_1a_3}{k_1\norm{a}}\\
   \frac{a_2}{\norm{a}} & \frac{a_1}{k_1} & \frac{-a_2a_3}{k_1\norm{a}}  \\
