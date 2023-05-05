@@ -141,11 +141,11 @@ def initiliaze_vecs():
     global swap
 
     if not swap:
-        vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=0.0, b=0.0, highlight=False)
-        vec2 = Vector(x=-1.0, y=2.0, z=2.0, r=0.5, g=0.5, b=0.0, highlight=False)
+        vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=0.5, b=0.0, highlight=False)
+        vec2 = Vector(x=-1.0, y=2.0, z=2.0, r=0.5, g=0.0, b=1.0, highlight=False)
     else:
-        vec1 = Vector(x=-1.0, y=2.0, z=2.0, r=1.0, g=0.0, b=0.0, highlight=False)
-        vec2 = Vector(x=3.0, y=4.0, z=5.0, r=0.5, g=0.5, b=0.0, highlight=False)
+        vec1 = Vector(x=-1.0, y=2.0, z=2.0, r=1.0, g=0.5, b=0.0, highlight=False)
+        vec2 = Vector(x=3.0, y=4.0, z=5.0, r=0.5, g=0.0, b=1.0, highlight=False)
 
     vec3 = None
 
@@ -391,7 +391,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             animation_time = 0.0
             step_number = 0
 
-        if imgui.button("Highlight Vec 1"):
+        if imgui.button("Highlight vector a"):
             vec1.highlight = not vec1.highlight
             vec2.highlight = False
 
@@ -408,7 +408,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         imgui.same_line()
 
-        if imgui.button("Highlight Vec 2"):
+        if imgui.button("Highlight vector b"):
             vec2.highlight = not vec2.highlight
             vec1.highlight = False
 
