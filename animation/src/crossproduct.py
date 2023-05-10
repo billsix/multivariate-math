@@ -210,6 +210,7 @@ angle_x = None
 draw_coordinate_system_of_natural_basis = None
 step_number = None
 auto_rotate_camera = False
+seconds_per_operation = 2.0
 
 
 def restart():
@@ -268,6 +269,9 @@ def restart():
     global auto_rotate_camera
     auto_rotate_camera = False
 
+    global seconds_per_operation
+    seconds_per_operation = 2.0
+
 
 # initiliaze
 restart()
@@ -276,7 +280,7 @@ restart()
 def current_animation_ratio():
     if step_number == 0:
         return 0.0
-    return min(1.0, (animation_time - current_animation_start_time) / 2.0)
+    return min(1.0, (animation_time - current_animation_start_time) / seconds_per_operation)
 
 
 with compile_shader("lines.vert", "lines.frag") as lines_shader:
@@ -467,6 +471,14 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         if imgui.button("Restart"):
             restart()
+        imgui.same_line()
+        changed, (
+            seconds_per_operation
+        ) = imgui.input_float(
+            "Seconds Per Operation",
+            seconds_per_operation
+        )
+
         if step_number == 0:
             changed, draw_first_relative_coordinates = imgui.checkbox(
                 label="Draw Relative Coordinates",
@@ -495,7 +507,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                     )
 
                     angle = math.atan2(b_doubleprime_3, b_doubleprime_2)
-                    return angle if angle > 0.0 else angle + 2 * np.pi
+                    return angle
 
                 angle_x = calc_angle_x()
 
@@ -576,7 +588,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 draw_ground(animation_time)
                 draw_axis()
 
-        if step_number == 3 or step_number == 4:
+        if step_number == 3 :
             if imgui.button("Show Triangle"):
                 vec3_after_rotate = np.ascontiguousarray(
                     ms.get_current_matrix(ms.MatrixStack.model),
@@ -593,8 +605,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 )
                 vec3.translate_amount = vec3_after_rotate[0]
                 step_number = 4
-
-            imgui.same_line()
+        if step_number == 4:
             if imgui.button("Project onto e_2 e_3 plane"):
                 project_onto_yz_plane = True
                 step_number = 5
