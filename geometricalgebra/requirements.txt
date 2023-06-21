@@ -2,3 +2,4 @@ galgebra==0.5.0
 jupyter==1.0.0
 jupytext==1.14.6
 matplotlib==3.7.1
+mathjax==0.1.2
