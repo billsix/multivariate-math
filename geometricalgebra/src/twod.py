@@ -65,7 +65,7 @@ from galgebra.ga import Ga
 #      {a_1} \\
 # \end{bmatrix}  * sin(\theta)
 # \\]
-
+#
 # \\[ = \begin{bmatrix}
 #      {a_1} \\
 #      {a_2} \\
@@ -77,7 +77,7 @@ from galgebra.ga import Ga
 #      {a_1} \\
 # \end{bmatrix}  * sin(\theta)
 # \\]
-
+#
 # \\[ = \begin{bmatrix}
 #      {a_1} \\
 #      {a_2} \\
@@ -88,6 +88,18 @@ from galgebra.ga import Ga
 #      0 \\
 #      1 \\
 # \end{bmatrix}  * {a_1}   * sin(\theta)
+# \\]
+#
+# \\[ = \begin{bmatrix}
+#      {a_1} \\
+#      {a_2} \\
+# \end{bmatrix}  * cos(\theta)  + {e_2} \wedge {e_1}  * -{a_2}  * sin(\theta) + {e_1} \wedge {e_2} * {a_1}   * sin(\theta)
+# \\]
+#
+# \\[ = \begin{bmatrix}
+#      {a_1} \\
+#      {a_2} \\
+# \end{bmatrix}  * cos(\theta)  + {e_1} \wedge {e_2}  * {a_2}  * sin(\theta) + {e_1} \wedge {e_2} * {a_1}   * sin(\theta)
 # \\]
 
 
