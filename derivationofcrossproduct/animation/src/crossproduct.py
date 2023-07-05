@@ -502,7 +502,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                     )
 
                     angle = math.atan2(b_doubleprime_3, b_doubleprime_2)
-                    return angle
+                    return angle if abs(angle) <= np.pi / 2.0 else (angle - 2 * np.pi)
 
                 angle_x = calc_angle_x()
 
