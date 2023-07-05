@@ -472,12 +472,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         if imgui.button("Restart"):
             restart()
         imgui.same_line()
-        changed, (
-            seconds_per_operation
-        ) = imgui.input_float(
-            "Seconds Per Operation",
-            seconds_per_operation
-        )
+        changed, (seconds_per_operation) = imgui.input_float("Seconds Per Operation", seconds_per_operation)
 
         if step_number == 0:
             changed, draw_first_relative_coordinates = imgui.checkbox(
@@ -588,7 +583,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 draw_ground(animation_time)
                 draw_axis()
 
-        if step_number == 3 :
+        if step_number == 3:
             if imgui.button("Show Triangle"):
                 vec3_after_rotate = np.ascontiguousarray(
                     ms.get_current_matrix(ms.MatrixStack.model),
