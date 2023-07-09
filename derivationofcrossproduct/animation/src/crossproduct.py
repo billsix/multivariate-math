@@ -100,22 +100,20 @@ def ground_vertices():
     verts = []
     for x in range(-10, 11, 1):
         for y in range(-10, 11, 1):
-
             width_divisor = 300.0
 
             for delta in range(-10, 10):
-
                 verts.append(float(-x))
                 verts.append(float(y + delta / width_divisor))
                 verts.append(float(0.0))
                 verts.append(float(x))
-                verts.append(float(y+ delta / width_divisor))
+                verts.append(float(y + delta / width_divisor))
                 verts.append(float(0.0))
 
-                verts.append(float(x+ delta / width_divisor))
+                verts.append(float(x + delta / width_divisor))
                 verts.append(float(-y))
                 verts.append(float(0.0))
-                verts.append(float(x+ delta / width_divisor))
+                verts.append(float(x + delta / width_divisor))
                 verts.append(float(y))
                 verts.append(float(0.0))
     return np.array(verts, dtype=np.float32)
@@ -129,8 +127,7 @@ def unit_circle_vertices():
     width_divisor = 200.0
 
     for delta in range(1, 10):
-
-        radius =  1.0 + (delta / width_divisor)
+        radius = 1.0 + (delta / width_divisor)
         for x in range(the_range - 1):
             verts.append(radius * math.cos(the_list[x]))
             verts.append(radius * math.sin(the_list[x]))
@@ -515,7 +512,6 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 state=draw_first_relative_coordinates,
             )
 
-
         if step_number == 1:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Rotate Y"):
@@ -637,7 +633,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 changed, draw_undo_rotate_x_relative_coordinates = imgui.checkbox(
                     label="Draw Relative Coordinates",
                     state=draw_undo_rotate_x_relative_coordinates,
-            )
+                )
 
         if step_number == 7:
             if current_animation_ratio() >= 0.999999:
