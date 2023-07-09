@@ -100,18 +100,24 @@ def ground_vertices():
     verts = []
     for x in range(-10, 11, 1):
         for y in range(-10, 11, 1):
-            verts.append(float(-x))
-            verts.append(float(y))
-            verts.append(float(0.0))
-            verts.append(float(x))
-            verts.append(float(y))
-            verts.append(float(0.0))
-            verts.append(float(x))
-            verts.append(float(-y))
-            verts.append(float(0.0))
-            verts.append(float(x))
-            verts.append(float(y))
-            verts.append(float(0.0))
+
+            width_divisor = 300.0
+
+            for delta in range(-10, 10):
+
+                verts.append(float(-x))
+                verts.append(float(y + delta / width_divisor))
+                verts.append(float(0.0))
+                verts.append(float(x))
+                verts.append(float(y+ delta / width_divisor))
+                verts.append(float(0.0))
+
+                verts.append(float(x+ delta / width_divisor))
+                verts.append(float(-y))
+                verts.append(float(0.0))
+                verts.append(float(x+ delta / width_divisor))
+                verts.append(float(y))
+                verts.append(float(0.0))
     return np.array(verts, dtype=np.float32)
 
 
@@ -120,14 +126,18 @@ def unit_circle_vertices():
     verts = []
     the_range = 100
     the_list = np.linspace(0.0, 2 * np.pi, the_range)
+    width_divisor = 200.0
 
-    for x in range(the_range - 1):
-        verts.append(math.cos(the_list[x]))
-        verts.append(math.sin(the_list[x]))
-        verts.append(float(0.0))
-        verts.append(math.cos(the_list[x + 1]))
-        verts.append(math.sin(the_list[x + 1]))
-        verts.append(float(0.0))
+    for delta in range(1, 10):
+
+        radius =  1.0 + (delta / width_divisor)
+        for x in range(the_range - 1):
+            verts.append(radius * math.cos(the_list[x]))
+            verts.append(radius * math.sin(the_list[x]))
+            verts.append(float(0.0))
+            verts.append(radius * math.cos(the_list[x + 1]))
+            verts.append(radius * math.sin(the_list[x + 1]))
+            verts.append(float(0.0))
     return np.array(verts, dtype=np.float32)
 
 
@@ -475,12 +485,6 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
         changed, (seconds_per_operation) = imgui.input_float("Seconds Per Operation", seconds_per_operation)
 
         if step_number == 0:
-            changed, draw_first_relative_coordinates = imgui.checkbox(
-                label="Draw Relative Coordinates",
-                state=draw_first_relative_coordinates,
-            )
-            imgui.same_line()
-
             if imgui.button("Rotate Z"):
                 do_first_rotate = True
                 current_animation_start_time = animation_time
@@ -505,28 +509,36 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                     return angle if abs(angle) <= np.pi / 2.0 else (angle - 2 * np.pi)
 
                 angle_x = calc_angle_x()
+            imgui.same_line()
+            changed, draw_first_relative_coordinates = imgui.checkbox(
+                label="Draw Relative Coordinates",
+                state=draw_first_relative_coordinates,
+            )
+
 
         if step_number == 1:
-            changed, draw_second_relative_coordinates = imgui.checkbox(
-                label="Draw Second Relative Coordinates",
-                state=draw_second_relative_coordinates,
-            )
-            imgui.same_line()
-            if imgui.button("Rotate Y"):
-                do_second_rotate = True
-                step_number = 2
-                current_animation_start_time = animation_time
+            if current_animation_ratio() >= 0.999999:
+                if imgui.button("Rotate Y"):
+                    do_second_rotate = True
+                    step_number = 2
+                    current_animation_start_time = animation_time
+                imgui.same_line()
+                changed, draw_second_relative_coordinates = imgui.checkbox(
+                    label="Draw Second Relative Coordinates",
+                    state=draw_second_relative_coordinates,
+                )
 
         if step_number == 2:
-            changed, draw_third_relative_coordinates = imgui.checkbox(
-                label="Draw Third Relative Coordinates",
-                state=draw_third_relative_coordinates,
-            )
-            imgui.same_line()
-            if imgui.button("Rotate X"):
-                do_third_rotate = True
-                step_number = 3
-                current_animation_start_time = animation_time
+            if current_animation_ratio() >= 0.999999:
+                if imgui.button("Rotate X"):
+                    do_third_rotate = True
+                    step_number = 3
+                    current_animation_start_time = animation_time
+                imgui.same_line()
+                changed, draw_third_relative_coordinates = imgui.checkbox(
+                    label="Draw Third Relative Coordinates",
+                    state=draw_third_relative_coordinates,
+                )
 
         if do_third_rotate:
             ratio = current_animation_ratio() if step_number == 3 else 1.0
@@ -584,75 +596,83 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                 draw_axis()
 
         if step_number == 3:
-            if imgui.button("Show Triangle"):
-                vec3_after_rotate = np.ascontiguousarray(
-                    ms.get_current_matrix(ms.MatrixStack.model),
-                    dtype=np.float32,
-                ) @ np.array([vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32)
+            if current_animation_ratio() >= 0.999999:
+                if imgui.button("Show Triangle"):
+                    vec3_after_rotate = np.ascontiguousarray(
+                        ms.get_current_matrix(ms.MatrixStack.model),
+                        dtype=np.float32,
+                    ) @ np.array([vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32)
 
-                vec3 = Vector(
-                    x=0.0,
-                    y=-vec3_after_rotate[2],
-                    z=vec3_after_rotate[1],
-                    r=0.0,
-                    g=1.0,
-                    b=0.0,
-                )
-                vec3.translate_amount = vec3_after_rotate[0]
-                step_number = 4
+                    vec3 = Vector(
+                        x=0.0,
+                        y=-vec3_after_rotate[2],
+                        z=vec3_after_rotate[1],
+                        r=0.0,
+                        g=1.0,
+                        b=0.0,
+                    )
+                    vec3.translate_amount = vec3_after_rotate[0]
+                    step_number = 4
         if step_number == 4:
-            if imgui.button("Project onto e_2 e_3 plane"):
-                project_onto_yz_plane = True
-                step_number = 5
-                current_animation_start_time = animation_time
+            if current_animation_ratio() >= 0.999999:
+                if imgui.button("Project onto e_2 e_3 plane"):
+                    project_onto_yz_plane = True
+                    step_number = 5
+                    current_animation_start_time = animation_time
 
         if step_number == 5:
-            if imgui.button("Rotate Y to Z, Z to -Y"):
-                rotate_yz_90 = True
-                step_number = 6
-                current_animation_start_time = animation_time
+            if current_animation_ratio() >= 0.999999:
+                if imgui.button("Rotate Y to Z, Z to -Y"):
+                    rotate_yz_90 = True
+                    step_number = 6
+                    current_animation_start_time = animation_time
 
         if step_number == 6:
-            changed, draw_undo_rotate_x_relative_coordinates = imgui.checkbox(
-                label="Draw Relative Coordinates",
-                state=draw_undo_rotate_x_relative_coordinates,
+            if current_animation_ratio() >= 0.999999:
+                if imgui.button("Undo Rotate X"):
+                    undo_rotate_x = True
+                    step_number = 7
+                    current_animation_start_time = animation_time
+                imgui.same_line()
+                changed, draw_undo_rotate_x_relative_coordinates = imgui.checkbox(
+                    label="Draw Relative Coordinates",
+                    state=draw_undo_rotate_x_relative_coordinates,
             )
-            imgui.same_line()
-            if imgui.button("Undo Rotate X"):
-                undo_rotate_x = True
-                step_number = 7
-                current_animation_start_time = animation_time
 
         if step_number == 7:
-            changed, draw_undo_rotate_y_relative_coordinates = imgui.checkbox(
-                label="Draw Relative Coordinates",
-                state=draw_undo_rotate_y_relative_coordinates,
-            )
-            imgui.same_line()
-            if imgui.button("Undo Rotate Y"):
-                undo_rotate_y = True
-                step_number = 8
-                current_animation_start_time = animation_time
+            if current_animation_ratio() >= 0.999999:
+                if imgui.button("Undo Rotate Y"):
+                    undo_rotate_y = True
+                    step_number = 8
+                    current_animation_start_time = animation_time
+                imgui.same_line()
+                changed, draw_undo_rotate_y_relative_coordinates = imgui.checkbox(
+                    label="Draw Relative Coordinates",
+                    state=draw_undo_rotate_y_relative_coordinates,
+                )
 
         if step_number == 8:
-            changed, draw_undo_rotate_z_relative_coordinates = imgui.checkbox(
-                label="Draw Relative Coordinates",
-                state=draw_undo_rotate_z_relative_coordinates,
-            )
-            imgui.same_line()
-            if imgui.button("Undo Rotate Z"):
-                undo_rotate_z = True
-                step_number = 9
-                current_animation_start_time = animation_time
+            if current_animation_ratio() >= 0.999999:
+                if imgui.button("Undo Rotate Z"):
+                    undo_rotate_z = True
+                    step_number = 9
+                    current_animation_start_time = animation_time
+                imgui.same_line()
+                changed, draw_undo_rotate_z_relative_coordinates = imgui.checkbox(
+                    label="Draw Relative Coordinates",
+                    state=draw_undo_rotate_z_relative_coordinates,
+                )
 
         if step_number == 9:
-            if imgui.button("Scale By Magnitude of first vector"):
-                do_scale = True
-                step_number = 10
+            if current_animation_ratio() >= 0.999999:
+                if imgui.button("Scale By Magnitude of first vector"):
+                    do_scale = True
+                    step_number = 10
 
         if step_number == 10:
-            if imgui.button("Show Plane spanned by vec a and vec b"):
-                do_remove_ground = True
+            if current_animation_ratio() >= 0.999999:
+                if imgui.button("Show Plane spanned by vec a and vec b"):
+                    do_remove_ground = True
 
         imgui.end()
 
@@ -679,8 +699,8 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
                     ms.scale(
                         ms.MatrixStack.model,
-                        magnitude,
-                        magnitude,
+                        1.0,
+                        1.0,
                         magnitude,
                     )
 

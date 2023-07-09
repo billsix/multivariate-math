@@ -171,30 +171,37 @@ def do_draw_vector(shader, v):
     def vertices_of_arrow():
         # glColor3f(0.1,0.1,0.1)
         verts = []
-        verts.append(float(0.0))
-        verts.append(float(0.0))
-        verts.append(float(0.0))
 
-        verts.append(float(0.0))
-        verts.append(float(magnitude))
-        verts.append(float(0.0))
+        for y in range(-10, 11, 1):
 
-        # arrow
-        verts.append(float(0.0))
-        verts.append(float(magnitude))
-        verts.append(float(0.0))
+            width_divisor = 300.0
 
-        verts.append(float(0.25))
-        verts.append(float(magnitude - 0.25))
-        verts.append(float(0.0))
+            for delta in range(-10, 10):
 
-        verts.append(float(0.0))
-        verts.append(float(magnitude))
-        verts.append(float(0.0))
+                verts.append(float(0.0+ delta / width_divisor))
+                verts.append(float(0.0))
+                verts.append(float(0.0))
 
-        verts.append(float(-0.25))
-        verts.append(float(magnitude - 0.25))
-        verts.append(float(0.0))
+                verts.append(float(0.0+ delta / width_divisor))
+                verts.append(float(magnitude))
+                verts.append(float(0.0))
+
+                # arrow
+                verts.append(float(0.0+ delta / width_divisor))
+                verts.append(float(magnitude))
+                verts.append(float(0.0))
+
+                verts.append(float(0.25+ delta / width_divisor))
+                verts.append(float(magnitude - 0.25))
+                verts.append(float(0.0))
+
+                verts.append(float(0.0+ delta / width_divisor))
+                verts.append(float(magnitude))
+                verts.append(float(0.0))
+
+                verts.append(float(-0.25+ delta / width_divisor))
+                verts.append(float(magnitude - 0.25))
+                verts.append(float(0.0))
 
         return np.array(verts, dtype=np.float32)
 
@@ -260,32 +267,39 @@ def do_draw_axis(shader):
     def vertices_of_axis():
         # glColor3f(0.1,0.1,0.1)
         verts = []
-        verts.append(float(0.0))
-        verts.append(float(0.0))
-        verts.append(float(0.0))
 
-        verts.append(float(0.0))
-        verts.append(float(1.0))
-        verts.append(float(0.0))
+        for y in range(-10, 11, 1):
 
-        # arrow
-        verts.append(float(0.0))
-        verts.append(float(1.0))
-        verts.append(float(0.0))
+            width_divisor = 300.0
 
-        verts.append(float(0.25))
-        verts.append(float(0.75))
-        verts.append(float(0.0))
+            for delta in range(-10, 10):
 
-        verts.append(float(0.0))
-        verts.append(float(1.0))
-        verts.append(float(0.0))
+                verts.append(float(0.0+ delta / width_divisor))
+                verts.append(float(0.0))
+                verts.append(float(0.0))
 
-        verts.append(float(-0.25))
-        verts.append(float(0.75))
-        verts.append(float(0.0))
+                verts.append(float(0.0+ delta / width_divisor))
+                verts.append(float(1.0))
+                verts.append(float(0.0))
 
-        return np.array(verts, dtype=np.float32)
+                # arrow
+                verts.append(float(0.0+ delta / width_divisor))
+                verts.append(float(1.0))
+                verts.append(float(0.0))
+
+                verts.append(float(0.25+ delta / width_divisor))
+                verts.append(float(0.75))
+                verts.append(float(0.0))
+
+                verts.append(float(0.0+ delta / width_divisor))
+                verts.append(float(1.0))
+                verts.append(float(0.0))
+
+                verts.append(float(-0.25+ delta / width_divisor))
+                verts.append(float(0.75))
+                verts.append(float(0.0))
+
+            return np.array(verts, dtype=np.float32)
 
     # GL_QUADS aren't available anymore, only triangles
     # need 6 vertices instead of 4
