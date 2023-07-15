@@ -173,33 +173,30 @@ def do_draw_vector(shader, v):
         verts = []
 
         for y in range(-10, 11, 1):
-            width_divisor = 300.0
+            verts.append(float(0.0))
+            verts.append(float(0.0))
+            verts.append(float(0.0))
 
-            for delta in range(-10, 10):
-                verts.append(float(0.0 + delta / width_divisor))
-                verts.append(float(0.0))
-                verts.append(float(0.0))
+            verts.append(float(0.0))
+            verts.append(float(magnitude))
+            verts.append(float(0.0))
 
-                verts.append(float(0.0 + delta / width_divisor))
-                verts.append(float(magnitude))
-                verts.append(float(0.0))
+            # arrow
+            verts.append(float(0.0))
+            verts.append(float(magnitude))
+            verts.append(float(0.0))
 
-                # arrow
-                verts.append(float(0.0 + delta / width_divisor))
-                verts.append(float(magnitude))
-                verts.append(float(0.0))
+            verts.append(float(0.25))
+            verts.append(float(magnitude - 0.25))
+            verts.append(float(0.0))
 
-                verts.append(float(0.25 + delta / width_divisor))
-                verts.append(float(magnitude - 0.25))
-                verts.append(float(0.0))
+            verts.append(float(0.0))
+            verts.append(float(magnitude))
+            verts.append(float(0.0))
 
-                verts.append(float(0.0 + delta / width_divisor))
-                verts.append(float(magnitude))
-                verts.append(float(0.0))
-
-                verts.append(float(-0.25 + delta / width_divisor))
-                verts.append(float(magnitude - 0.25))
-                verts.append(float(0.0))
+            verts.append(float(-0.25))
+            verts.append(float(magnitude - 0.25))
+            verts.append(float(0.0))
 
         return np.array(verts, dtype=np.float32)
 
@@ -267,33 +264,30 @@ def do_draw_axis(shader):
         verts = []
 
         for y in range(-10, 11, 1):
-            width_divisor = 300.0
+            verts.append(float(0.0))
+            verts.append(float(0.0))
+            verts.append(float(0.0))
 
-            for delta in range(-10, 10):
-                verts.append(float(0.0 + delta / width_divisor))
-                verts.append(float(0.0))
-                verts.append(float(0.0))
+            verts.append(float(0.0))
+            verts.append(float(1.0))
+            verts.append(float(0.0))
 
-                verts.append(float(0.0 + delta / width_divisor))
-                verts.append(float(1.0))
-                verts.append(float(0.0))
+            # arrow
+            verts.append(float(0.0))
+            verts.append(float(1.0))
+            verts.append(float(0.0))
 
-                # arrow
-                verts.append(float(0.0 + delta / width_divisor))
-                verts.append(float(1.0))
-                verts.append(float(0.0))
+            verts.append(float(0.25))
+            verts.append(float(0.75))
+            verts.append(float(0.0))
 
-                verts.append(float(0.25 + delta / width_divisor))
-                verts.append(float(0.75))
-                verts.append(float(0.0))
+            verts.append(float(0.0))
+            verts.append(float(1.0))
+            verts.append(float(0.0))
 
-                verts.append(float(0.0 + delta / width_divisor))
-                verts.append(float(1.0))
-                verts.append(float(0.0))
-
-                verts.append(float(-0.25 + delta / width_divisor))
-                verts.append(float(0.75))
-                verts.append(float(0.0))
+            verts.append(float(-0.25))
+            verts.append(float(0.75))
+            verts.append(float(0.0))
 
             return np.array(verts, dtype=np.float32)
 
