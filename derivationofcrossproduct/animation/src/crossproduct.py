@@ -548,7 +548,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                 ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
 
                 draw_ground(animation_time, width, height, xy=False, yz=True)
-                draw_axis()
+                draw_axis(width, height)
 
         if do_second_rotate:
             ratio = current_animation_ratio() if step_number == 2 else 1.0
