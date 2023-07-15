@@ -285,19 +285,19 @@ def current_animation_ratio():
     return min(1.0, (animation_time - current_animation_start_time) / seconds_per_operation)
 
 
-with compile_shader("lines.vert", "lines.frag") as lines_shader:
+with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
-    def draw_ground(time, xy=True, yz=False, zx=False):
-        do_draw_lines(lines_shader, ground_vertices(), time, xy, yz, zx)
+    def draw_ground(time, width, height, xy=True, yz=False, zx=False):
+        do_draw_lines(lines_shader, ground_vertices(), time, width, height, xy, yz, zx)
 
-    def draw_unit_circle(time, xy=True, yz=False, zx=False):
-        do_draw_lines(lines_shader, unit_circle_vertices(), time, xy, yz, zx)
+    def draw_unit_circle(time, width, height, xy=True, yz=False, zx=False):
+        do_draw_lines(lines_shader, unit_circle_vertices(), time, width, height, xy, yz, zx)
 
-    def draw_vector(v):
-        do_draw_vector(lines_shader, v)
+    def draw_vector(v, width, height):
+        do_draw_vector(lines_shader, v, width, height)
 
-    def draw_axis():
-        do_draw_axis(lines_shader)
+    def draw_axis(width, height):
+        do_draw_axis(lines_shader, width, height)
 
     # Loop until the user closes the window
     while not glfw.window_should_close(window):
@@ -357,12 +357,12 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
         if draw_coordinate_system_of_natural_basis:
             if not do_remove_ground:
-                draw_ground(animation_time)
-                draw_ground(animation_time, xy=False, zx=True)
-                draw_unit_circle(animation_time)
-                draw_unit_circle(animation_time, xy=False, zx=True)
+                draw_ground(animation_time, width, height)
+                draw_ground(animation_time, width, height, xy=False, zx=True)
+                draw_unit_circle(animation_time, width, height)
+                draw_unit_circle(animation_time, width, height, xy=False, zx=True)
 
-        draw_axis()
+        draw_axis(width, height)
 
         imgui.new_frame()
 
@@ -540,14 +540,14 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
             if draw_undo_rotate_x_relative_coordinates and not do_remove_ground:
                 draw_ground(animation_time, xy=False, yz=True)
-                draw_axis()
+                draw_axis(width, height)
 
         if draw_third_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
                 ratio = current_animation_ratio() if step_number == 4 else 1.0
                 ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
 
-                draw_ground(animation_time, xy=False, yz=True)
+                draw_ground(animation_time, width, height, xy=False, yz=True)
                 draw_axis()
 
         if do_second_rotate:
@@ -558,15 +558,15 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             ratio = current_animation_ratio() if step_number == 8 else 0.0 if step_number < 8 else 1.0
             ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
             if draw_undo_rotate_y_relative_coordinates and not do_remove_ground:
-                draw_ground(animation_time, xy=False, zx=True)
-                draw_axis()
+                draw_ground(animation_time, width, height, xy=False, zx=True)
+                draw_axis(width, height)
 
         if draw_second_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
                 ratio = current_animation_ratio() if step_number == 3 else 1.0
                 ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
-                draw_ground(animation_time, xy=False, zx=True)
-                draw_axis()
+                draw_ground(animation_time, width, height, xy=False, zx=True)
+                draw_axis(width, height)
 
         if do_first_rotate:
             ratio = current_animation_ratio() if step_number == 1 else 1.0
@@ -576,15 +576,15 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
             ratio = current_animation_ratio() if step_number == 9 else 0.0 if step_number < 9 else 1.0
             ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
             if draw_undo_rotate_z_relative_coordinates and not do_remove_ground:
-                draw_ground(animation_time)
-                draw_axis()
+                draw_ground(animation_time, width, height)
+                draw_axis(width, height)
 
         if draw_first_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
                 ratio = current_animation_ratio() if step_number == 2 else 1.0
                 ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
-                draw_ground(animation_time)
-                draw_axis()
+                draw_ground(animation_time, width, height)
+                draw_axis(width, height)
 
         if step_number == 3:
             if current_animation_ratio() >= 0.999999:
@@ -684,7 +684,7 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
 
                 if do_scale:
                     if do_remove_ground:
-                        draw_ground(animation_time)
+                        draw_ground(animation_time, width, height)
 
                     magnitude = math.sqrt(vec1.x**2 + vec1.y**2 + vec1.z**2)
 
@@ -711,15 +711,15 @@ with compile_shader("lines.vert", "lines.frag") as lines_shader:
                         vec3.g = 1.0 * (1.0 - ratio)
                         vec3.b = 1.0 * ratio
                         ms.rotate_x(ms.MatrixStack.model, math.radians(90.0 * ratio))
-                        draw_vector(vec3)
+                        draw_vector(vec3, width, height)
                 else:
-                    draw_vector(vec3)
+                    draw_vector(vec3, width, height)
                 glEnable(GL_DEPTH_TEST)
 
         glDisable(GL_DEPTH_TEST)
 
-        draw_vector(vec1)
-        draw_vector(vec2)
+        draw_vector(vec1, width, height)
+        draw_vector(vec2, width, height)
 
         imgui.render()
         impl.render(imgui.get_draw_data())

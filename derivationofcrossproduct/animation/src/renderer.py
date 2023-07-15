@@ -31,6 +31,7 @@ from OpenGL.GL import (
     glBindVertexArray,
     GL_VERTEX_SHADER,
     GL_FRAGMENT_SHADER,
+    GL_GEOMETRY_SHADER,
     glGenBuffers,
     glBindBuffer,
     GL_ARRAY_BUFFER,
@@ -47,6 +48,8 @@ from OpenGL.GL import (
     GL_LINES,
     glDeleteBuffers,
     glDeleteProgram,
+    glUniform1f,
+    glUniform2f,
     glUniform3f,
     glDeleteVertexArrays,
 )
@@ -73,17 +76,20 @@ floatsPerColor = 3
 
 
 @contextmanager
-def compile_shader(vert, frag):
+def compile_shader(vert, frag, geom):
     with open(os.path.join(pwd, vert), "r") as f:
         vs = shaders.compileShader(f.read(), GL_VERTEX_SHADER)
 
     with open(os.path.join(pwd, frag), "r") as f:
         fs = shaders.compileShader(f.read(), GL_FRAGMENT_SHADER)
 
+    with open(os.path.join(pwd, frag), "r") as f:
+        gs = shaders.compileShader(f.read(), GL_GEOMETRY_SHADER)
+
     vao = glGenVertexArrays(1)
     glBindVertexArray(vao)
 
-    shader = shaders.compileProgram(vs, fs)
+    shader = shaders.compileProgram(vs, gs, fs)
 
     try:
         yield shader
@@ -92,13 +98,15 @@ def compile_shader(vert, frag):
         glDeleteVertexArrays(1, [vao])
 
 
-def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
+def do_draw_lines(shader, vertices, time, width, height, xy=True, yz=False, zx=False):
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
     glUseProgram(shader)
 
     mvpMatrixLoc = glGetUniformLocation(shader, "mvpMatrix")
     colorLoc = glGetUniformLocation(shader, "color")
+    thicknessLoc = glGetUniformLocation(shader, "u_thickness");
+    viewportLoc = glGetUniformLocation(shader, "u_viewport_size");
 
     # send the modelspace data to the GPU
     vbo = glGenBuffers(1)
@@ -136,6 +144,8 @@ def do_draw_lines(shader, vertices, time, xy=True, yz=False, zx=False):
         )
 
         glUniform3f(colorLoc, 0.3, 0.3, 0.3)
+        glUniform1f(thicknessLoc, 4.0)
+        glUniform2f(viewportLoc, width, height)
 
         glDrawArrays(GL_LINES, 0, numberOfVertices)
 
@@ -207,6 +217,8 @@ def do_draw_vector(shader, v):
 
     mvpMatrixLoc = glGetUniformLocation(shader, "mvpMatrix")
     colorLoc = glGetUniformLocation(shader, "color")
+    thicknessLoc = glGetUniformLocation(shader, "u_thickness");
+    viewportLoc = glGetUniformLocation(shader, "u_viewport_size");
 
     # send the modelspace data to the GPU
     vbo = glGenBuffers(1)
@@ -251,6 +263,10 @@ def do_draw_vector(shader, v):
                     dtype=np.float32,
                 ),
             )
+
+            glUniform1f(thicknessLoc, 4.0)
+            glUniform2f(viewportLoc, width, height)
+
 
             glDrawArrays(GL_LINES, 0, numberOfVertices)
     glDeleteBuffers(1, [vbo])
@@ -298,6 +314,8 @@ def do_draw_axis(shader):
 
     mvpMatrixLoc = glGetUniformLocation(shader, "mvpMatrix")
     colorLoc = glGetUniformLocation(shader, "color")
+    thicknessLoc = glGetUniformLocation(shader, "u_thickness");
+    viewportLoc = glGetUniformLocation(shader, "u_viewport_size");
 
     # send the modelspace data to the GPU
     vbo = glGenBuffers(1)
@@ -339,6 +357,8 @@ def do_draw_axis(shader):
                     dtype=np.float32,
                 ),
             )
+            glUniform1f(thicknessLoc, 4.0)
+            glUniform2f(viewportLoc, width, height)
             glDrawArrays(GL_LINES, 0, numberOfVertices)
 
         # z
@@ -358,6 +378,8 @@ def do_draw_axis(shader):
                     dtype=np.float32,
                 ),
             )
+            glUniform1f(thicknessLoc, 4.0)
+            glUniform2f(viewportLoc, width, height)
             glDrawArrays(GL_LINES, 0, numberOfVertices)
 
         # y
@@ -373,6 +395,8 @@ def do_draw_axis(shader):
                 dtype=np.float32,
             ),
         )
+        glUniform1f(thicknessLoc, 4.0)
+        glUniform2f(viewportLoc, width, height)
         glDrawArrays(GL_LINES, 0, numberOfVertices)
     glEnable(GL_DEPTH_TEST)
 
