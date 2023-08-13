@@ -37,6 +37,7 @@ from OpenGL.GL import (
     GL_LESS,
 )
 
+from enum import Enum, auto
 
 import glfw
 import pyMatrixStack as ms
@@ -187,6 +188,20 @@ TARGET_FRAMERATE = 60  # fps
 time_at_beginning_of_previous_frame = glfw.get_time()
 
 
+class StepNumber(Enum):
+    beginning = auto() # 0
+    rotate_z = auto() # 1
+    rotate_y = auto() # 2
+    rotate_x = auto() # 3
+    show_triangle = auto() # 4
+    project_onto_y = auto() # 5
+    rotate_to_z = auto() # 6
+    undo_rotate_x = auto() # 7
+    undo_rotate_y = auto() # 8
+    undo_rotate_z = auto() # 9
+    scale_by_mag_a = auto() # 10
+    show_plane = auto() # 11
+
 animation_time = None
 current_animation_start_time = None
 animation_time_multiplier = None
@@ -210,7 +225,7 @@ use_ortho = None
 new_b = None
 angle_x = None
 draw_coordinate_system_of_natural_basis = None
-step_number = None
+step_number = StepNumber.beginning
 auto_rotate_camera = False
 seconds_per_operation = 2.0
 
@@ -259,7 +274,7 @@ def restart():
     global do_remove_ground
     do_remove_ground = False
     global step_number
-    step_number = 0
+    step_number = StepNumber.beginning
 
     global draw_undo_rotate_x_relative_coordinates
     draw_undo_rotate_x_relative_coordinates = False
@@ -280,7 +295,7 @@ restart()
 
 
 def current_animation_ratio():
-    if step_number == 0:
+    if step_number == StepNumber.beginning:
         return 0.0
     return min(1.0, (animation_time - current_animation_start_time) / seconds_per_operation)
 
@@ -395,7 +410,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if changed:
             animation_time = 0.0
-            step_number = 0
+            step_number = StepNumber.beginning
 
         if imgui.button("Highlight vector a"):
             vec1.highlight = not vec1.highlight
@@ -425,7 +440,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if changed:
             animation_time = 0.0
-            step_number = 0
+            step_number = StepNumber.beginning
 
         imgui.end()
 
@@ -476,11 +491,11 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
         imgui.same_line()
         changed, (seconds_per_operation) = imgui.input_float("Seconds Per Operation", seconds_per_operation)
 
-        if step_number == 0:
+        if step_number == StepNumber.beginning:
             if imgui.button("Rotate Z"):
                 do_first_rotate = True
                 current_animation_start_time = animation_time
-                step_number = 1
+                step_number = StepNumber.rotate_z
 
                 def calc_angle_x():
                     a1 = vec1.x
@@ -507,11 +522,11 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                 state=draw_first_relative_coordinates,
             )
 
-        if step_number == 1:
+        if step_number == StepNumber.rotate_z:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Rotate Y"):
                     do_second_rotate = True
-                    step_number = 2
+                    step_number = StepNumber.rotate_y
                     current_animation_start_time = animation_time
                 imgui.same_line()
                 changed, draw_second_relative_coordinates = imgui.checkbox(
@@ -519,11 +534,11 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                     state=draw_second_relative_coordinates,
                 )
 
-        if step_number == 2:
+        if step_number == StepNumber.rotate_y:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Rotate X"):
                     do_third_rotate = True
-                    step_number = 3
+                    step_number = StepNumber.rotate_x
                     current_animation_start_time = animation_time
                 imgui.same_line()
                 changed, draw_third_relative_coordinates = imgui.checkbox(
@@ -532,11 +547,11 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                 )
 
         if do_third_rotate:
-            ratio = current_animation_ratio() if step_number == 3 else 1.0
+            ratio = current_animation_ratio() if step_number == StepNumber.rotate_x else 1.0
             ms.rotate_x(ms.MatrixStack.model, -angle_x * ratio)
             if ratio > 0.9999:
                 draw_third_relative_coordinates = False
-            ratio = current_animation_ratio() if step_number == 7 else 0.0 if step_number < 7 else 1.0
+            ratio = current_animation_ratio() if step_number == StepNumber.undo_rotate_x else 0.0 if step_number.value < StepNumber.undo_rotate_x.value else 1.0
             ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
             if draw_undo_rotate_x_relative_coordinates and not do_remove_ground:
                 draw_ground(animation_time, xy=False, yz=True)
@@ -544,18 +559,18 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if draw_third_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = current_animation_ratio() if step_number == 4 else 1.0
+                ratio = current_animation_ratio() if step_number == StepNumber.show_triangle.value else 1.0
                 ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
 
                 draw_ground(animation_time, width, height, xy=False, yz=True)
                 draw_axis(width, height)
 
         if do_second_rotate:
-            ratio = current_animation_ratio() if step_number == 2 else 1.0
+            ratio = current_animation_ratio() if step_number == StepNumber.rotate_y else 1.0
             ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y * ratio)
             if ratio > 0.99:
                 draw_second_relative_coordinates = False
-            ratio = current_animation_ratio() if step_number == 8 else 0.0 if step_number < 8 else 1.0
+            ratio = current_animation_ratio() if step_number == StepNumber.undo_rotate_y else 0.0 if step_number.value < StepNumber.undo_rotate_y.value else 1.0
             ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
             if draw_undo_rotate_y_relative_coordinates and not do_remove_ground:
                 draw_ground(animation_time, width, height, xy=False, zx=True)
@@ -563,17 +578,17 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if draw_second_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = current_animation_ratio() if step_number == 3 else 1.0
+                ratio = current_animation_ratio() if step_number == StepNumber.rotate_x else 1.0
                 ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
                 draw_ground(animation_time, width, height, xy=False, zx=True)
                 draw_axis(width, height)
 
         if do_first_rotate:
-            ratio = current_animation_ratio() if step_number == 1 else 1.0
+            ratio = current_animation_ratio() if step_number == StepNumber.rotate_z else 1.0
             ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z * ratio)
             if ratio > 0.99:
                 draw_first_relative_coordinates = False
-            ratio = current_animation_ratio() if step_number == 9 else 0.0 if step_number < 9 else 1.0
+            ratio = current_animation_ratio() if step_number == StepNumber.undo_rotate_z else 0.0 if step_number.value < StepNumber.undo_rotate_z.value else 1.0
             ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
             if draw_undo_rotate_z_relative_coordinates and not do_remove_ground:
                 draw_ground(animation_time, width, height)
@@ -581,12 +596,12 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if draw_first_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = current_animation_ratio() if step_number == 2 else 1.0
+                ratio = current_animation_ratio() if step_number == StepNumber.rotate_y else 1.0
                 ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
                 draw_ground(animation_time, width, height)
                 draw_axis(width, height)
 
-        if step_number == 3:
+        if step_number == StepNumber.rotate_x:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Show Triangle"):
                     vec3_after_rotate = np.ascontiguousarray(
@@ -603,26 +618,26 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                         b=0.0,
                     )
                     vec3.translate_amount = vec3_after_rotate[0]
-                    step_number = 4
-        if step_number == 4:
+                    step_number = StepNumber.show_triangle
+        if step_number == StepNumber.show_triangle:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Project onto e_2 e_3 plane"):
                     project_onto_yz_plane = True
-                    step_number = 5
+                    step_number = StepNumber.project_onto_y
                     current_animation_start_time = animation_time
 
-        if step_number == 5:
+        if step_number == StepNumber.project_onto_y:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Rotate Y to Z, Z to -Y"):
                     rotate_yz_90 = True
-                    step_number = 6
+                    step_number = StepNumber.rotate_to_z
                     current_animation_start_time = animation_time
 
-        if step_number == 6:
+        if step_number == StepNumber.rotate_to_z:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Undo Rotate X"):
                     undo_rotate_x = True
-                    step_number = 7
+                    step_number = StepNumber.undo_rotate_x
                     current_animation_start_time = animation_time
                 imgui.same_line()
                 changed, draw_undo_rotate_x_relative_coordinates = imgui.checkbox(
@@ -630,11 +645,11 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                     state=draw_undo_rotate_x_relative_coordinates,
                 )
 
-        if step_number == 7:
+        if step_number == StepNumber.undo_rotate_x:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Undo Rotate Y"):
                     undo_rotate_y = True
-                    step_number = 8
+                    step_number = StepNumber.undo_rotate_y
                     current_animation_start_time = animation_time
                 imgui.same_line()
                 changed, draw_undo_rotate_y_relative_coordinates = imgui.checkbox(
@@ -642,11 +657,11 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                     state=draw_undo_rotate_y_relative_coordinates,
                 )
 
-        if step_number == 8:
+        if step_number == StepNumber.undo_rotate_y:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Undo Rotate Z"):
                     undo_rotate_z = True
-                    step_number = 9
+                    step_number = StepNumber.undo_rotate_z
                     current_animation_start_time = animation_time
                 imgui.same_line()
                 changed, draw_undo_rotate_z_relative_coordinates = imgui.checkbox(
@@ -654,32 +669,32 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                     state=draw_undo_rotate_z_relative_coordinates,
                 )
 
-        if step_number == 9:
+        if step_number == StepNumber.undo_rotate_z:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Scale By Magnitude of first vector"):
                     do_scale = True
-                    step_number = 10
+                    step_number = StepNumber.scale_by_mag_a
 
-        if step_number == 10:
+        if step_number == StepNumber.scale_by_mag_a:
             if current_animation_ratio() >= 0.999999:
                 if imgui.button("Show Plane spanned by vec a and vec b"):
                     do_remove_ground = True
 
         imgui.end()
 
-        if vec3 and (step_number >= 4):
+        if vec3 and (step_number.value >= StepNumber.show_triangle.value):
             with ms.push_matrix(ms.MatrixStack.model):
                 ms.set_to_identity_matrix(ms.MatrixStack.model)
                 ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
                 if undo_rotate_z:
-                    ratio = current_animation_ratio() if step_number == 9 else 0.0 if step_number < 9 else 1.0
+                    ratio = current_animation_ratio() if step_number == StepNumber.undo_rotate_z else 0.0 if step_number.value < StepNumber.undo_rotate_z.value else 1.0
                     ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
                 if undo_rotate_y:
-                    ratio = current_animation_ratio() if step_number == 8 else 0.0 if step_number < 8 else 1.0
+                    ratio = current_animation_ratio() if step_number == StepNumber.undo_rotate_y else 0.0 if step_number.value < StepNumber.undo_rotate_y.value else 1.0
                     ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
                 if undo_rotate_x:
-                    ratio = current_animation_ratio() if step_number == 7 else 0.0 if step_number < 7 else 1.0
+                    ratio = current_animation_ratio() if step_number == StepNumber.undo_rotate_x else 0.0 if step_number.value < StepNumber.undo_rotate_x.value else 1.0
                     ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
 
                 if do_scale:
@@ -696,7 +711,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                     )
 
                 glDisable(GL_DEPTH_TEST)
-                ratio = current_animation_ratio() if step_number == 5 else 0.0 if step_number <= 5 else 1.0
+                ratio = current_animation_ratio() if step_number == StepNumber.project_onto_y else 0.0 if step_number.value <= StepNumber.project_onto_y.value else 1.0
                 ms.translate(
                     ms.MatrixStack.model,
                     vec3.translate_amount * (1.0 - ratio),
@@ -705,7 +720,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                 )
                 if rotate_yz_90:
                     with ms.push_matrix(ms.MatrixStack.model):
-                        ratio = current_animation_ratio() if step_number == 6 else 1.0 if step_number > 6 else 0.0
+                        ratio = current_animation_ratio() if step_number == StepNumber.rotate_to_z else 1.0 if step_number.value > StepNumber.rotate_to_z.value else 0.0
 
                         vec3.r = 0.0 * (1.0 - ratio)
                         vec3.g = 1.0 * (1.0 - ratio)
