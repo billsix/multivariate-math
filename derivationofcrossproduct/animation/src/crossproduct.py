@@ -228,7 +228,7 @@ draw_coordinate_system_of_natural_basis = None
 step_number = StepNumber.beginning
 auto_rotate_camera = False
 seconds_per_operation = 2.0
-
+auto_play = False
 
 def restart():
     global animation_time
@@ -289,6 +289,8 @@ def restart():
     global seconds_per_operation
     seconds_per_operation = 2.0
 
+    global auto_play
+    auto_play = False
 
 # initiliaze
 restart()
@@ -486,13 +488,17 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
         imgui.set_next_window_bg_alpha(0.05)
         imgui.begin("Time", True)
 
+        if imgui.button("AutoPlay " + ("Enable" if auto_play else "Disable") ):
+            auto_play = not auto_play
+
+
         if imgui.button("Restart"):
             restart()
         imgui.same_line()
         changed, (seconds_per_operation) = imgui.input_float("Seconds Per Operation", seconds_per_operation)
 
         if step_number == StepNumber.beginning:
-            if imgui.button("Rotate Z"):
+            if imgui.button("Rotate Z") or auto_play:
                 do_first_rotate = True
                 current_animation_start_time = animation_time
                 step_number = StepNumber.rotate_z
@@ -524,7 +530,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if step_number == StepNumber.rotate_z:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Rotate Y"):
+                if imgui.button("Rotate Y") or auto_play:
                     do_second_rotate = True
                     step_number = StepNumber.rotate_y
                     current_animation_start_time = animation_time
@@ -536,7 +542,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if step_number == StepNumber.rotate_y:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Rotate X"):
+                if imgui.button("Rotate X") or auto_play:
                     do_third_rotate = True
                     step_number = StepNumber.rotate_x
                     current_animation_start_time = animation_time
@@ -603,7 +609,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if step_number == StepNumber.rotate_x:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Show Triangle"):
+                if imgui.button("Show Triangle") or auto_play:
                     vec3_after_rotate = np.ascontiguousarray(
                         ms.get_current_matrix(ms.MatrixStack.model),
                         dtype=np.float32,
@@ -621,21 +627,21 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                     step_number = StepNumber.show_triangle
         if step_number == StepNumber.show_triangle:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Project onto e_2 e_3 plane"):
+                if imgui.button("Project onto e_2 e_3 plane") or auto_play:
                     project_onto_yz_plane = True
                     step_number = StepNumber.project_onto_y
                     current_animation_start_time = animation_time
 
         if step_number == StepNumber.project_onto_y:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Rotate Y to Z, Z to -Y"):
+                if imgui.button("Rotate Y to Z, Z to -Y") or auto_play:
                     rotate_yz_90 = True
                     step_number = StepNumber.rotate_to_z
                     current_animation_start_time = animation_time
 
         if step_number == StepNumber.rotate_to_z:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Undo Rotate X"):
+                if imgui.button("Undo Rotate X") or auto_play:
                     undo_rotate_x = True
                     step_number = StepNumber.undo_rotate_x
                     current_animation_start_time = animation_time
@@ -647,7 +653,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if step_number == StepNumber.undo_rotate_x:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Undo Rotate Y"):
+                if imgui.button("Undo Rotate Y") or auto_play:
                     undo_rotate_y = True
                     step_number = StepNumber.undo_rotate_y
                     current_animation_start_time = animation_time
@@ -659,7 +665,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if step_number == StepNumber.undo_rotate_y:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Undo Rotate Z"):
+                if imgui.button("Undo Rotate Z") or auto_play:
                     undo_rotate_z = True
                     step_number = StepNumber.undo_rotate_z
                     current_animation_start_time = animation_time
@@ -671,13 +677,13 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if step_number == StepNumber.undo_rotate_z:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Scale By Magnitude of first vector"):
+                if imgui.button("Scale By Magnitude of first vector") or auto_play:
                     do_scale = True
                     step_number = StepNumber.scale_by_mag_a
 
         if step_number == StepNumber.scale_by_mag_a:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Show Plane spanned by vec a and vec b"):
+                if imgui.button("Show Plane spanned by vec a and vec b") or auto_play:
                     do_remove_ground = True
 
         imgui.end()
