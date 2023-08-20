@@ -53,5 +53,12 @@ do
     git add $FILE
 done
 
+for FILE in $(git diff --cached --name-only | grep '\.ipynb')
+do
+    jupyter nbconvert --ClearOutputPreprocessor.enabled=True --inplace $FILE
+    git add $FILE
+done
+
+
 # If there are whitespace errors, print the offending file names and fail.
 exec git diff-index --check --cached $against --
