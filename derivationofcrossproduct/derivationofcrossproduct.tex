@@ -80,12 +80,32 @@
   Define $\vec{f}_a^{zx}(\vec{v})$ such that $\vec{f}_a^{zx}(\vec{a})$ is rotated onto the $xz$ plane.
 
 \begin{flalign}
-\vec{f}_a^{zx}(\begin{bmatrix}
+  \vec{a'}  \triangleq
+  \vec{f}_a^{zx}(\begin{bmatrix}
      {v_1} \\
      {v_2} \\
      {v_3} \\
-\end{bmatrix}
-) & \triangleq     \begin{bmatrix}
+\end{bmatrix} )
+  & \triangleq \begin{bmatrix}
+     \frac{a_1}{k_1} \\
+     \frac{-a_2}{k_1} \\
+     0 \\
+\end{bmatrix} * {v_1} +  \begin{bmatrix}
+     \frac{a_2}{k_1} \\
+     \frac{a_1}{k_1} \\
+     0 \\
+\end{bmatrix} * {v_2} +  \begin{bmatrix}
+      0 \\
+      0 \\
+      1 \\
+\end{bmatrix} * {v_3}
+\end{flalign}
+
+
+  Define $\vec{f}_{a'}^x(\vec{v})$ such that $(\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{a})$ is rotated onto the $x$ axis.
+
+\begin{flalign}
+  \vec{f}_{a'}^x(\vec{v}) & \triangleq     \begin{bmatrix}
      \frac{k_1}{\norm{a}} \\
      0 \\
      \frac{-a_3}{\norm{a}} \\
@@ -103,27 +123,8 @@
 \end{flalign}
 
 
-  Define $\vec{f}_{zx}^x(\vec{v})$ such that $(\vec{f}_{zx}^x \circ \vec{f}_a^{zx})(\vec{a})$ is rotated onto the $x$ axis.
-
 \begin{flalign}
-  \vec{f}_{zx}^x(\vec{v}) & \triangleq \begin{bmatrix}
-     \frac{a_1}{k_1} \\
-     \frac{-a_2}{k_1} \\
-     0 \\
-\end{bmatrix} * {v_1} +  \begin{bmatrix}
-     \frac{a_2}{k_1} \\
-     \frac{a_1}{k_1} \\
-     0 \\
-\end{bmatrix} * {v_2} +  \begin{bmatrix}
-      0 \\
-      0 \\
-      1 \\
-\end{bmatrix} * {v_3}
-\end{flalign}
-
-
-\begin{flalign}
-(\vec{f}_{zx}^x \circ \vec{f}_a^{zx})(\vec{v}) & = \begin{bmatrix}
+\vec{a''}  \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{v}) & = \begin{bmatrix}
      \frac{k_1}{\norm{a}} & 0  & \frac{a_3}{\norm{a}} \\
      0 & 1  & 0 \\
      \frac{-a_3}{\norm{a}} & 0 & \frac{k_1}{\norm{a}}\\
@@ -140,7 +141,7 @@
 \end{flalign}
 
 \begin{flalign}
-(\vec{f}_{zx}^x \circ \vec{f}_a^{zx})(\vec{a}) & = \begin{bmatrix}
+(\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{a}) & = \begin{bmatrix}
      \frac{a_1^2}{\norm{a}} + \frac{a_2^2}{\norm{a}} + \frac{a_3^2}{\norm{a}}  \\
      \frac{-a_2a_1}{k_1}  + \frac{a_1a_2}{k_1} \\
      \frac{-a_1^2a_3}{k_1\norm{a}} + \frac{-a_2^2a_3}{k_1\norm{a}} + \frac{k_1a_3}{\norm{a}} \\
@@ -169,7 +170,7 @@
 
 
 \begin{flalign}
-(\vec{f}_{zx}^x \circ \vec{f}_a^{zx})(\vec{b}) = \begin{bmatrix}
+\vec{b''} \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{b}) = \begin{bmatrix}
      \frac{a_1b_1}{\norm{a}} + \frac{a_2b_2}{\norm{a}} + \frac{a_3b_3}{\norm{a}} \\
      \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
      \frac{-a_1a_3b_1}{k_1\norm{a}} + \frac{-a_2a_3b_2}{k_1\norm{a}} + \frac{k_1b_3}{\norm{a}} \\
@@ -177,24 +178,10 @@
 \end{flalign}
 
 
-\textbf{Rotate $\vec{b''} \triangleq (\vec{f}_{zx}^x \circ \vec{f}_a^{zx})(\vec{b}) $ onto the $xy$ plane }
+\textbf{Rotate $\vec{b''} \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{b}) $ onto the $xy$ plane }
 
 
   let $k_2 \triangleq \sqrt{{b''_2}^2 + {b''_3}^2}$.
-
-
-  \begin{flalign}
-            \vec{b''}  \triangleq \begin{bmatrix}
-    b''_1 \\
-    b''_2 \\
-    b''_3 \\
-            \end{bmatrix}   \triangleq
-   \begin{bmatrix}
-     \frac{a_1b_1}{\norm{a}} + \frac{a_2b_2}{\norm{a}} + \frac{a_3b_3}{\norm{a}} \\
-     \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
-     \frac{-a_1a_3b_1}{k_1\norm{a}} + \frac{-a_2a_3b_2}{k_1\norm{a}} + \frac{k_1b_3}{\norm{a}} \\
-\end{bmatrix}
-\end{flalign}
 
 \begin{flalign}
   \vec{f}_{b''}^{xy}(\vec{v}) & \triangleq \begin{bmatrix}
@@ -209,12 +196,8 @@
      0 \\
      \frac{b''_3}{k_2} \\
      \frac{b''_2}{k_2} \\
-\end{bmatrix} * {v_3}
-\end{flalign}
-
-
-\begin{flalign}
-\vec{f}_{b''}^{xy}(\vec{v}) & \triangleq \begin{bmatrix}
+\end{bmatrix} * {v_3} \\
+  & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
      0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
@@ -226,23 +209,37 @@
 
 
 \begin{flalign}
-( \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
+\vec{b'''}  \triangleq ( \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
      0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
-\end{bmatrix} * (\vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b})
+\end{bmatrix} * (\vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b})
 \end{flalign}
 
 
 
 
-\textbf{Project $( \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b})$ onto the $yz$ plane }
+\textbf{Project $( \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b})$ onto the $yz$ plane }
 
 Define $\vec{f}_{b'''}^{y}(\vec{v})$ to project any vector $v$ onto the $y$ axis.
 
 
 \begin{flalign}
-\vec{f}_{b'''}^{y}(\vec{v}) & \triangleq \begin{bmatrix}
+  \vec{f}_{b'''}^{y}(\vec{v}) & \triangleq
+  \begin{bmatrix}
+     0 \\
+     0 \\
+     0 \\
+\end{bmatrix} * {v_1} +  \begin{bmatrix}
+     0 \\
+     1 \\
+     0 \\
+\end{bmatrix} * {v_2} +  \begin{bmatrix}
+      0 \\
+      0 \\
+      0 \\
+\end{bmatrix} * {v_3} \\
+  & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 1 & 0 \\
      0 & 0 & 0 \\
@@ -250,7 +247,7 @@ Define $\vec{f}_{b'''}^{y}(\vec{v})$ to project any vector $v$ onto the $y$ axis
 \end{flalign}
 
 \begin{flalign}
-( \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
+( \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 1 & 0 \\
      0 & 0 & 0 \\
@@ -258,22 +255,36 @@ Define $\vec{f}_{b'''}^{y}(\vec{v})$ to project any vector $v$ onto the $y$ axis
      1 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
      0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
-  \end{bmatrix} * (\vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
+  \end{bmatrix} * (\vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
   & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
      0 & 0 & 0 \\
-\end{bmatrix} * (\vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b})
+\end{bmatrix} * (\vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b})
 \end{flalign}
 
 
 
-\textbf{Rotate $( \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) $ 90 degrees on the $yz$ plane.}
+\textbf{Rotate $( \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) $ 90 degrees on the $yz$ plane.}
 
 Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 
 \begin{flalign}
-\vec{f}_y^{z}(\vec{v}) & \triangleq \begin{bmatrix}
+\vec{f}_y^{z}(\vec{v}) & \triangleq
+  \begin{bmatrix}
+     1 \\
+     0 \\
+     0 \\
+\end{bmatrix} * {v_1} +  \begin{bmatrix}
+     0 \\
+     0 \\
+     1 \\
+\end{bmatrix} * {v_2} +  \begin{bmatrix}
+      0 \\
+      -1 \\
+      0 \\
+\end{bmatrix} * {v_3} \\
+  & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & 0 & -1 \\
      0 & 1 & 0 \\
@@ -281,7 +292,7 @@ Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 \end{flalign}
 
 \begin{flalign}
-  ( \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
+  ( \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & 0 & -1 \\
      0 & 1 & 0 \\
@@ -289,12 +300,12 @@ Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
      0 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
      0 & 0 & 0 \\
-  \end{bmatrix} * (\vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
+  \end{bmatrix} * (\vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
   & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
-  \end{bmatrix} * (\vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
+  \end{bmatrix} * (\vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
   & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 0 & 0 \\
@@ -317,10 +328,10 @@ Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 \end{flalign}
 
 
-\textbf{Apply inverse of $\vec{f}_{b''}^{xy}$ to $( \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b})$ }
+\textbf{Apply inverse of $\vec{f}_{b''}^{xy}$ to $( \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b})$ }
 
 \begin{flalign}
-  ( (\vec{f}_{b''}^{xy})^{-1} \circ \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
+  ( (\vec{f}_{b''}^{xy})^{-1} \circ \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & \frac{b''_2}{k_2} & \frac{-b''_3}{k_2}  \\
      0 & \frac{b''_3}{k_2} & \frac{b''_2}{k_2}  \\
@@ -350,7 +361,7 @@ Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 
 \textbf{Rotate the x axis back to $\vec{a}$ }
 \begin{flalign}
-  f  & \triangleq ( (\vec{f}_a^{zx})^{-1} \circ (\vec{f}_{zx}^x)^{-1} \circ (\vec{f}_{b''}^{xy})^{-1} \circ \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{zx}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
+  f  & \triangleq ( (\vec{f}_a^{zx})^{-1} \circ (\vec{f}_{a'}^x)^{-1} \circ (\vec{f}_{b''}^{xy})^{-1} \circ \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
      & = \begin{bmatrix}
   \frac{a_1}{\norm{a}} & \frac{-a_2}{k_1} & \frac{-a_1a_3}{k_1\norm{a}}\\
   \frac{a_2}{\norm{a}} & \frac{a_1}{k_1} & \frac{-a_2a_3}{k_1\norm{a}}  \\
