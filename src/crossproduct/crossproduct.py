@@ -301,9 +301,7 @@ restart()
 def current_animation_ratio():
     if step_number == StepNumber.beginning:
         return 0.0
-    return min(
-        1.0, (animation_time - current_animation_start_time) / seconds_per_operation
-    )
+    return min(1.0, (animation_time - current_animation_start_time) / seconds_per_operation)
 
 
 with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
@@ -312,9 +310,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
         do_draw_lines(lines_shader, ground_vertices(), time, width, height, xy, yz, zx)
 
     def draw_unit_circle(time, width, height, xy=True, yz=False, zx=False):
-        do_draw_lines(
-            lines_shader, unit_circle_vertices(), time, width, height, xy, yz, zx
-        )
+        do_draw_lines(lines_shader, unit_circle_vertices(), time, width, height, xy, yz, zx)
 
     def draw_vector(v, width, height):
         do_draw_vector(lines_shader, v, width, height)
@@ -325,10 +321,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
     # Loop until the user closes the window
     while not glfw.window_should_close(window):
         # poll the time to try to get a constant framerate
-        while (
-            glfw.get_time()
-            < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE
-        ):
+        while glfw.get_time() < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE:
             pass
         # set for comparison on the next frame
         time_at_beginning_of_previous_frame = glfw.get_time()
@@ -394,9 +387,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if imgui.begin_main_menu_bar():
             if imgui.begin_menu("File", True):
-                clicked_quit, selected_quit = imgui.menu_item(
-                    "Quit", "Cmd+Q", False, True
-                )
+                clicked_quit, selected_quit = imgui.menu_item("Quit", "Cmd+Q", False, True)
 
                 if clicked_quit:
                     exit(0)
@@ -462,17 +453,13 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
         imgui.set_next_window_position(0, 100, imgui.FIRST_USE_EVER)
         imgui.begin("Camera", True)
 
-        changed, auto_rotate_camera = imgui.checkbox(
-            label="Auto Rotate Camera", state=auto_rotate_camera
-        )
+        changed, auto_rotate_camera = imgui.checkbox(label="Auto Rotate Camera", state=auto_rotate_camera)
 
         if auto_rotate_camera:
             camera.rot_y += math.radians(0.1)
 
         if not use_ortho:
-            clicked_camera, camera.r = imgui.slider_float(
-                "Camera Radius", camera.r, 3, 130.0
-            )
+            clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 130.0)
 
         if imgui.button("View Down X Axis"):
             camera.rot_x = 0.0
@@ -494,9 +481,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
             if not draw_coordinate_system_of_natural_basis
             else "Don't Draw Coordinate System Of Natural Basis"
         ):
-            draw_coordinate_system_of_natural_basis = (
-                not draw_coordinate_system_of_natural_basis
-            )
+            draw_coordinate_system_of_natural_basis = not draw_coordinate_system_of_natural_basis
 
         imgui.end()
 
@@ -511,9 +496,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
         if imgui.button("Restart"):
             restart()
         imgui.same_line()
-        changed, (seconds_per_operation) = imgui.input_float(
-            "Seconds Per Operation", seconds_per_operation
-        )
+        changed, (seconds_per_operation) = imgui.input_float("Seconds Per Operation", seconds_per_operation)
 
         if step_number == StepNumber.beginning:
             if imgui.button("Rotate Z") or auto_play:
@@ -533,9 +516,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
                     b_doubleprime_2 = (-a2 * b1) / k1 + (a1 * b2) / k1
                     b_doubleprime_3 = (
-                        (-a1 * a3 * b1) / (k1 * mag_a)
-                        + (-a2 * a3 * b2) / (k1 * mag_a)
-                        + (k1 * b3) / mag_a
+                        (-a1 * a3 * b1) / (k1 * mag_a) + (-a2 * a3 * b2) / (k1 * mag_a) + (k1 * b3) / mag_a
                     )
 
                     angle = math.atan2(b_doubleprime_3, b_doubleprime_2)
@@ -573,9 +554,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                 )
 
         if do_third_rotate:
-            ratio = (
-                current_animation_ratio() if step_number == StepNumber.rotate_x else 1.0
-            )
+            ratio = current_animation_ratio() if step_number == StepNumber.rotate_x else 1.0
             ms.rotate_x(ms.MatrixStack.model, -angle_x * ratio)
             if ratio > 0.9999:
                 draw_third_relative_coordinates = False
@@ -593,20 +572,14 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if draw_third_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = (
-                    current_animation_ratio()
-                    if step_number == StepNumber.show_triangle.value
-                    else 1.0
-                )
+                ratio = current_animation_ratio() if step_number == StepNumber.show_triangle.value else 1.0
                 ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
 
                 draw_ground(animation_time, width, height, xy=False, yz=True)
                 draw_axis(width, height)
 
         if do_second_rotate:
-            ratio = (
-                current_animation_ratio() if step_number == StepNumber.rotate_y else 1.0
-            )
+            ratio = current_animation_ratio() if step_number == StepNumber.rotate_y else 1.0
             ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y * ratio)
             if ratio > 0.99:
                 draw_second_relative_coordinates = False
@@ -624,19 +597,13 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if draw_second_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = (
-                    current_animation_ratio()
-                    if step_number == StepNumber.rotate_x
-                    else 1.0
-                )
+                ratio = current_animation_ratio() if step_number == StepNumber.rotate_x else 1.0
                 ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
                 draw_ground(animation_time, width, height, xy=False, zx=True)
                 draw_axis(width, height)
 
         if do_first_rotate:
-            ratio = (
-                current_animation_ratio() if step_number == StepNumber.rotate_z else 1.0
-            )
+            ratio = current_animation_ratio() if step_number == StepNumber.rotate_z else 1.0
             ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z * ratio)
             if ratio > 0.99:
                 draw_first_relative_coordinates = False
@@ -654,11 +621,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         if draw_first_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = (
-                    current_animation_ratio()
-                    if step_number == StepNumber.rotate_y
-                    else 1.0
-                )
+                ratio = current_animation_ratio() if step_number == StepNumber.rotate_y else 1.0
                 ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
                 draw_ground(animation_time, width, height)
                 draw_axis(width, height)

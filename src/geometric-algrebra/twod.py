@@ -32,7 +32,6 @@
 
 # %%
 import sympy
-import galgebra
 from galgebra.ga import Ga
 
 
@@ -107,4 +106,3 @@ from galgebra.ga import Ga
 xyz = (x, y, z) = sympy.symbols("x y z", real=True)
 o3d = Ga("e_x e_y e_z", g=[1, 1, 1], coords=xyz)
 e_x, e_y, e_z = o3d.mv()
-

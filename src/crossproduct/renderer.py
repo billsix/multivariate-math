@@ -117,9 +117,7 @@ def do_draw_lines(shader, vertices, time, width, height, xy=True, yz=False, zx=F
     position = glGetAttribLocation(shader, "position")
     glEnableVertexAttribArray(position)
 
-    glVertexAttribPointer(
-        position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0)
-    )
+    glVertexAttribPointer(position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0))
 
     glBufferData(
         GL_ARRAY_BUFFER,
@@ -231,9 +229,7 @@ def do_draw_vector(shader, v, width, height):
     position = glGetAttribLocation(shader, "position")
     glEnableVertexAttribArray(position)
 
-    glVertexAttribPointer(
-        position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0)
-    )
+    glVertexAttribPointer(position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0))
 
     glBufferData(
         GL_ARRAY_BUFFER,
@@ -329,9 +325,7 @@ def do_draw_axis(shader, width, height):
     position = glGetAttribLocation(shader, "position")
     glEnableVertexAttribArray(position)
 
-    glVertexAttribPointer(
-        position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0)
-    )
+    glVertexAttribPointer(position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0))
 
     glBufferData(
         GL_ARRAY_BUFFER,

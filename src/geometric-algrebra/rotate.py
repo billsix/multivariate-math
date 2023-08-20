@@ -118,44 +118,8 @@ galgebra.mv.Mv.rotate = rotate
 
 # %%
 def rotate(self, from_vec, to_vec):
-    return self.project(onto=from_vec ^ to_vec) * from_vec * to_vec / abs(
-        from_vec
-    ) / abs(to_vec) + self.reject(away_from=from_vec ^ to_vec)
-
-
-galgebra.mv.Mv.rotate = rotate
-
-
-# %% [markdown]
-# Define rotate in 3D
-# -------------------
-#
-# Inline definitions
-
-
-# %%
-def rotate(self, from_vec, to_vec):
-    return (self | (from_vec ^ to_vec)) / (from_vec ^ to_vec) * from_vec * to_vec / abs(
-        from_vec
-    ) / abs(to_vec) + (self ^ (from_vec ^ to_vec)) / (from_vec ^ to_vec)
-
-
-galgebra.mv.Mv.rotate = rotate
-
-
-# %% [markdown]
-# Define rotate in 3D
-# -------------------
-#
-# Inline definitions
-
-
-# %%
-def rotate(self, from_vec, to_vec):
-    return (self | (from_vec ^ to_vec)) / (from_vec ^ to_vec) * from_vec * to_vec / abs(
-        from_vec
-    ) / abs(to_vec) + (self * (from_vec ^ to_vec) - (self | (from_vec ^ to_vec))) / (
-        from_vec ^ to_vec
+    return self.project(onto=from_vec ^ to_vec) * from_vec * to_vec / abs(from_vec) / abs(to_vec) + self.reject(
+        away_from=from_vec ^ to_vec
     )
 
 
@@ -171,13 +135,43 @@ galgebra.mv.Mv.rotate = rotate
 
 # %%
 def rotate(self, from_vec, to_vec):
-    return (self | (from_vec ^ to_vec)) / (from_vec ^ to_vec) * from_vec * to_vec / abs(
-        from_vec
-    ) / abs(to_vec) + (
+    return (self | (from_vec ^ to_vec)) / (from_vec ^ to_vec) * from_vec * to_vec / abs(from_vec) / abs(to_vec) + (
+        self ^ (from_vec ^ to_vec)
+    ) / (from_vec ^ to_vec)
+
+
+galgebra.mv.Mv.rotate = rotate
+
+
+# %% [markdown]
+# Define rotate in 3D
+# -------------------
+#
+# Inline definitions
+
+
+# %%
+def rotate(self, from_vec, to_vec):
+    return (self | (from_vec ^ to_vec)) / (from_vec ^ to_vec) * from_vec * to_vec / abs(from_vec) / abs(to_vec) + (
+        self * (from_vec ^ to_vec) - (self | (from_vec ^ to_vec))
+    ) / (from_vec ^ to_vec)
+
+
+galgebra.mv.Mv.rotate = rotate
+
+
+# %% [markdown]
+# Define rotate in 3D
+# -------------------
+#
+# Inline definitions
+
+
+# %%
+def rotate(self, from_vec, to_vec):
+    return (self | (from_vec ^ to_vec)) / (from_vec ^ to_vec) * from_vec * to_vec / abs(from_vec) / abs(to_vec) + (
         self * (from_vec ^ to_vec) / (from_vec ^ to_vec) - (self | (from_vec ^ to_vec))
-    ) / (
-        from_vec ^ to_vec
-    )
+    ) / (from_vec ^ to_vec)
 
 
 galgebra.mv.Mv.rotate = rotate
@@ -238,8 +232,8 @@ galgebra.mv.Mv.rotate = rotate
 # Define the cross product
 # ------------------------
 # %%
-cross_product = symvec2.rotate(from_vec=symvec1, to_vec=e_x).project(
-    onto=e_y ^ e_z
-).rotate(from_vec=e_y, to_vec=e_z).rotate(from_vec=e_x, to_vec=symvec1) * abs(symvec1)
+cross_product = symvec2.rotate(from_vec=symvec1, to_vec=e_x).project(onto=e_y ^ e_z).rotate(
+    from_vec=e_y, to_vec=e_z
+).rotate(from_vec=e_x, to_vec=symvec1) * abs(symvec1)
 # %%
 cross_product
