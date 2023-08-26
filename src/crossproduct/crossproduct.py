@@ -385,20 +385,12 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         imgui.new_frame()
 
-        if imgui.begin_main_menu_bar():
-            if imgui.begin_menu("File", True):
-                clicked_quit, selected_quit = imgui.menu_item("Quit", "Cmd+Q", False, True)
-
-                if clicked_quit:
-                    exit(0)
-
-                imgui.end_menu()
-            imgui.end_main_menu_bar()
-
         imgui.set_next_window_bg_alpha(0.05)
-        imgui.set_next_window_size(400, 100, imgui.FIRST_USE_EVER)
+        imgui.set_next_window_size(300, 175, imgui.FIRST_USE_EVER)
         imgui.set_next_window_position(0, 0, imgui.FIRST_USE_EVER)
         imgui.begin("Input Vectors", True)
+
+        imgui.label_text("label", "Value")
 
         changed, (
             vec1.x,
@@ -410,15 +402,10 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
             value1=vec1.y,
             value2=vec1.z,
         )
-        imgui.same_line()
 
         if changed:
             animation_time = 0.0
             step_number = StepNumber.beginning
-
-        if imgui.button("Highlight vector a"):
-            vec1.highlight = not vec1.highlight
-            vec2.highlight = False
 
         changed, (
             vec2.x,
@@ -431,8 +418,9 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
             value2=vec2.z,
         )
 
-        imgui.same_line()
-
+        if imgui.button("Highlight vector a"):
+            vec1.highlight = not vec1.highlight
+            vec2.highlight = False
         if imgui.button("Highlight vector b"):
             vec2.highlight = not vec2.highlight
             vec1.highlight = False
@@ -449,8 +437,8 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
         imgui.end()
 
         imgui.set_next_window_bg_alpha(0.05)
-        imgui.set_next_window_size(400, 100, imgui.FIRST_USE_EVER)
-        imgui.set_next_window_position(0, 100, imgui.FIRST_USE_EVER)
+        imgui.set_next_window_size(300, 175, imgui.FIRST_USE_EVER)
+        imgui.set_next_window_position(0, 175, imgui.FIRST_USE_EVER)
         imgui.begin("Camera", True)
 
         changed, auto_rotate_camera = imgui.checkbox(label="Auto Rotate Camera", state=auto_rotate_camera)
@@ -465,37 +453,35 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
             camera.rot_x = 0.0
             camera.rot_y = math.pi / 2.0
             use_ortho = True
-        imgui.same_line()
+
         if imgui.button("View Down Negative Y Axis"):
             camera.rot_x = 0.0
             camera.rot_y = 0.0
             use_ortho = True
-        imgui.same_line()
+
         if imgui.button("View Down Z Axis"):
             camera.rot_x = math.pi / 2.0
             camera.rot_y = 0.0
             use_ortho = True
 
-        if imgui.button(
-            "Draw Coordinate System Of Natural Basis"
-            if not draw_coordinate_system_of_natural_basis
-            else "Don't Draw Coordinate System Of Natural Basis"
-        ):
-            draw_coordinate_system_of_natural_basis = not draw_coordinate_system_of_natural_basis
+        changed, draw_coordinate_system_of_natural_basis = imgui.checkbox(
+            label="Draw Coordinate System of Natural Basis",
+            state=draw_coordinate_system_of_natural_basis,
+        )
 
         imgui.end()
 
-        imgui.set_next_window_position(0, 200, imgui.FIRST_USE_EVER)
-        imgui.set_next_window_size(400, 100, imgui.FIRST_USE_EVER)
+        imgui.set_next_window_position(0, 350, imgui.FIRST_USE_EVER)
+        imgui.set_next_window_size(300, 100, imgui.FIRST_USE_EVER)
         imgui.set_next_window_bg_alpha(0.05)
         imgui.begin("Time", True)
 
-        if imgui.button("AutoPlay " + ("Enable" if auto_play else "Disable")):
-            auto_play = not auto_play
+        changed, auto_play = imgui.checkbox(label="AutoPlay", state=auto_play)
 
         if imgui.button("Restart"):
             restart()
-        imgui.same_line()
+
+        imgui.label_text("label", "Value")
         changed, (seconds_per_operation) = imgui.input_float("Seconds Per Operation", seconds_per_operation)
 
         if step_number == StepNumber.beginning:
