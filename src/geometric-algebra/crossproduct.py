@@ -6,7 +6,6 @@ import sympy
 import galgebra
 from galgebra.ga import Ga
 from galgebra.printer import latex
-from IPython.display import Math
 
 # tell sympy to use our printing by default
 sympy.init_printing(latex_printer=latex, use_latex="mathjax")
@@ -34,9 +33,9 @@ vec1 = 3 * e_x + 4 * e_y - 12 * e_z
 vec2 = -3 * e_x + 12 * e_y + 4 * e_z
 
 # %%
-Math("vec1 = %s" % latex(vec1))
+vec1
 # %%
-Math("vec2 = %s" % latex(vec2))
+vec2
 
 # %% [markdown]
 # Define vectors with symbols
@@ -45,10 +44,10 @@ Math("vec2 = %s" % latex(vec2))
 symvec1 = a_1 * e_x + a_2 * e_y + a_3 * e_z
 symvec2 = b_1 * e_x + b_2 * e_y + b_3 * e_z
 
-Math("symvec1 = %s" % latex(symvec1))
+symvec1
 
 # %%
-Math("symvec2 = %s" % latex(symvec2))
+symvec2
 
 
 # %% [markdown]
@@ -92,4 +91,4 @@ cross_product = symvec2.rotate(from_vec=symvec1, to_vec=e_x) \
                        .rotate(from_vec=e_y, to_vec=e_z) \
                        .rotate(from_vec=e_x, to_vec=symvec1) * abs(symvec1)
 # fmt: on
-Math("cross\_product = %s" % latex(cross_product))
+cross_product
