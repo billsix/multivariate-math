@@ -2,7 +2,6 @@
 # Cross Product
 # -------------
 # %%
-
 import sympy
 import galgebra
 from galgebra.ga import Ga
@@ -85,7 +84,12 @@ def rotate(self, from_vec, to_vec):
 galgebra.mv.Mv.rotate = rotate
 
 # %%
-cross_product = symvec2.rotate(from_vec=symvec1, to_vec=e_x).project(onto=e_y ^ e_z).rotate(
-    from_vec=e_y, to_vec=e_z
-).rotate(from_vec=e_x, to_vec=symvec1) * abs(symvec1)
+# fmt: off
+cross_product = symvec2.rotate(from_vec=symvec1, to_vec=e_x) \
+                       .project(
+                           onto=e_y ^ e_z
+                       ) \
+                       .rotate(from_vec=e_y, to_vec=e_z) \
+                       .rotate(from_vec=e_x, to_vec=symvec1) * abs(symvec1)
+# fmt: on
 Math("cross\_product = %s" % latex(cross_product))
