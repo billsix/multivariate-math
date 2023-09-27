@@ -508,13 +508,9 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                 g.step_number = StepNumber.rotate_z
 
                 def calc_angle_x():
-                    a1 = g.vec1.x
-                    a2 = g.vec1.y
-                    a3 = g.vec1.z
+                    a1, a2, a3 = g.vec1.x, g.vec1.y, g.vec1.z
                     mag_a = np.sqrt(a1**2 + a2**2 + a3**2)
-                    b1 = g.vec2.x
-                    b2 = g.vec2.y
-                    b3 = g.vec2.z
+                    b1, b2, b3 = g.vec2.x, g.vec2.y, g.vec2.z
                     k1 = np.sqrt(a1**2 + a2**2)
 
                     if k1 < 0.0001:
@@ -783,9 +779,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                             else 0.0
                         )
 
-                        g.vec3.r = 0.0 * (1.0 - ratio)
-                        g.vec3.g = 1.0 * (1.0 - ratio)
-                        g.vec3.b = 1.0 * ratio
+                        g.vec3.r, g.vec3.g, g.vec3.b = 0.0 * (1.0 - ratio), 1.0 * (1.0 - ratio), 1.0 * ratio
                         ms.rotate_x(ms.MatrixStack.model, math.radians(90.0 * ratio))
                         draw_vector(g.vec3, width, height)
                 else:
