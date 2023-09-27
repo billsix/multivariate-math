@@ -500,12 +500,15 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                     b3 = vec2.z
                     k1 = np.sqrt(a1**2 + a2**2)
 
-                    b_doubleprime_2 = (-a2 * b1) / k1 + (a1 * b2) / k1
-                    b_doubleprime_3 = (
-                        (-a1 * a3 * b1) / (k1 * mag_a) + (-a2 * a3 * b2) / (k1 * mag_a) + (k1 * b3) / mag_a
-                    )
+                    if k1 < 0.0001:
+                        angle = 0.0
+                    else:
+                        b_doubleprime_2 = (-a2 * b1) / k1 + (a1 * b2) / k1
+                        b_doubleprime_3 = (
+                            (-a1 * a3 * b1) / (k1 * mag_a) + (-a2 * a3 * b2) / (k1 * mag_a) + (k1 * b3) / mag_a
+                        )
 
-                    angle = math.atan2(b_doubleprime_3, b_doubleprime_2)
+                        angle = math.atan2(b_doubleprime_3, b_doubleprime_2)
                     return angle if abs(angle) <= np.pi / 2.0 else (angle - 2 * np.pi)
 
                 angle_x = calc_angle_x()
