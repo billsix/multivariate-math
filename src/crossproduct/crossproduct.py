@@ -38,7 +38,7 @@ from OpenGL.GL import (
 )
 
 from enum import Enum, auto
-
+from dataclasses import dataclass
 import glfw
 import pyMatrixStack as ms
 import imgui
@@ -136,57 +136,6 @@ def unit_circle_vertices():
 swap = False
 
 
-def initiliaze_vecs():
-    global vec1
-    global vec2
-    global vec3
-    global swap
-
-    if not swap:
-        vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=0.5, b=0.0, highlight=False)
-        vec2 = Vector(x=-1.0, y=2.0, z=2.0, r=0.5, g=0.0, b=1.0, highlight=False)
-    else:
-        vec1 = Vector(x=-1.0, y=2.0, z=2.0, r=1.0, g=0.5, b=0.0, highlight=False)
-        vec2 = Vector(x=3.0, y=4.0, z=5.0, r=0.5, g=0.0, b=1.0, highlight=False)
-
-    vec3 = None
-
-
-initiliaze_vecs()
-
-camera = Camera(r=22.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
-
-
-def handle_inputs():
-    global camera
-
-    global use_ortho
-
-    if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS:
-        camera.rot_y -= math.radians(1.0)
-        use_ortho = False
-    if glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS:
-        camera.rot_y += math.radians(1.0)
-        use_ortho = False
-    if glfw.get_key(window, glfw.KEY_UP) == glfw.PRESS:
-        camera.rot_x -= math.radians(1.0)
-        use_ortho = False
-    if glfw.get_key(window, glfw.KEY_DOWN) == glfw.PRESS:
-        camera.rot_x += math.radians(1.0)
-        use_ortho = False
-
-    if camera.rot_x > math.pi / 2.0:
-        camera.rot_x = math.pi / 2.0
-    if camera.rot_x < -math.pi / 2.0:
-        camera.rot_x = -math.pi / 2.0
-
-
-TARGET_FRAMERATE = 60  # fps
-
-# to try to standardize on 60 fps, compare times between frames
-time_at_beginning_of_previous_frame = glfw.get_time()
-
-
 class StepNumber(Enum):
     beginning = auto()  # 0
     rotate_z = auto()  # 1
@@ -202,96 +151,164 @@ class StepNumber(Enum):
     show_plane = auto()  # 11
 
 
-animation_time = None
-current_animation_start_time = None
-animation_time_multiplier = None
-animation_paused = None
-draw_first_relative_coordinates = None
-do_first_rotate = None
-draw_second_relative_coordinates = None
-do_second_rotate = None
-draw_third_relative_coordinates = None
-do_third_rotate = None
-project_onto_yz_plane = None
-rotate_yz_90 = None
-undo_rotate_z = None
-draw_undo_rotate_z_relative_coordinates = None
-undo_rotate_y = None
-draw_undo_rotate_y_relative_coordinates = None
-undo_rotate_x = None
-draw_undo_rotate_x_relative_coordinates = None
-do_scale = None
-use_ortho = None
-new_b = None
-angle_x = None
-draw_coordinate_system_of_natural_basis = None
-step_number = StepNumber.beginning
-auto_rotate_camera = False
-seconds_per_operation = 2.0
-auto_play = False
+@dataclass
+class Globals:
+    vec1: any
+    vec2: any
+    vec3: any
+    swap: any
+    camera: any
+    use_ortho: any
+    animation_time: any
+    current_animation_start_time: any
+    animation_time_multiplier: any
+    animation_paused: any
+    draw_first_relative_coordinates: any
+    do_first_rotate: any
+    draw_second_relative_coordinates: any
+    do_second_rotate: any
+    draw_third_relative_coordinates: any
+    do_third_rotate: any
+    project_onto_yz_plane: any
+    rotate_yz_90: any
+    undo_rotate_z: any
+    undo_rotate_y: any
+    undo_rotate_x: any
+    do_scale: any
+    use_ortho: any
+    new_b: any
+    angle_x: any
+    draw_coordinate_system_of_natural_basis: any
+    do_remove_ground: any
+    step_number: any
+    draw_undo_rotate_x_relative_coordinates: any
+    draw_undo_rotate_y_relative_coordinates: any
+    draw_undo_rotate_z_relative_coordinates: any
+    auto_rotate_camera: any
+    seconds_per_operation: any
+    auto_play: any
+    time_at_beginning_of_previous_frame: any
+
+
+g = Globals(
+    animation_time=None,
+    current_animation_start_time=None,
+    animation_time_multiplier=None,
+    animation_paused=None,
+    draw_first_relative_coordinates=None,
+    do_first_rotate=None,
+    draw_second_relative_coordinates=None,
+    do_second_rotate=None,
+    draw_third_relative_coordinates=None,
+    do_third_rotate=None,
+    project_onto_yz_plane=None,
+    rotate_yz_90=None,
+    undo_rotate_z=None,
+    draw_undo_rotate_z_relative_coordinates=None,
+    undo_rotate_y=None,
+    draw_undo_rotate_y_relative_coordinates=None,
+    undo_rotate_x=None,
+    draw_undo_rotate_x_relative_coordinates=None,
+    do_scale=None,
+    use_ortho=None,
+    new_b=None,
+    angle_x=None,
+    draw_coordinate_system_of_natural_basis=None,
+    step_number=StepNumber.beginning,
+    auto_rotate_camera=False,
+    seconds_per_operation=2.0,
+    auto_play=False,
+    vec1=None,
+    vec2=None,
+    vec3=None,
+    swap=None,
+    camera=None,
+    do_remove_ground=None,
+    time_at_beginning_of_previous_frame=glfw.get_time(),
+)
+
+
+def initiliaze_vecs():
+    global g
+    if not g.swap:
+        g.vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=0.5, b=0.0, highlight=False)
+        g.vec2 = Vector(x=-1.0, y=2.0, z=2.0, r=0.5, g=0.0, b=1.0, highlight=False)
+    else:
+        g.vec1 = Vector(x=-1.0, y=2.0, z=2.0, r=1.0, g=0.5, b=0.0, highlight=False)
+        g.vec2 = Vector(x=3.0, y=4.0, z=5.0, r=0.5, g=0.0, b=1.0, highlight=False)
+
+    g.vec3 = None
+
+
+initiliaze_vecs()
+
+g.camera = Camera(r=22.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
+
+
+def handle_inputs():
+    if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS:
+        g.camera.rot_y -= math.radians(1.0)
+        g.use_ortho = False
+    if glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS:
+        g.camera.rot_y += math.radians(1.0)
+        g.use_ortho = False
+    if glfw.get_key(window, glfw.KEY_UP) == glfw.PRESS:
+        g.camera.rot_x -= math.radians(1.0)
+        g.use_ortho = False
+    if glfw.get_key(window, glfw.KEY_DOWN) == glfw.PRESS:
+        g.camera.rot_x += math.radians(1.0)
+        g.use_ortho = False
+
+    if g.camera.rot_x > math.pi / 2.0:
+        g.camera.rot_x = math.pi / 2.0
+    if g.camera.rot_x < -math.pi / 2.0:
+        g.camera.rot_x = -math.pi / 2.0
+
+
+TARGET_FRAMERATE = 60  # fps
+
+# to try to standardize on 60 fps, compare times between frames
+g.time_at_beginning_of_previous_frame = glfw.get_time()
 
 
 def restart():
-    global animation_time
-    animation_time = 0.0
-    global current_animation_start_time
-    current_animation_start_time = 0.0
-    global animation_time_multiplier
-    animation_time_multiplier = 1.0
-    global animation_paused
-    animation_paused = False
-    global draw_first_relative_coordinates
-    draw_first_relative_coordinates = False
-    global do_first_rotate
-    do_first_rotate = False
-    global draw_second_relative_coordinates
-    draw_second_relative_coordinates = False
-    global do_second_rotate
-    do_second_rotate = False
-    global draw_third_relative_coordinates
-    draw_third_relative_coordinates = False
-    global do_third_rotate
-    do_third_rotate = False
-    global project_onto_yz_plane
-    project_onto_yz_plane = False
-    global rotate_yz_90
-    rotate_yz_90 = False
-    global undo_rotate_z
-    undo_rotate_z = False
-    global undo_rotate_y
-    undo_rotate_y = False
-    global undo_rotate_x
-    undo_rotate_x = False
-    global do_scale
-    do_scale = False
-    global use_ortho
-    use_ortho = False
-    global new_b
-    new_b = None
-    global angle_x
-    angle_x = None
-    global draw_coordinate_system_of_natural_basis
-    draw_coordinate_system_of_natural_basis = True
-    global do_remove_ground
-    do_remove_ground = False
-    global step_number
-    step_number = StepNumber.beginning
-
-    global draw_undo_rotate_x_relative_coordinates
-    draw_undo_rotate_x_relative_coordinates = False
-    global draw_undo_rotate_y_relative_coordinates
-    draw_undo_rotate_y_relative_coordinates = False
-    global draw_undo_rotate_z_relative_coordinates
-    draw_undo_rotate_z_relative_coordinates = False
-
-    global auto_rotate_camera
-    auto_rotate_camera = False
-
-    global seconds_per_operation
-    seconds_per_operation = 2.0
-
-    global auto_play
-    auto_play = False
+    global g
+    g = Globals(
+        animation_time=0.0,
+        current_animation_start_time=0.0,
+        animation_time_multiplier=1.0,
+        animation_paused=False,
+        draw_first_relative_coordinates=False,
+        do_first_rotate=False,
+        draw_second_relative_coordinates=False,
+        do_second_rotate=False,
+        draw_third_relative_coordinates=False,
+        do_third_rotate=False,
+        project_onto_yz_plane=False,
+        rotate_yz_90=False,
+        undo_rotate_z=False,
+        undo_rotate_y=False,
+        undo_rotate_x=False,
+        do_scale=False,
+        use_ortho=False,
+        new_b=None,
+        angle_x=None,
+        draw_coordinate_system_of_natural_basis=True,
+        do_remove_ground=False,
+        step_number=StepNumber.beginning,
+        draw_undo_rotate_x_relative_coordinates=False,
+        draw_undo_rotate_y_relative_coordinates=False,
+        draw_undo_rotate_z_relative_coordinates=False,
+        auto_rotate_camera=False,
+        auto_play=False,
+        vec1=g.vec1,
+        vec2=g.vec2,
+        vec3=g.vec3,
+        swap=False,
+        camera=g.camera,
+        seconds_per_operation=2.0,
+        time_at_beginning_of_previous_frame=glfw.get_time(),
+    )
 
 
 # initiliaze
@@ -299,9 +316,9 @@ restart()
 
 
 def current_animation_ratio():
-    if step_number == StepNumber.beginning:
+    if g.step_number == StepNumber.beginning:
         return 0.0
-    return min(1.0, (animation_time - current_animation_start_time) / seconds_per_operation)
+    return min(1.0, (g.animation_time - g.current_animation_start_time) / g.seconds_per_operation)
 
 
 with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
@@ -321,13 +338,13 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
     # Loop until the user closes the window
     while not glfw.window_should_close(window):
         # poll the time to try to get a constant framerate
-        while glfw.get_time() < time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE:
+        while glfw.get_time() < g.time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE:
             pass
         # set for comparison on the next frame
-        time_at_beginning_of_previous_frame = glfw.get_time()
+        g.time_at_beginning_of_previous_frame = glfw.get_time()
 
-        if not animation_paused:
-            animation_time += 1.0 / 60.0 * animation_time_multiplier
+        if not g.animation_paused:
+            g.animation_time += 1.0 / 60.0 * g.animation_time_multiplier
 
         # Poll for and process events
         glfw.poll_events()
@@ -346,7 +363,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
         ms.set_to_identity_matrix(ms.MatrixStack.view)
         ms.set_to_identity_matrix(ms.MatrixStack.projection)
 
-        if use_ortho:
+        if g.use_ortho:
             ms.ortho(
                 left=-10.0 * float(width) / float(height),
                 right=10.0 * float(width) / float(height),
@@ -366,20 +383,20 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
             )
 
             # note - opengl matricies use degrees
-            ms.translate(ms.MatrixStack.view, 0.0, 0.0, -camera.r)
+            ms.translate(ms.MatrixStack.view, 0.0, 0.0, -g.camera.r)
 
-        ms.rotate_x(ms.MatrixStack.view, camera.rot_x)
-        ms.rotate_y(ms.MatrixStack.view, -camera.rot_y)
+        ms.rotate_x(ms.MatrixStack.view, g.camera.rot_x)
+        ms.rotate_y(ms.MatrixStack.view, -g.camera.rot_y)
 
         # do everything in math coordinate system
         ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
-        if draw_coordinate_system_of_natural_basis:
-            if not do_remove_ground:
-                draw_ground(animation_time, width, height)
-                draw_ground(animation_time, width, height, xy=False, zx=True)
-                draw_unit_circle(animation_time, width, height)
-                draw_unit_circle(animation_time, width, height, xy=False, zx=True)
+        if g.draw_coordinate_system_of_natural_basis:
+            if not g.do_remove_ground:
+                draw_ground(g.animation_time, width, height)
+                draw_ground(g.animation_time, width, height, xy=False, zx=True)
+                draw_unit_circle(g.animation_time, width, height)
+                draw_unit_circle(g.animation_time, width, height, xy=False, zx=True)
 
         draw_axis(width, height)
 
@@ -393,80 +410,80 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
         imgui.label_text("label", "Value")
 
         changed, (
-            vec1.x,
-            vec1.y,
-            vec1.z,
+            g.vec1.x,
+            g.vec1.y,
+            g.vec1.z,
         ) = imgui.input_float3(
             label="vec A",
-            value0=vec1.x,
-            value1=vec1.y,
-            value2=vec1.z,
+            value0=g.vec1.x,
+            value1=g.vec1.y,
+            value2=g.vec1.z,
         )
 
         if changed:
-            animation_time = 0.0
-            step_number = StepNumber.beginning
+            g.animation_time = 0.0
+            g.step_number = StepNumber.beginning
 
         changed, (
-            vec2.x,
-            vec2.y,
-            vec2.z,
+            g.vec2.x,
+            g.vec2.y,
+            g.vec2.z,
         ) = imgui.input_float3(
             label="vec B",
-            value0=vec2.x,
-            value1=vec2.y,
-            value2=vec2.z,
+            value0=g.vec2.x,
+            value1=g.vec2.y,
+            value2=g.vec2.z,
         )
 
         if imgui.button("Highlight vector a"):
-            vec1.highlight = not vec1.highlight
-            vec2.highlight = False
+            g.vec1.highlight = not g.vec1.highlight
+            g.vec2.highlight = False
         if imgui.button("Highlight vector b"):
-            vec2.highlight = not vec2.highlight
-            vec1.highlight = False
+            g.vec2.highlight = not g.vec2.highlight
+            g.vec1.highlight = False
 
-        clicked = imgui.button("Swap vectors")
+        clicked = imgui.button("G.Swap vectors")
         if clicked:
-            swap = not swap
+            g.swap = not g.swap
             initiliaze_vecs()
 
         if changed:
-            animation_time = 0.0
-            step_number = StepNumber.beginning
+            g.animation_time = 0.0
+            g.step_number = StepNumber.beginning
 
         imgui.end()
 
         imgui.set_next_window_bg_alpha(0.05)
         imgui.set_next_window_size(300, 175, imgui.FIRST_USE_EVER)
         imgui.set_next_window_position(0, 175, imgui.FIRST_USE_EVER)
-        imgui.begin("Camera", True)
+        imgui.begin("G.Camera", True)
 
-        changed, auto_rotate_camera = imgui.checkbox(label="Auto Rotate Camera", state=auto_rotate_camera)
+        changed, g.auto_rotate_camera = imgui.checkbox(label="Auto Rotate G.Camera", state=g.auto_rotate_camera)
 
-        if auto_rotate_camera:
-            camera.rot_y += math.radians(0.1)
+        if g.auto_rotate_camera:
+            g.camera.rot_y += math.radians(0.1)
 
-        if not use_ortho:
-            clicked_camera, camera.r = imgui.slider_float("Camera Radius", camera.r, 3, 130.0)
+        if not g.use_ortho:
+            clicked, g.camera.r = imgui.slider_float("Camera Radius", g.camera.r, 3, 130.0)
 
         if imgui.button("View Down X Axis"):
-            camera.rot_x = 0.0
-            camera.rot_y = math.pi / 2.0
-            use_ortho = True
+            g.camera.rot_x = 0.0
+            g.camera.rot_y = math.pi / 2.0
+            g.use_ortho = True
 
         if imgui.button("View Down Negative Y Axis"):
-            camera.rot_x = 0.0
-            camera.rot_y = 0.0
-            use_ortho = True
+            g.camera.rot_x = 0.0
+            g.camera.rot_y = 0.0
+            g.use_ortho = True
 
         if imgui.button("View Down Z Axis"):
-            camera.rot_x = math.pi / 2.0
-            camera.rot_y = 0.0
-            use_ortho = True
+            g.camera.rot_x = math.pi / 2.0
+            g.camera.rot_y = 0.0
+            g.use_ortho = True
 
-        changed, draw_coordinate_system_of_natural_basis = imgui.checkbox(
+        changed, g.draw_coordinate_system_of_natural_basis = imgui.checkbox(
             label="Draw Coordinate System of Natural Basis",
-            state=draw_coordinate_system_of_natural_basis,
+            state=g.draw_coordinate_system_of_natural_basis,
         )
 
         imgui.end()
@@ -476,28 +493,28 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
         imgui.set_next_window_bg_alpha(0.05)
         imgui.begin("Time", True)
 
-        changed, auto_play = imgui.checkbox(label="AutoPlay", state=auto_play)
+        changed, g.auto_play = imgui.checkbox(label="AutoPlay", state=g.auto_play)
 
         if imgui.button("Restart"):
             restart()
 
         imgui.label_text("label", "Value")
-        changed, (seconds_per_operation) = imgui.input_float("Seconds Per Operation", seconds_per_operation)
+        changed, (g.seconds_per_operation) = imgui.input_float("Seconds Per Operation", g.seconds_per_operation)
 
-        if step_number == StepNumber.beginning:
-            if imgui.button("Rotate Z") or auto_play:
-                do_first_rotate = True
-                current_animation_start_time = animation_time
-                step_number = StepNumber.rotate_z
+        if g.step_number == StepNumber.beginning:
+            if imgui.button("Rotate Z") or g.auto_play:
+                g.do_first_rotate = True
+                g.current_animation_start_time = g.animation_time
+                g.step_number = StepNumber.rotate_z
 
                 def calc_angle_x():
-                    a1 = vec1.x
-                    a2 = vec1.y
-                    a3 = vec1.z
+                    a1 = g.vec1.x
+                    a2 = g.vec1.y
+                    a3 = g.vec1.z
                     mag_a = np.sqrt(a1**2 + a2**2 + a3**2)
-                    b1 = vec2.x
-                    b2 = vec2.y
-                    b3 = vec2.z
+                    b1 = g.vec2.x
+                    b2 = g.vec2.y
+                    b3 = g.vec2.z
                     k1 = np.sqrt(a1**2 + a2**2)
 
                     if k1 < 0.0001:
@@ -511,229 +528,229 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                         angle = math.atan2(b_doubleprime_3, b_doubleprime_2)
                     return angle if abs(angle) <= np.pi / 2.0 else (angle - 2 * np.pi)
 
-                angle_x = calc_angle_x()
+                g.angle_x = calc_angle_x()
             imgui.same_line()
-            changed, draw_first_relative_coordinates = imgui.checkbox(
+            changed, g.draw_first_relative_coordinates = imgui.checkbox(
                 label="Draw Relative Coordinates",
-                state=draw_first_relative_coordinates,
+                state=g.draw_first_relative_coordinates,
             )
 
-        if step_number == StepNumber.rotate_z:
+        if g.step_number == StepNumber.rotate_z:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Rotate Y") or auto_play:
-                    do_second_rotate = True
-                    step_number = StepNumber.rotate_y
-                    current_animation_start_time = animation_time
+                if imgui.button("Rotate Y") or g.auto_play:
+                    g.do_second_rotate = True
+                    g.step_number = StepNumber.rotate_y
+                    g.current_animation_start_time = g.animation_time
                 imgui.same_line()
-                changed, draw_second_relative_coordinates = imgui.checkbox(
+                changed, g.draw_second_relative_coordinates = imgui.checkbox(
                     label="Draw Second Relative Coordinates",
-                    state=draw_second_relative_coordinates,
+                    state=g.draw_second_relative_coordinates,
                 )
 
-        if step_number == StepNumber.rotate_y:
+        if g.step_number == StepNumber.rotate_y:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Rotate X") or auto_play:
-                    do_third_rotate = True
-                    step_number = StepNumber.rotate_x
-                    current_animation_start_time = animation_time
+                if imgui.button("Rotate X") or g.auto_play:
+                    g.do_third_rotate = True
+                    g.step_number = StepNumber.rotate_x
+                    g.current_animation_start_time = g.animation_time
                 imgui.same_line()
-                changed, draw_third_relative_coordinates = imgui.checkbox(
+                changed, g.draw_third_relative_coordinates = imgui.checkbox(
                     label="Draw Third Relative Coordinates",
-                    state=draw_third_relative_coordinates,
+                    state=g.draw_third_relative_coordinates,
                 )
 
-        if do_third_rotate:
-            ratio = current_animation_ratio() if step_number == StepNumber.rotate_x else 1.0
-            ms.rotate_x(ms.MatrixStack.model, -angle_x * ratio)
+        if g.do_third_rotate:
+            ratio = current_animation_ratio() if g.step_number == StepNumber.rotate_x else 1.0
+            ms.rotate_x(ms.MatrixStack.model, -g.angle_x * ratio)
             if ratio > 0.9999:
-                draw_third_relative_coordinates = False
+                g.draw_third_relative_coordinates = False
             ratio = (
                 current_animation_ratio()
-                if step_number == StepNumber.undo_rotate_x
+                if g.step_number == StepNumber.undo_rotate_x
                 else 0.0
-                if step_number.value < StepNumber.undo_rotate_x.value
+                if g.step_number.value < StepNumber.undo_rotate_x.value
                 else 1.0
             )
-            ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
-            if draw_undo_rotate_x_relative_coordinates and not do_remove_ground:
-                draw_ground(animation_time, xy=False, yz=True)
+            ms.rotate_x(ms.MatrixStack.model, g.angle_x * ratio)
+            if g.draw_undo_rotate_x_relative_coordinates and not g.do_remove_ground:
+                draw_ground(g.animation_time, xy=False, yz=True)
                 draw_axis(width, height)
 
-        if draw_third_relative_coordinates:
+        if g.draw_third_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = current_animation_ratio() if step_number == StepNumber.show_triangle.value else 1.0
-                ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
+                ratio = current_animation_ratio() if g.step_number == StepNumber.show_triangle.value else 1.0
+                ms.rotate_x(ms.MatrixStack.model, g.angle_x * ratio)
 
-                draw_ground(animation_time, width, height, xy=False, yz=True)
+                draw_ground(g.animation_time, width, height, xy=False, yz=True)
                 draw_axis(width, height)
 
-        if do_second_rotate:
-            ratio = current_animation_ratio() if step_number == StepNumber.rotate_y else 1.0
-            ms.rotate_y(ms.MatrixStack.model, -vec1.angle_y * ratio)
+        if g.do_second_rotate:
+            ratio = current_animation_ratio() if g.step_number == StepNumber.rotate_y else 1.0
+            ms.rotate_y(ms.MatrixStack.model, -g.vec1.angle_y * ratio)
             if ratio > 0.99:
-                draw_second_relative_coordinates = False
+                g.draw_second_relative_coordinates = False
             ratio = (
                 current_animation_ratio()
-                if step_number == StepNumber.undo_rotate_y
+                if g.step_number == StepNumber.undo_rotate_y
                 else 0.0
-                if step_number.value < StepNumber.undo_rotate_y.value
+                if g.step_number.value < StepNumber.undo_rotate_y.value
                 else 1.0
             )
-            ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
-            if draw_undo_rotate_y_relative_coordinates and not do_remove_ground:
-                draw_ground(animation_time, width, height, xy=False, zx=True)
+            ms.rotate_y(ms.MatrixStack.model, g.vec1.angle_y * ratio)
+            if g.draw_undo_rotate_y_relative_coordinates and not g.do_remove_ground:
+                draw_ground(g.animation_time, width, height, xy=False, zx=True)
                 draw_axis(width, height)
 
-        if draw_second_relative_coordinates:
+        if g.draw_second_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = current_animation_ratio() if step_number == StepNumber.rotate_x else 1.0
-                ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
-                draw_ground(animation_time, width, height, xy=False, zx=True)
+                ratio = current_animation_ratio() if g.step_number == StepNumber.rotate_x else 1.0
+                ms.rotate_y(ms.MatrixStack.model, g.vec1.angle_y * ratio)
+                draw_ground(g.animation_time, width, height, xy=False, zx=True)
                 draw_axis(width, height)
 
-        if do_first_rotate:
-            ratio = current_animation_ratio() if step_number == StepNumber.rotate_z else 1.0
-            ms.rotate_z(ms.MatrixStack.model, -vec1.angle_z * ratio)
+        if g.do_first_rotate:
+            ratio = current_animation_ratio() if g.step_number == StepNumber.rotate_z else 1.0
+            ms.rotate_z(ms.MatrixStack.model, -g.vec1.angle_z * ratio)
             if ratio > 0.99:
-                draw_first_relative_coordinates = False
+                g.draw_first_relative_coordinates = False
             ratio = (
                 current_animation_ratio()
-                if step_number == StepNumber.undo_rotate_z
+                if g.step_number == StepNumber.undo_rotate_z
                 else 0.0
-                if step_number.value < StepNumber.undo_rotate_z.value
+                if g.step_number.value < StepNumber.undo_rotate_z.value
                 else 1.0
             )
-            ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
-            if draw_undo_rotate_z_relative_coordinates and not do_remove_ground:
-                draw_ground(animation_time, width, height)
+            ms.rotate_z(ms.MatrixStack.model, g.vec1.angle_z * ratio)
+            if g.draw_undo_rotate_z_relative_coordinates and not g.do_remove_ground:
+                draw_ground(g.animation_time, width, height)
                 draw_axis(width, height)
 
-        if draw_first_relative_coordinates:
+        if g.draw_first_relative_coordinates:
             with ms.push_matrix(ms.MatrixStack.model):
-                ratio = current_animation_ratio() if step_number == StepNumber.rotate_y else 1.0
-                ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
-                draw_ground(animation_time, width, height)
+                ratio = current_animation_ratio() if g.step_number == StepNumber.rotate_y else 1.0
+                ms.rotate_z(ms.MatrixStack.model, g.vec1.angle_z * ratio)
+                draw_ground(g.animation_time, width, height)
                 draw_axis(width, height)
 
-        if step_number == StepNumber.rotate_x:
+        if g.step_number == StepNumber.rotate_x:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Show Triangle") or auto_play:
-                    vec3_after_rotate = np.ascontiguousarray(
+                if imgui.button("Show Triangle") or g.auto_play:
+                    g.vec3_after_rotate = np.ascontiguousarray(
                         ms.get_current_matrix(ms.MatrixStack.model),
                         dtype=np.float32,
-                    ) @ np.array([vec2.x, vec2.y, vec2.z, 1.0], dtype=np.float32)
+                    ) @ np.array([g.vec2.x, g.vec2.y, g.vec2.z, 1.0], dtype=np.float32)
 
-                    vec3 = Vector(
+                    g.vec3 = Vector(
                         x=0.0,
-                        y=-vec3_after_rotate[2],
-                        z=vec3_after_rotate[1],
+                        y=-g.vec3_after_rotate[2],
+                        z=g.vec3_after_rotate[1],
                         r=0.0,
                         g=1.0,
                         b=0.0,
                     )
-                    vec3.translate_amount = vec3_after_rotate[0]
-                    step_number = StepNumber.show_triangle
-        if step_number == StepNumber.show_triangle:
+                    g.vec3.translate_amount = g.vec3_after_rotate[0]
+                    g.step_number = StepNumber.show_triangle
+        if g.step_number == StepNumber.show_triangle:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Project onto e_2 e_3 plane") or auto_play:
-                    project_onto_yz_plane = True
-                    step_number = StepNumber.project_onto_y
-                    current_animation_start_time = animation_time
+                if imgui.button("Project onto e_2 e_3 plane") or g.auto_play:
+                    g.project_onto_yz_plane = True
+                    g.step_number = StepNumber.project_onto_y
+                    g.current_animation_start_time = g.animation_time
 
-        if step_number == StepNumber.project_onto_y:
+        if g.step_number == StepNumber.project_onto_y:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Rotate Y to Z, Z to -Y") or auto_play:
-                    rotate_yz_90 = True
-                    step_number = StepNumber.rotate_to_z
-                    current_animation_start_time = animation_time
+                if imgui.button("Rotate Y to Z, Z to -Y") or g.auto_play:
+                    g.rotate_yz_90 = True
+                    g.step_number = StepNumber.rotate_to_z
+                    g.current_animation_start_time = g.animation_time
 
-        if step_number == StepNumber.rotate_to_z:
+        if g.step_number == StepNumber.rotate_to_z:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Undo Rotate X") or auto_play:
-                    undo_rotate_x = True
-                    step_number = StepNumber.undo_rotate_x
-                    current_animation_start_time = animation_time
+                if imgui.button("Undo Rotate X") or g.auto_play:
+                    g.undo_rotate_x = True
+                    g.step_number = StepNumber.undo_rotate_x
+                    g.current_animation_start_time = g.animation_time
                 imgui.same_line()
-                changed, draw_undo_rotate_x_relative_coordinates = imgui.checkbox(
+                changed, g.draw_undo_rotate_x_relative_coordinates = imgui.checkbox(
                     label="Draw Relative Coordinates",
-                    state=draw_undo_rotate_x_relative_coordinates,
+                    state=g.draw_undo_rotate_x_relative_coordinates,
                 )
 
-        if step_number == StepNumber.undo_rotate_x:
+        if g.step_number == StepNumber.undo_rotate_x:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Undo Rotate Y") or auto_play:
-                    undo_rotate_y = True
-                    step_number = StepNumber.undo_rotate_y
-                    current_animation_start_time = animation_time
+                if imgui.button("Undo Rotate Y") or g.auto_play:
+                    g.undo_rotate_y = True
+                    g.step_number = StepNumber.undo_rotate_y
+                    g.current_animation_start_time = g.animation_time
                 imgui.same_line()
-                changed, draw_undo_rotate_y_relative_coordinates = imgui.checkbox(
+                changed, g.draw_undo_rotate_y_relative_coordinates = imgui.checkbox(
                     label="Draw Relative Coordinates",
-                    state=draw_undo_rotate_y_relative_coordinates,
+                    state=g.draw_undo_rotate_y_relative_coordinates,
                 )
 
-        if step_number == StepNumber.undo_rotate_y:
+        if g.step_number == StepNumber.undo_rotate_y:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Undo Rotate Z") or auto_play:
-                    undo_rotate_z = True
-                    step_number = StepNumber.undo_rotate_z
-                    current_animation_start_time = animation_time
+                if imgui.button("Undo Rotate Z") or g.auto_play:
+                    g.undo_rotate_z = True
+                    g.step_number = StepNumber.undo_rotate_z
+                    g.current_animation_start_time = g.animation_time
                 imgui.same_line()
-                changed, draw_undo_rotate_z_relative_coordinates = imgui.checkbox(
+                changed, g.draw_undo_rotate_z_relative_coordinates = imgui.checkbox(
                     label="Draw Relative Coordinates",
-                    state=draw_undo_rotate_z_relative_coordinates,
+                    state=g.draw_undo_rotate_z_relative_coordinates,
                 )
 
-        if step_number == StepNumber.undo_rotate_z:
+        if g.step_number == StepNumber.undo_rotate_z:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Scale By Magnitude of first vector") or auto_play:
-                    do_scale = True
-                    step_number = StepNumber.scale_by_mag_a
+                if imgui.button("Scale By Magnitude of first vector") or g.auto_play:
+                    g.do_scale = True
+                    g.step_number = StepNumber.scale_by_mag_a
 
-        if step_number == StepNumber.scale_by_mag_a:
+        if g.step_number == StepNumber.scale_by_mag_a:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Show Plane spanned by vec a and vec b") or auto_play:
-                    do_remove_ground = True
+                if imgui.button("Show Plane spanned by vec a and vec b") or g.auto_play:
+                    g.do_remove_ground = True
 
         imgui.end()
 
-        if vec3 and (step_number.value >= StepNumber.show_triangle.value):
+        if g.vec3 and (g.step_number.value >= StepNumber.show_triangle.value):
             with ms.push_matrix(ms.MatrixStack.model):
                 ms.set_to_identity_matrix(ms.MatrixStack.model)
                 ms.rotate_x(ms.MatrixStack.model, math.radians(-90.0))
 
-                if undo_rotate_z:
+                if g.undo_rotate_z:
                     ratio = (
                         current_animation_ratio()
-                        if step_number == StepNumber.undo_rotate_z
+                        if g.step_number == StepNumber.undo_rotate_z
                         else 0.0
-                        if step_number.value < StepNumber.undo_rotate_z.value
+                        if g.step_number.value < StepNumber.undo_rotate_z.value
                         else 1.0
                     )
-                    ms.rotate_z(ms.MatrixStack.model, vec1.angle_z * ratio)
-                if undo_rotate_y:
+                    ms.rotate_z(ms.MatrixStack.model, g.vec1.angle_z * ratio)
+                if g.undo_rotate_y:
                     ratio = (
                         current_animation_ratio()
-                        if step_number == StepNumber.undo_rotate_y
+                        if g.step_number == StepNumber.undo_rotate_y
                         else 0.0
-                        if step_number.value < StepNumber.undo_rotate_y.value
+                        if g.step_number.value < StepNumber.undo_rotate_y.value
                         else 1.0
                     )
-                    ms.rotate_y(ms.MatrixStack.model, vec1.angle_y * ratio)
-                if undo_rotate_x:
+                    ms.rotate_y(ms.MatrixStack.model, g.vec1.angle_y * ratio)
+                if g.undo_rotate_x:
                     ratio = (
                         current_animation_ratio()
-                        if step_number == StepNumber.undo_rotate_x
+                        if g.step_number == StepNumber.undo_rotate_x
                         else 0.0
-                        if step_number.value < StepNumber.undo_rotate_x.value
+                        if g.step_number.value < StepNumber.undo_rotate_x.value
                         else 1.0
                     )
-                    ms.rotate_x(ms.MatrixStack.model, angle_x * ratio)
+                    ms.rotate_x(ms.MatrixStack.model, g.angle_x * ratio)
 
-                if do_scale:
-                    if do_remove_ground:
-                        draw_ground(animation_time, width, height)
+                if g.do_scale:
+                    if g.do_remove_ground:
+                        draw_ground(g.animation_time, width, height)
 
-                    magnitude = math.sqrt(vec1.x**2 + vec1.y**2 + vec1.z**2)
+                    magnitude = math.sqrt(g.vec1.x**2 + g.vec1.y**2 + g.vec1.z**2)
 
                     ms.scale(
                         ms.MatrixStack.model,
@@ -745,46 +762,46 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                 glDisable(GL_DEPTH_TEST)
                 ratio = (
                     current_animation_ratio()
-                    if step_number == StepNumber.project_onto_y
+                    if g.step_number == StepNumber.project_onto_y
                     else 0.0
-                    if step_number.value <= StepNumber.project_onto_y.value
+                    if g.step_number.value <= StepNumber.project_onto_y.value
                     else 1.0
                 )
                 ms.translate(
                     ms.MatrixStack.model,
-                    vec3.translate_amount * (1.0 - ratio),
+                    g.vec3.translate_amount * (1.0 - ratio),
                     0.0,
                     0.0,
                 )
-                if rotate_yz_90:
+                if g.rotate_yz_90:
                     with ms.push_matrix(ms.MatrixStack.model):
                         ratio = (
                             current_animation_ratio()
-                            if step_number == StepNumber.rotate_to_z
+                            if g.step_number == StepNumber.rotate_to_z
                             else 1.0
-                            if step_number.value > StepNumber.rotate_to_z.value
+                            if g.step_number.value > StepNumber.rotate_to_z.value
                             else 0.0
                         )
 
-                        vec3.r = 0.0 * (1.0 - ratio)
-                        vec3.g = 1.0 * (1.0 - ratio)
-                        vec3.b = 1.0 * ratio
+                        g.vec3.r = 0.0 * (1.0 - ratio)
+                        g.vec3.g = 1.0 * (1.0 - ratio)
+                        g.vec3.b = 1.0 * ratio
                         ms.rotate_x(ms.MatrixStack.model, math.radians(90.0 * ratio))
-                        draw_vector(vec3, width, height)
+                        draw_vector(g.vec3, width, height)
                 else:
-                    draw_vector(vec3, width, height)
+                    draw_vector(g.vec3, width, height)
                 glEnable(GL_DEPTH_TEST)
 
         glDisable(GL_DEPTH_TEST)
 
-        draw_vector(vec1, width, height)
-        draw_vector(vec2, width, height)
+        draw_vector(g.vec1, width, height)
+        draw_vector(g.vec2, width, height)
 
         imgui.render()
         impl.render(imgui.get_draw_data())
 
-        # done with frame, flush and swap buffers
-        # Swap front and back buffers
+        # done with frame, flush and g.swap buffers
+        # G.Swap front and back buffers
         glfw.swap_buffers(window)
 
 
