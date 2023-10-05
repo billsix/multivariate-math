@@ -569,7 +569,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
             )
             ms.rotate_x(ms.MatrixStack.model, g.angle_x * ratio)
             if g.draw_undo_rotate_x_relative_coordinates and not g.do_remove_ground:
-                draw_ground(g.animation_time, xy=False, yz=True)
+                draw_ground(g.animation_time, width, height, xy=False, yz=True)
                 draw_axis(width, height)
 
         if g.draw_third_relative_coordinates:
@@ -648,7 +648,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                     g.step_number = StepNumber.show_triangle
         if g.step_number == StepNumber.show_triangle:
             if current_animation_ratio() >= 0.999999:
-                if imgui.button("Project onto e_2 e_3 plane") or g.auto_play:
+                if imgui.button("Project onto yz plane") or g.auto_play:
                     g.project_onto_yz_plane = True
                     g.step_number = StepNumber.project_onto_y
                     g.current_animation_start_time = g.animation_time
