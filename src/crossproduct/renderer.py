@@ -63,6 +63,9 @@ from dataclasses import dataclass
 from contextlib import contextmanager
 
 import ctypes
+from OpenGL.GL.shaders import ShaderProgram
+from numpy import ndarray
+from typing import Iterator
 
 
 # NEW - for shader location
@@ -79,7 +82,7 @@ line_thickness = 2.0
 
 
 @contextmanager
-def compile_shader(vert, frag, geom):
+def compile_shader(vert: str, frag: str, geom: str) -> Iterator[ShaderProgram]:
     with open(os.path.join(pwd, vert), "r") as f:
         vs = shaders.compileShader(f.read(), GL_VERTEX_SHADER)
 
@@ -100,7 +103,7 @@ def compile_shader(vert, frag, geom):
         glDeleteVertexArrays(1, [vao])
 
 
-def do_draw_lines(shader, vertices, time, width, height, xy=True, yz=False, zx=False):
+def do_draw_lines(shader: ShaderProgram, vertices: ndarray, time: float, width: int, height: int, xy: bool=True, yz: bool=False, zx: bool=False) -> None:
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
     glUseProgram(shader)
@@ -167,15 +170,15 @@ class Vector:
     highlight: bool = False
 
     @property
-    def angle_y(self):
+    def angle_y(self) -> float:
         return -math.atan2(self.z, math.sqrt(self.x**2 + self.y**2))
 
     @property
-    def angle_z(self):
+    def angle_z(self) -> float:
         return math.atan2(self.y, self.x)
 
 
-def do_draw_vector(shader, v, width, height):
+def do_draw_vector(shader: ShaderProgram, v: Vector, width: int, height: int) -> None:
     glUseProgram(shader)
 
     magnitude = math.sqrt(v.x**2 + v.y**2 + v.z**2)
@@ -273,7 +276,7 @@ def do_draw_vector(shader, v, width, height):
     glDeleteBuffers(1, [vbo])
 
 
-def do_draw_axis(shader, width, height):
+def do_draw_axis(shader: ShaderProgram, width: int, height: int) -> None:
     glUseProgram(shader)
 
     def vertices_of_axis():

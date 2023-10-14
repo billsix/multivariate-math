@@ -6,6 +6,7 @@ import sympy
 import galgebra
 from galgebra.ga import Ga
 from galgebra.printer import latex
+from galgebra.mv import Mv
 
 # tell sympy to use our printing by default
 sympy.init_printing(latex_printer=latex, use_latex="mathjax")
@@ -54,7 +55,7 @@ symvec2
 # Define Basic Operations on Vectors/Multivectors
 # -----------------------------------------------
 # %%
-def project(self, onto):
+def project(self: Mv, onto: Mv) -> Mv:
     return (self | onto) / onto
 
 
@@ -62,7 +63,7 @@ galgebra.mv.Mv.project = project
 
 
 # %%
-def reject(self, away_from):
+def reject(self: Mv, away_from: Mv) -> Mv:
     return (self ^ away_from) / away_from
 
 
@@ -70,7 +71,7 @@ galgebra.mv.Mv.reject = reject
 
 
 # %%
-def rotate(self, from_vec, to_vec):
+def rotate(self: Mv, from_vec: Mv, to_vec: Mv) -> Mv:
     plane = from_vec ^ to_vec
 
     parallel = self.project(onto=plane)

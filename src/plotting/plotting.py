@@ -15,7 +15,7 @@ sympy.init_printing(latex_printer=latex, use_latex="mathjax")
 # Make test for if this is notebook
 # ---------------------------------
 # %%
-def is_notebook():
+def is_notebook() -> bool:
     try:
         from IPython import get_ipython
 

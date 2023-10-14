@@ -55,6 +55,7 @@ from renderer import (
     Camera,
     compile_shader,
 )
+from numpy import ndarray
 
 
 if not glfw.init():
@@ -97,7 +98,7 @@ glEnable(GL_DEPTH_TEST)
 
 
 @functools.cache
-def ground_vertices():
+def ground_vertices() -> ndarray:
     verts = []
     for x in range(-10, 11, 1):
         for y in range(-10, 11, 1):
@@ -118,7 +119,7 @@ def ground_vertices():
 
 
 @functools.cache
-def unit_circle_vertices():
+def unit_circle_vertices() -> ndarray:
     verts = []
     the_range = 100
     the_list = np.linspace(0.0, 2 * np.pi, the_range)
@@ -228,7 +229,7 @@ g = Globals(
 )
 
 
-def initiliaze_vecs():
+def initiliaze_vecs() -> None:
     global g
     if not g.swap:
         g.vec1 = Vector(x=3.0, y=4.0, z=5.0, r=1.0, g=0.5, b=0.0, highlight=False)
@@ -245,7 +246,7 @@ initiliaze_vecs()
 g.camera = Camera(r=22.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
 
 
-def handle_inputs():
+def handle_inputs() -> None:
     if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS:
         g.camera.rot_y -= math.radians(1.0)
         g.use_ortho = False
@@ -271,7 +272,7 @@ TARGET_FRAMERATE = 60  # fps
 g.time_at_beginning_of_previous_frame = glfw.get_time()
 
 
-def restart():
+def restart() -> None:
     global g
     g = Globals(
         animation_time=0.0,
@@ -315,7 +316,7 @@ def restart():
 restart()
 
 
-def current_animation_ratio():
+def current_animation_ratio() -> float:
     if g.step_number == StepNumber.beginning:
         return 0.0
     return min(1.0, (g.animation_time - g.current_animation_start_time) / g.seconds_per_operation)
@@ -323,16 +324,16 @@ def current_animation_ratio():
 
 with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
-    def draw_ground(time, width, height, xy=True, yz=False, zx=False):
+    def draw_ground(time: float, width: int, height: int, xy: bool=True, yz: bool=False, zx: bool=False) -> None:
         do_draw_lines(lines_shader, ground_vertices(), time, width, height, xy, yz, zx)
 
-    def draw_unit_circle(time, width, height, xy=True, yz=False, zx=False):
+    def draw_unit_circle(time: float, width: int, height: int, xy: bool=True, yz: bool=False, zx: bool=False) -> None:
         do_draw_lines(lines_shader, unit_circle_vertices(), time, width, height, xy, yz, zx)
 
-    def draw_vector(v, width, height):
+    def draw_vector(v: Vector, width: int, height: int) -> None:
         do_draw_vector(lines_shader, v, width, height)
 
-    def draw_axis(width, height):
+    def draw_axis(width: int, height: int) -> None:
         do_draw_axis(lines_shader, width, height)
 
     # Loop until the user closes the window
@@ -507,7 +508,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                 g.current_animation_start_time = g.animation_time
                 g.step_number = StepNumber.rotate_z
 
-                def calc_angle_x():
+                def calc_angle_x() -> float:
                     a1, a2, a3 = g.vec1.x, g.vec1.y, g.vec1.z
                     mag_a = np.sqrt(a1**2 + a2**2 + a3**2)
                     b1, b2, b3 = g.vec2.x, g.vec2.y, g.vec2.z
