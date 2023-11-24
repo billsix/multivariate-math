@@ -1,0 +1,155 @@
+%% \copyright 2022-2023 William Emerison Six
+
+%% Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+%% The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+%% THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+\documentclass[12pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amsthm,amssymb,scrextend,commath}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\I}{\mathbb{I}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\renewcommand{\qed}{\hfill$\blacksquare$}
+\let\newproof\proof
+\renewenvironment{proof}{\begin{addmargin}[1em]{0em}\begin{newproof}}{\end{newproof}\end{addmargin}\qed}
+% \newcommand{\expl}[1]{\text{\hfill[#1]}$}
+
+\newenvironment{theorem}[2][Theorem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{lemma}[2][Lemma]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{problem}[2][Problem]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{exercise}[2][Exercise]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{reflection}[2][Reflection]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{proposition}[2][Proposition]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+\newenvironment{corollary}[2][Corollary]{\begin{trivlist}
+\item[\hskip \labelsep {\bfseries #1}\hskip \labelsep {\bfseries #2.}]}{\end{trivlist}}
+
+\begin{document}
+
+% --------------------------------------------------------------
+%                         Start here
+% --------------------------------------------------------------
+
+\lhead{Verification of Quaternions for rotation in a plane}
+\chead{William Emerison Six}
+\rhead{\today}
+
+% \maketitle
+
+\copyright 2023 William Emerison Six, licensed under the MIT License (at end of this document)
+
+\begin{problem}{1} %You can use theorem, proposition, exercise, or reflection here.  Modify x.yz to be whatever number you are proving
+
+  Given vectors $\vec{a}$ and $\vec{b}$ in $\R^3$, verify that a quaternion can be made to rotate the plane
+  spanned by $\vec{a}$ and $\vec{b}$ to rotate $\vec{a}$ to $\vec{b}$.
+
+
+\textbf{Define quaternion, and it's multiplication}
+
+A quarternion is defined as an unevaluated addition of a scalar and a three
+dimensional vection
+$ (q +\vec{q})$.
+
+Quaternion multiplication is defined as being distributive, where two vectors
+``multiplied'' results in the negative dot product of the vectors.
+
+
+   $ (p +\vec{p})(q + \vec{q}) \triangleq (pq - \vec{p} \cdot \vec{q}) + (p\vec{q} + q\vec{p} + \vec{p} \times \vec{q}) $.
+
+
+\textbf{Calculate the angle of rotation between $\vec{a}$ and $\vec{b}$ : }
+
+  Let $\vec{c} \triangleq \vec{a} \times \vec{b}$.
+
+  $\norm{\vec{c}} = \norm{\vec{a}}\norm{\vec{b}}\sin(\theta) $
+
+  $\vec{d} \triangleq  \vec{d}_{\parallel} + \vec{d}_{\perp}$
+
+
+\textbf{Create quaternion: }
+
+  Let $q  \triangleq \frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} + \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}  $.
+
+\end{problem}
+
+
+
+\begin{proof}
+
+\textbf{Components of vector parallel to plane of rotation: }
+
+$ (\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} + \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}})(0+\vec{d}_{\parallel})(\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}})   $
+
+
+
+$ (
+    ({\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}}{0} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} \cdot \vec{d}_{\parallel} )  +
+(
+\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}\vec{d}_{\parallel} +
+{0}\frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} +
+\frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} \times \vec{d}_{\parallel}
+)
+)
+(\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}) $
+
+
+$ (
+    (0 - 0 )  +
+(
+\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}\vec{d}_{\parallel} +
+0 +
+\frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} \times \vec{d}_{\parallel}
+)
+)
+(\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}) $
+
+
+
+$ ( 0 + (
+\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}\vec{d}_{\parallel} +
+\frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} \times \vec{d}_{\parallel}
+)) (\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}) $
+
+
+
+$ \vec{e}_{\parallel} \triangleq \frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}\vec{d}_{\parallel} +
+\frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} \times \vec{d}_{\parallel} $
+
+
+
+$ (0 + \vec{e}_{\parallel}) (\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}) $
+
+
+
+
+\end{proof}
+
+
+
+\textbf{License of proof }
+
+\copyright 2023 William Emerison Six
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+\end{document}
