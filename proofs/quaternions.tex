@@ -66,25 +66,30 @@ A quarternion is defined as an unevaluated addition of a scalar and a three
 dimensional vection
 $ (q +\vec{q})$.
 
-Quaternion multiplication is defined as being distributive, where two vectors
-``multiplied'' results in the negative dot product of the vectors.
+Quaternion multiplication is defined as being distributive, where the product of two vectors
+``multiplied'' is the cross product added to negative dot product of the vectors.
 
 
-   $ (p +\vec{p})(q + \vec{q}) \triangleq (pq - \vec{p} \cdot \vec{q}) + (p\vec{q} + q\vec{p} + \vec{p} \times \vec{q}) $.
+\begin{flalign}
+  (p +\vec{p})(q + \vec{q}) & \triangleq
+     (\underbrace{pq}_{s1} - \underbrace{\vec{p} \cdot \vec{q}}_{s2}) +
+     (\underbrace{p\vec{q}}_{v1} + \underbrace{q\vec{p}}_{v2} + \underbrace{\vec{p} \times \vec{q}}_{v3})
+\end{flalign}
+
 
 
 \textbf{Calculate the angle of rotation between $\vec{a}$ and $\vec{b}$ : }
 
   Let $\vec{c} \triangleq \vec{a} \times \vec{b}$.
 
-  $\norm{\vec{c}} = \norm{\vec{a}}\norm{\vec{b}}\sin(\theta) $
+  $\norm{\vec{c}} = \norm{\vec{a}\vphantom{\vec{b}}}\norm{\vec{b}}\sin({\theta}_{ab}) $
 
   $\vec{d} \triangleq  \vec{d}_{\parallel} + \vec{d}_{\perp}$
 
 
 \textbf{Create quaternion: }
 
-  Let $q  \triangleq \frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} + \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}  $.
+  Let $q  \triangleq \cos({\theta}_{ab}) + \frac{\vec{c}}{\norm{\vec{c}}}  $.
 
 \end{problem}
 
@@ -92,48 +97,38 @@ Quaternion multiplication is defined as being distributive, where two vectors
 
 \begin{proof}
 
+$ \vec{r}_a^{b}(\vec{d}) = \vec{r}_a^{b}(\vec{d}_{\parallel}) + \vec{d}_{\perp} $
+
 \textbf{Components of vector parallel to plane of rotation: }
 
-$ (\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} + \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}})(0+\vec{d}_{\parallel})(\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}})   $
-
-
-
-$ (
-    ({\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}}{0} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} \cdot \vec{d}_{\parallel} )  +
+\begin{flalign}
+\vec{r}_a^{b}(\vec{d}_{\parallel})  & \triangleq (\cos({\theta}_{ab}) + \frac{\vec{c}}{\norm{\vec{c}}})(0+\vec{d}_{\parallel})(\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}})   \\
+   & =  (
+    (\underbrace{\cos({\theta}_{ab}){0}}_{s1} - \underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \cdot \vec{d}_{\parallel}}_{s2} )  +
 (
-\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}\vec{d}_{\parallel} +
-{0}\frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} +
-\frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} \times \vec{d}_{\parallel}
+\underbrace{\cos({\theta}_{ab})\vec{d}_{\parallel}}_{v1} +
+\underbrace{{0}\frac{\vec{c}}{\norm{\vec{c}}}}_{v2} +
+\underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}}_{v3}
 )
 )
-(\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}) $
-
-
-$ (
-    (0 - 0 )  +
+(\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}}) \\
+  & = (
+    (\underbrace{0}_{s1} - \underbrace{0}_{s2} )  +
 (
-\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}\vec{d}_{\parallel} +
-0 +
-\frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} \times \vec{d}_{\parallel}
+\underbrace{\cos({\theta}_{ab})\vec{d}_{\parallel}}_{v1} +
+\underbrace{0}_{v2} +
+\underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}}_{v3}
 )
 )
-(\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}) $
-
-
-
-$ ( 0 + (
-\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}\vec{d}_{\parallel} +
-\frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} \times \vec{d}_{\parallel}
-)) (\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}) $
-
-
-
-$ \vec{e}_{\parallel} \triangleq \frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}\vec{d}_{\parallel} +
-\frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} \times \vec{d}_{\parallel} $
-
-
-
-$ (0 + \vec{e}_{\parallel}) (\frac{\vec{a} \cdot \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}} - \frac{\vec{a} \times \vec{b}}{\norm{\vec{a}}\norm{\vec{b}}}) $
+(\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}})  \\
+  & = ( \underbrace{0}_{s1 - s2} + (
+\underbrace{\cos({\theta}_{ab})\vec{d}_{\parallel}}_{v1} +
+\underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}}_{v3}
+)) (\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}})  \\
+  & = \vec{e}_{\parallel} \triangleq \cos({\theta}_{ab})\vec{d}_{\parallel} +
+\frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}  \\
+  & = (0 + \vec{e}_{\parallel}) (\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}})
+\end{flalign}
 
 
 
