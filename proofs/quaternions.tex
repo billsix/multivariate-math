@@ -89,7 +89,7 @@ Quaternion multiplication is defined as being distributive, where the product of
 
 \textbf{Create quaternion: }
 
-  Let $q  \triangleq \cos({\theta}_{ab}) + \frac{\vec{c}}{\norm{\vec{c}}}  $.
+  Let $q  \triangleq \underbrace{\cos({\theta}_{ab})}_{p} + \underbrace{\frac{\vec{c}}{\norm{\vec{c}}}}_{\vec{p}}  $.
 
 \end{problem}
 
@@ -102,7 +102,7 @@ $ \vec{r}_a^{b}(\vec{d}) = \vec{r}_a^{b}(\vec{d}_{\parallel}) + \vec{d}_{\perp} 
 \textbf{Components of vector parallel to plane of rotation: }
 
 \begin{flalign}
-\vec{r}_a^{b}(\vec{d}_{\parallel})  & \triangleq (\cos({\theta}_{ab}) + \frac{\vec{c}}{\norm{\vec{c}}})(0+\vec{d}_{\parallel})(\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}})   \\
+\vec{r}_a^{b}(\vec{d}_{\parallel})  & \triangleq (\underbrace{\cos({\theta}_{ab})}_{p} + \underbrace{\frac{\vec{c}}{\norm{\vec{c}}}}_{\vec{p}})(\underbrace{0}_{q}+\underbrace{\vec{d}_{\parallel}}_{\vec{q}})(\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}})   \\
    & =  (
     (\underbrace{\cos({\theta}_{ab}){0}}_{s1} - \underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \cdot \vec{d}_{\parallel}}_{s2} )  +
 (
