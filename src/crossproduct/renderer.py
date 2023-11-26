@@ -103,7 +103,16 @@ def compile_shader(vert: str, frag: str, geom: str) -> Iterator[ShaderProgram]:
         glDeleteVertexArrays(1, [vao])
 
 
-def do_draw_lines(shader: ShaderProgram, vertices: ndarray, time: float, width: int, height: int, xy: bool=True, yz: bool=False, zx: bool=False) -> None:
+def do_draw_lines(
+    shader: ShaderProgram,
+    vertices: ndarray,
+    time: float,
+    width: int,
+    height: int,
+    xy: bool = True,
+    yz: bool = False,
+    zx: bool = False,
+) -> None:
     numberOfVertices = np.size(vertices) // floatsPerVertex
 
     glUseProgram(shader)
@@ -276,7 +285,14 @@ def do_draw_vector(shader: ShaderProgram, v: Vector, width: int, height: int) ->
     glDeleteBuffers(1, [vbo])
 
 
-def do_draw_axis(shader: ShaderProgram, width: int, height: int) -> None:
+def do_draw_axis(
+    shader: ShaderProgram,
+    width: int,
+    height: int,
+    highlight_x: bool = False,
+    highlight_y: bool = False,
+    highlight_z: bool = False,
+) -> None:
     glUseProgram(shader)
 
     def vertices_of_axis():
@@ -349,7 +365,10 @@ def do_draw_axis(shader: ShaderProgram, width: int, height: int) -> None:
         with ms.push_matrix(ms.MatrixStack.model):
             ms.rotate_z(ms.MatrixStack.model, math.radians(-90.0))
 
-            glUniform3f(colorLoc, 1.0, 0.0, 0.0)
+            if highlight_x:
+                glUniform3f(colorLoc, 1.0, 1.0, 1.0)
+            else:
+                glUniform3f(colorLoc, 1.0, 0.0, 0.0)
 
             # ascontiguousarray puts the array in column major order
             glUniformMatrix4fv(
@@ -371,7 +390,10 @@ def do_draw_axis(shader: ShaderProgram, width: int, height: int) -> None:
             ms.rotate_y(ms.MatrixStack.model, math.radians(90.0))
             ms.rotate_z(ms.MatrixStack.model, math.radians(90.0))
 
-            glUniform3f(colorLoc, 0.0, 0.0, 1.0)
+            if highlight_z:
+                glUniform3f(colorLoc, 1.0, 1.0, 1.0)
+            else:
+                glUniform3f(colorLoc, 0.0, 0.0, 1.0)
             # ascontiguousarray puts the array in column major order
             glUniformMatrix4fv(
                 mvpMatrixLoc,
@@ -387,7 +409,10 @@ def do_draw_axis(shader: ShaderProgram, width: int, height: int) -> None:
             glDrawArrays(GL_LINES, 0, numberOfVertices)
 
         # y
-        glUniform3f(colorLoc, 0.0, 1.0, 0.0)
+        if highlight_y:
+            glUniform3f(colorLoc, 1.0, 1.0, 1.0)
+        else:
+            glUniform3f(colorLoc, 0.0, 1.0, 0.0)
         # glColor3f(0.0,1.0,0.0) # green y
         # ascontiguousarray puts the array in column major order
         glUniformMatrix4fv(
