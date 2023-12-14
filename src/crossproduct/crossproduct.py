@@ -418,8 +418,7 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
             if not g.do_remove_ground:
                 draw_ground(g.animation_time, width, height)
                 draw_ground(g.animation_time, width, height, xy=False, zx=True)
-                draw_unit_circle(g.animation_time, width, height)
-                draw_unit_circle(g.animation_time, width, height, xy=False, zx=True)
+                draw_unit_circle(g.animation_time, width, height, xy=True, yz=True, zx=True)
 
         draw_axis(width, height, highlight_x=g.highlight_x, highlight_y=g.highlight_y, highlight_z=g.highlight_z)
 

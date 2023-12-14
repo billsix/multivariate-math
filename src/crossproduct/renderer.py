@@ -138,31 +138,70 @@ def do_draw_lines(
         GL_STATIC_DRAW,
     )
 
-    with ms.push_matrix(ms.MatrixStack.model):
-        if xy:
-            pass
-        elif yz:
+    # xy
+    if xy:
+        with ms.push_matrix(ms.MatrixStack.model):
+            # ascontiguousarray puts the array in column major order
+            glUniformMatrix4fv(
+                mvpMatrixLoc,
+                1,
+                GL_TRUE,
+                np.ascontiguousarray(
+                    ms.get_current_matrix(ms.MatrixStack.modelviewprojection),
+                    dtype=np.float32,
+                ),
+            )
+
+            glUniform3f(colorLoc, 0.3, 0.3, 0.3)
+            glUniform1f(thicknessLoc, line_thickness)
+            glUniform2f(viewportLoc, width, height)
+
+            glDrawArrays(GL_LINES, 0, numberOfVertices)
+
+    # yz
+    if yz:
+        with ms.push_matrix(ms.MatrixStack.model):
             ms.rotate_y(ms.MatrixStack.model, math.radians(90.0))
-        elif zx:
+
+            # ascontiguousarray puts the array in column major order
+            glUniformMatrix4fv(
+                mvpMatrixLoc,
+                1,
+                GL_TRUE,
+                np.ascontiguousarray(
+                    ms.get_current_matrix(ms.MatrixStack.modelviewprojection),
+                    dtype=np.float32,
+                ),
+            )
+
+            glUniform3f(colorLoc, 0.3, 0.3, 0.3)
+            glUniform1f(thicknessLoc, line_thickness)
+            glUniform2f(viewportLoc, width, height)
+
+            glDrawArrays(GL_LINES, 0, numberOfVertices)
+    # zx
+    if zx:
+        with ms.push_matrix(ms.MatrixStack.model):
             ms.rotate_x(ms.MatrixStack.model, math.radians(90.0))
 
-        # ascontiguousarray puts the array in column major order
-        glUniformMatrix4fv(
-            mvpMatrixLoc,
-            1,
-            GL_TRUE,
-            np.ascontiguousarray(
-                ms.get_current_matrix(ms.MatrixStack.modelviewprojection),
-                dtype=np.float32,
-            ),
-        )
+            # ascontiguousarray puts the array in column major order
+            glUniformMatrix4fv(
+                mvpMatrixLoc,
+                1,
+                GL_TRUE,
+                np.ascontiguousarray(
+                    ms.get_current_matrix(ms.MatrixStack.modelviewprojection),
+                    dtype=np.float32,
+                ),
+            )
 
-        glUniform3f(colorLoc, 0.3, 0.3, 0.3)
-        glUniform1f(thicknessLoc, line_thickness)
-        glUniform2f(viewportLoc, width, height)
+            glUniform3f(colorLoc, 0.3, 0.3, 0.3)
+            glUniform1f(thicknessLoc, line_thickness)
+            glUniform2f(viewportLoc, width, height)
 
-        glDrawArrays(GL_LINES, 0, numberOfVertices)
+            glDrawArrays(GL_LINES, 0, numberOfVertices)
 
+        
     glDeleteBuffers(1, [vbo])
     # reset VAO/VBO to default
     glBindBuffer(GL_ARRAY_BUFFER, 0)
