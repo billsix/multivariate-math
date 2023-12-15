@@ -42,6 +42,7 @@ from dataclasses import dataclass
 import glfw
 import pyMatrixStack as ms
 import imgui
+import math
 from imgui.integrations.glfw import GlfwRenderer
 
 import functools
@@ -88,6 +89,17 @@ def on_key(window, key, scancode, action, mods):
 
 
 glfw.set_key_callback(window, on_key)
+
+
+def scroll_callback(window, xoffset, yoffset):
+    global g
+    g.camera.r = g.camera.r + -1 * (yoffset * math.log(g.camera.r))
+    if g.camera.r < 3.0:
+        g.camera.r = 3.0
+
+
+glfw.set_scroll_callback(window, scroll_callback)
+
 
 glClearColor(0.0, 0.0, 0.0, 1.0)
 
@@ -258,7 +270,7 @@ initiliaze_vecs()
 g.camera = Camera(r=22.0, rot_y=math.radians(45.0), rot_x=math.radians(35.264))
 
 
-def handle_inputs() -> None:
+def handle_inputs(previous_mouse_position) -> None:
     if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS:
         g.camera.rot_y -= math.radians(1.0)
         g.use_ortho = False
@@ -272,10 +284,22 @@ def handle_inputs() -> None:
         g.camera.rot_x += math.radians(1.0)
         g.use_ortho = False
 
+    new_mouse_position = glfw.get_cursor_pos(window)
+    return_none = False
+    if glfw.PRESS == glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT):
+        if previous_mouse_position:
+            g.camera.rot_y -= 0.2 * math.radians(new_mouse_position[0] - previous_mouse_position[0])
+            g.camera.rot_x += 0.2 * math.radians(new_mouse_position[1] - previous_mouse_position[1])
+            g.use_ortho = False
+    else:
+        return_none = True
+
     if g.camera.rot_x > math.pi / 2.0:
         g.camera.rot_x = math.pi / 2.0
     if g.camera.rot_x < -math.pi / 2.0:
         g.camera.rot_x = -math.pi / 2.0
+
+    return None if return_none else new_mouse_position
 
 
 TARGET_FRAMERATE = 60  # fps
@@ -358,6 +382,8 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
     ) -> None:
         do_draw_axis(lines_shader, width, height, highlight_x, highlight_y, highlight_z)
 
+    # local variable for event loop
+    previous_mouse_position = None
     # Loop until the user closes the window
     while not glfw.window_should_close(window):
         # poll the time to try to get a constant framerate
@@ -379,9 +405,9 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
         glEnable(GL_DEPTH_TEST)
 
-        # render scene
-        handle_inputs()
+        previous_mouse_position = handle_inputs(previous_mouse_position)
 
+        # render scene
         ms.set_to_identity_matrix(ms.MatrixStack.model)
         ms.set_to_identity_matrix(ms.MatrixStack.view)
         ms.set_to_identity_matrix(ms.MatrixStack.projection)
