@@ -72,8 +72,8 @@ Quaternion multiplication is defined as being distributive, where the product of
 
 \begin{flalign}
   (p +\vec{p})(q + \vec{q}) & \triangleq
-     (\underbrace{pq}_{s_1} - \underbrace{\vec{p} \cdot \vec{q}}_{s_2}) +
-     (\underbrace{p\vec{q}}_{v_1} + \underbrace{q\vec{p}}_{v_2} + \underbrace{\vec{p} \times \vec{q}}_{v_3})
+     (\underbrace{pq}_{m} - \underbrace{\vec{p} \cdot \vec{q}}_{n}) +
+     (\underbrace{p\vec{q}}_{r} + \underbrace{q\vec{p}}_{s} + \underbrace{\vec{p} \times \vec{q}}_{t})
 \end{flalign}
 
 
@@ -104,26 +104,26 @@ $ \vec{r}_a^{b}(\vec{d}) = \vec{r}_a^{b}(\vec{d}_{\parallel}) + \vec{d}_{\perp} 
 \begin{flalign}
 \vec{r}_a^{b}(\vec{d}_{\parallel})  & \triangleq (\underbrace{\cos({\theta}_{ab})}_{p} + \underbrace{\frac{\vec{c}}{\norm{\vec{c}}}}_{\vec{p}})(\underbrace{0}_{q}+\underbrace{\vec{d}_{\parallel}}_{\vec{q}})(\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}})   \\
    & =  (
-    (\underbrace{\cos({\theta}_{ab}){0}}_{s_1} - \underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \cdot \vec{d}_{\parallel}}_{s_2} )  +
+    (\underbrace{\cos({\theta}_{ab}){0}}_{m} - \underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \cdot \vec{d}_{\parallel}}_{n} )  +
 (
-\underbrace{\cos({\theta}_{ab})\vec{d}_{\parallel}}_{v_1} +
-\underbrace{{0}\frac{\vec{c}}{\norm{\vec{c}}}}_{v_2} +
-\underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}}_{v_3}
+\underbrace{\cos({\theta}_{ab})\vec{d}_{\parallel}}_{r} +
+\underbrace{{0}\frac{\vec{c}}{\norm{\vec{c}}}}_{s} +
+\underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}}_{t}
 )
 )
 (\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}}) \\
   & = (
-    (\underbrace{0}_{s_1} - \underbrace{0}_{s_2} )  +
+    (\underbrace{0}_{m} - \underbrace{0}_{n} )  +
 (
-\underbrace{\cos({\theta}_{ab})\vec{d}_{\parallel}}_{v_1} +
-\underbrace{0}_{v_2} +
-\underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}}_{v_3}
+\underbrace{\cos({\theta}_{ab})\vec{d}_{\parallel}}_{r} +
+\underbrace{0}_{s} +
+\underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}}_{t}
 )
 )
 (\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}})  \\
-  & = ( \underbrace{0}_{s_1 - s_2} + (
-\underbrace{\cos({\theta}_{ab})\vec{d}_{\parallel}}_{v_1} +
-\underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}}_{v_3}
+  & = ( \underbrace{0}_{m - n} + (
+\underbrace{\cos({\theta}_{ab})\vec{d}_{\parallel}}_{r} +
+\underbrace{\frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}}_{t}
 )) (\cos({\theta}_{ab}) - \frac{\vec{c}}{\norm{\vec{c}}})  \\
   & = \vec{e}_{\parallel} \triangleq \cos({\theta}_{ab})\vec{d}_{\parallel} +
 \frac{\vec{c}}{\norm{\vec{c}}} \times \vec{d}_{\parallel}  \\
