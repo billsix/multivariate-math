@@ -1,0 +1,242 @@
+\documentclass{article}
+\usepackage{amsmath}
+\usepackage{geometry}
+
+\geometry{top=1in, bottom=1in, left=1in, right=1in}
+
+\begin{document}
+
+\section{Multivariate Function Cheat Sheet}
+
+\subsection{2D}
+
+\subsubsection{2D dot product}
+
+\begin{description}
+\item[Function:] $\vec{a} \cdot \vec{b}$
+\item[Inputs:] $Vector, Vector$
+\item[Output:] $Real$
+\end{description}
+
+\[
+\text{Dot } \vec{a} \text{ with } \vec{b} : \quad \vec{a} \cdot \vec{b} =
+ \vec{a}_x \vec{b}_x  + \vec{a}_y \vec{b}_y
+\]
+
+
+\subsubsection{2D Vector Length}
+
+\begin{description}
+\item[Function:] $\vec{a} \cdot \vec{b}$
+\item[Inputs:] $Vector, Vector$
+\item[Output:] $Real$
+\end{description}
+
+\[
+\text{Dot } \vec{a} \text{ with } \vec{b} : \quad \| \vec{a} \| =
+ \sqrt{\vec{a} \cdot \vec{a}}
+\]
+
+
+\subsubsection{Cosine between 2D Vectors}
+
+\begin{description}
+\item[Function:] \texttt{cos(\(\vec{a}\), \(\vec{b}\))}
+\item[Inputs:] $Vector, Vector$
+\item[Output:] $Real$
+\end{description}
+
+\[
+\text{Cosine between vectors } \vec{a} \text{ and }  \vec{b} : \quad \texttt{cos}(\vec{a}, \vec{b}) =
+\frac{1}{\| \vec{a} \| \| \vec{b} \|} \vec{a} \cdot \vec{b}
+\]
+
+\subsubsection{2D Rotation in XY Plane by 90 Degrees}
+
+\begin{description}
+\item[Function:] \texttt{Rotate2D90(\(\vec{v}\))}
+\item[Inputs:] $Vector$
+\item[Output:] $Vector$
+\end{description}
+
+\[
+\text{Rotate } \vec{v} \text{ by 90 degrees} : \quad \texttt{Rotate2D90}(\vec{v}) = \begin{bmatrix}
+-\vec{v}_y \\
+\vec{v}_x
+\end{bmatrix}
+\]
+
+\subsubsection{Sine between 2D Vectors}
+
+\begin{description}
+\item[Function:] \texttt{sin(\(\vec{a}\), \(\vec{b}\))}
+\item[Inputs:] $Vector, Vector$
+\item[Output:] $Real$
+\end{description}
+
+\[
+\text{Sine between vectors } \vec{a} \text{ and }  \vec{b} : \quad \texttt{sin}(\vec{a}, \vec{b}) =
+\texttt{cos}(\texttt{Rotate2D90(\(\vec{a}\))}, \vec{b})
+\]
+
+\subsubsection{2D Uniform Scaling}
+
+\begin{description}
+\item[Function:] \texttt{Scale2D(\(\vec{v}, \alpha\))}
+\item[Inputs:] $Vector$
+\item[Output:] $Vector$
+\end{description}
+
+\[
+\text{Scale } \vec{v} \text{ by } \alpha : \quad \texttt{Scale2D}(\vec{v}, \alpha) = \alpha \begin{bmatrix}
+\vec{v}_x \\
+\vec{v}_y
+\end{bmatrix}
+\]
+
+\subsubsection{2D Rotation in XY Plane by \(\theta\) Degrees}
+
+\begin{description}
+\item[Function:] \texttt{Rotate2D(\(\vec{v}, \theta\))}
+\item[Inputs:] $Vector, Angle$
+\item[Output:] $Vector$
+\end{description}
+
+\[
+\text{Rotate } \vec{v} \text{ by } \theta \text{ degrees} :
+\quad \texttt{Rotate2D}(\vec{v}, \theta) =
+\cos(\theta) \vec{v} + \sin(\theta) \texttt{Rotate2D90(\(\vec{v}\))}
+\]
+
+\subsubsection{2D Rotation to Align X-Axis to Vector \(\vec{a}\) (Preserving Length)}
+
+\begin{description}
+\item[Function:] \texttt{Rotate2DToX(\(\vec{v}, \vec{a}\))}
+\item[Inputs:] $Vector, Vector$
+\item[Output:] $Vector$
+\end{description}
+
+\[
+\text{Rotate } \vec{v} \text{ to align with X-axis} : \quad \texttt{Rotate2DToX}(\vec{v}, \vec{a}) = \frac{1}{\| \vec{a} \|}  (
+\vec{v}_x \vec{a} + \vec{v}_y \texttt{Rotate2D90(\(\vec{a}\))}
+)
+\]
+
+\subsubsection{2D Rotation to Align Vector \(\vec{a}\) with X-Axis (Preserving Length)}
+
+\begin{description}
+\item[Function:] \texttt{Rotate2DToX(\(\vec{v}, \vec{a}\))}
+\item[Inputs:] $Vector, Vector$
+\item[Output:] $Vector$
+\end{description}
+
+\[
+\text{Rotate } \vec{v} \text{ to align with X-axis} : \quad \texttt{Rotate2DToX}(\vec{v}, \vec{a}) = \frac{1}{\| \vec{a} \|} \begin{bmatrix}
+\vec{v} \cdot \vec{a} \\
+\vec{v} \cdot \texttt{Rotate2D90(\(\vec{a}\))}
+\end{bmatrix}
+\]
+
+\subsubsection{3D Rotation in XY Plane by 90 Degrees}
+
+\begin{description}
+\item[Function:] \texttt{Rotate3DXY90(\(\vec{v}\))}
+\end{description}
+
+\[
+\text{Rotate } \vec{v} \text{ by 90 degrees} : \quad \texttt{Rotate3DXY90}(\vec{v}) = \begin{bmatrix}
+-\vec{v}_y \\
+\vec{v}_x \\
+\vec{v}_z
+\end{bmatrix}
+\]
+
+\subsubsection{3D Rotation in YZ Plane by 90 Degrees}
+
+\begin{description}
+\item[Function:] \texttt{Rotate3DYZ90(\(\vec{v}\))}
+\end{description}
+
+\[
+\text{Rotate } \vec{v} \text{ by 90 degrees} : \quad \texttt{Rotate3DYZ90}(\vec{v}) = \begin{bmatrix}
+\vec{v}_x \\
+-\vec{v}_z \\
+\vec{v}_y
+\end{bmatrix}
+\]
+
+\subsubsection{3D Rotation in ZX Plane by 90 Degrees}
+
+\begin{description}
+\item[Function:] \texttt{Rotate3DZX90(\(\vec{v}\))}
+\end{description}
+
+\[
+\text{Rotate } \vec{v} \text{ by 90 degrees} : \quad \texttt{Rotate3DZX90}(\vec{v}) = \begin{bmatrix}
+\vec{v}_z \\
+\vec{v}_y \\
+-\vec{v}_x
+\end{bmatrix}
+\]
+
+\subsubsection{3D Rotation in XY Plane by \(\theta\) Degrees}
+
+\begin{description}
+\item[Function:] \texttt{Rotate3DXY(\(\vec{v}, \theta\))}
+\end{description}
+
+\[
+\text{Rotate } \vec{v} \text{ by } \theta \text{ degrees} : \quad \texttt{Rotate3DXY}(\vec{v}, \theta) = \begin{bmatrix}
+\vec{v}_x \cos(\theta) - \vec{v}_y \sin(\theta) \\
+\vec{v}_x \sin(\theta) + \vec{v}_y \cos(\theta) \\
+\vec{v}_z
+\end{bmatrix}
+\]
+
+\subsubsection{3D Rotation in YZ Plane by \(\theta\) Degrees}
+
+\begin{description}
+\item[Function:] \texttt{Rotate3DYZ(\(\vec{v}, \theta\))}
+\end{description}
+
+\[
+\text{Rotate } \vec{v} \text{ by } \theta \text{ degrees} : \quad \texttt{Rotate3DYZ}(\vec{v}, \theta) = \begin{bmatrix}
+\vec{v}_x \\
+\vec{v}_y \cos(\theta) - \vec{v}_z \sin(\theta) \\
+\vec{v}_y \sin(\theta) + \vec{v}_z \cos(\theta)
+\end{bmatrix}
+\]
+
+\subsubsection{3D Rotation in ZX Plane by \(\theta\) Degrees}
+
+\begin{description}
+\item[Function:] \texttt{Rotate3DZX(\(\vec{v}, \theta\))}
+\end{description}
+
+\[
+\text{Rotate } \vec{v} \text{ by } \theta \text{ degrees} : \quad \texttt{Rotate3DZX}(\vec{v}, \theta) = \begin{bmatrix}
+\vec{v}_x \cos(\theta) - \vec{v}_z \sin(\theta) \\
+\vec{v}_y \\
+\vec{v}_x \sin(\theta) + \vec{v}_z \cos(\theta)
+\end{bmatrix}
+\]
+
+\subsubsection{3D Rotation of Vectors \(\vec{a}\) and \(\vec{b}\) to Align with X and XY Plane}
+
+\begin{description}
+\item[Function:] \texttt{Rotate3DToXY(\(\vec{a}, \vec{b}\))}
+\end{description}
+
+\[
+\text{Rotate vectors } \vec{a} \text{ and } \vec{b} \text{ to align with X and XY Plane} : \quad \texttt{Rotate3DToXY}(\vec{a}, \vec{b}) = \begin{bmatrix}
+\| \vec{a} \| \\
+0 \\
+0
+\end{bmatrix}, \begin{bmatrix}
+\| \vec{b} \| \\
+0 \\
+0
+\end{bmatrix}
+\]
+
+\end{document}

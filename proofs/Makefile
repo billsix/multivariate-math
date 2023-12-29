@@ -1,5 +1,6 @@
 all: crossproduct.pdf \
-	quaternions.pdf
+	quaternions.pdf \
+	multivariatebasics.pdf
 
 crossproduct.pdf: crossproduct.tex
 	pdflatex crossproduct.tex
@@ -8,3 +9,7 @@ crossproduct.pdf: crossproduct.tex
 quaternions.pdf: quaternions.tex
 	pdflatex quaternions.tex
 	pdflatex quaternions.tex
+
+multivariatebasics.pdf: multivariatebasics.tex
+	pdflatex multivariatebasics.tex
+	pdflatex multivariatebasics.tex
