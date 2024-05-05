@@ -361,16 +361,31 @@ restart()
 def current_animation_ratio() -> float:
     if g.step_number == StepNumber.beginning:
         return 0.0
-    return min(1.0, (g.animation_time - g.current_animation_start_time) / g.seconds_per_operation)
+    return min(
+        1.0,
+        (g.animation_time - g.current_animation_start_time) / g.seconds_per_operation,
+    )
 
 
 with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
 
-    def draw_ground(time: float, width: int, height: int, xy: bool = True, yz: bool = False, zx: bool = False) -> None:
+    def draw_ground(
+        time: float,
+        width: int,
+        height: int,
+        xy: bool = True,
+        yz: bool = False,
+        zx: bool = False,
+    ) -> None:
         do_draw_lines(lines_shader, ground_vertices(), time, width, height, xy, yz, zx)
 
     def draw_unit_circle(
-        time: float, width: int, height: int, xy: bool = True, yz: bool = False, zx: bool = False
+        time: float,
+        width: int,
+        height: int,
+        xy: bool = True,
+        yz: bool = False,
+        zx: bool = False,
     ) -> None:
         do_draw_lines(lines_shader, unit_circle_vertices(), time, width, height, xy, yz, zx)
 
@@ -378,7 +393,11 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
         do_draw_vector(lines_shader, v, width, height)
 
     def draw_axis(
-        width: int, height: int, highlight_x: bool = False, highlight_y: bool = False, highlight_z: bool = False
+        width: int,
+        height: int,
+        highlight_x: bool = False,
+        highlight_y: bool = False,
+        highlight_z: bool = False,
     ) -> None:
         do_draw_axis(lines_shader, width, height, highlight_x, highlight_y, highlight_z)
 
@@ -446,7 +465,13 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                 draw_ground(g.animation_time, width, height, xy=False, zx=True)
                 draw_unit_circle(g.animation_time, width, height, xy=True, yz=True, zx=True)
 
-        draw_axis(width, height, highlight_x=g.highlight_x, highlight_y=g.highlight_y, highlight_z=g.highlight_z)
+        draw_axis(
+            width,
+            height,
+            highlight_x=g.highlight_x,
+            highlight_y=g.highlight_y,
+            highlight_z=g.highlight_z,
+        )
 
         imgui.new_frame()
 
@@ -487,10 +512,13 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
             imgui.text("a x b")
             imgui.label_text("label", "Value")
             if g.step_number == StepNumber.beginning:
-                changed, (
-                    g.vec1.x,
-                    g.vec1.y,
-                    g.vec1.z,
+                (
+                    changed,
+                    (
+                        g.vec1.x,
+                        g.vec1.y,
+                        g.vec1.z,
+                    ),
                 ) = imgui.input_float3(
                     label="vec a" + a_extra_text(),
                     value0=g.vec1.x,
@@ -502,10 +530,13 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                     g.animation_time = 0.0
                     g.step_number = StepNumber.beginning
 
-                changed, (
-                    g.vec2.x,
-                    g.vec2.y,
-                    g.vec2.z,
+                (
+                    changed,
+                    (
+                        g.vec2.x,
+                        g.vec2.y,
+                        g.vec2.z,
+                    ),
                 ) = imgui.input_float3(
                     label="vec b" + a_extra_text(),
                     value0=g.vec2.x,
@@ -930,7 +961,11 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
                             else 0.0
                         )
 
-                        g.vec3.r, g.vec3.g, g.vec3.b = 0.0 * (1.0 - ratio), 1.0 * (1.0 - ratio), 1.0 * ratio
+                        g.vec3.r, g.vec3.g, g.vec3.b = (
+                            0.0 * (1.0 - ratio),
+                            1.0 * (1.0 - ratio),
+                            1.0 * ratio,
+                        )
                         ms.rotate_x(ms.MatrixStack.model, math.radians(90.0 * ratio))
                         draw_vector(g.vec3, width, height)
                 else:

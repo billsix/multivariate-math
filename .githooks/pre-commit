@@ -47,7 +47,7 @@ fi
 
 for FILE in $(git diff --cached --name-only | grep '\.py')
 do
-    black -l 120 $FILE
+    ruff format --line-length=120 $FILE
     autoflake8 --in-place $FILE
     removestar -i $FILE
     git add $FILE

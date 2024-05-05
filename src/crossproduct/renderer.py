@@ -201,7 +201,6 @@ def do_draw_lines(
 
             glDrawArrays(GL_LINES, 0, numberOfVertices)
 
-        
     glDeleteBuffers(1, [vbo])
     # reset VAO/VBO to default
     glBindBuffer(GL_ARRAY_BUFFER, 0)

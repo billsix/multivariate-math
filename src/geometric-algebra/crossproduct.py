@@ -37,8 +37,8 @@ vec2 = -3 * e_x + 12 * e_y + 4 * e_z
 
 # %%
 vec1
-display(Math(r'F(k) = \int_{-\infty}^{\infty} f(x) e^{2\pi i k} dx'))
-display(Math(r'F(k) = {3}{\frac{5}{2}}'))
+display(Math(r"F(k) = \int_{-\infty}^{\infty} f(x) e^{2\pi i k} dx"))
+display(Math(r"F(k) = {3}{\frac{5}{2}}"))
 # %%
 vec2
 
