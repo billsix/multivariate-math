@@ -7,6 +7,7 @@ from galgebra.printer import latex
 import matplotlib.pyplot as plt
 import numpy as np
 
+
 # tell sympy to use our printing by default
 sympy.init_printing(latex_printer=latex, use_latex="mathjax")
 
@@ -51,9 +52,6 @@ plt.show()
 # Do vector
 # ---------
 # %%
-import matplotlib.pyplot as plt
-import numpy as np
-
 # Vector components
 x = 2
 y = 4

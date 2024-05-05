@@ -42,7 +42,6 @@ from dataclasses import dataclass
 import glfw
 import pyMatrixStack as ms
 import imgui
-import math
 from imgui.integrations.glfw import GlfwRenderer
 
 import functools
