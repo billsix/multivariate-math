@@ -70,39 +70,39 @@
 \textbf{Rotate $\vec{a}$ and $\vec{b}$ so that $\vec{a}$ is on the x axis: }
 
   Let $\vec{a} \triangleq \begin{bmatrix}
-    a_1 \\
-    a_2 \\
-    a_3 \\
+    a_x \\
+    a_y \\
+    a_z \\
   \end{bmatrix}$ and let $\vec{b} \triangleq \begin{bmatrix}
-    b_1 \\
-    b_2 \\
-    b_3 \\
+    b_x \\
+    b_y \\
+    b_z \\
   \end{bmatrix}$.
 
-  let $k_1 \triangleq \sqrt{a_1^2 + a_2^2}$.
+  let $k \triangleq \sqrt{a_x^2 + a_y^2}$.
 
   Define $\vec{f}_a^{zx}(\vec{v})$ such that $\vec{f}_a^{zx}(\vec{a})$ is rotated onto the $xz$ plane.
 
 \begin{flalign}
   \vec{a'}  \triangleq
   \vec{f}_a^{zx}(\begin{bmatrix}
-     {v_1} \\
-     {v_2} \\
-     {v_3} \\
+     {v_x} \\
+     {v_y} \\
+     {v_z} \\
 \end{bmatrix} )
   & \triangleq \begin{bmatrix}
-     \frac{a_1}{k_1} \\
-     \frac{-a_2}{k_1} \\
+     \frac{a_x}{k} \\
+     \frac{-a_y}{k} \\
      0 \\
-\end{bmatrix} * {v_1} +  \begin{bmatrix}
-     \frac{a_2}{k_1} \\
-     \frac{a_1}{k_1} \\
+\end{bmatrix} * {v_x} +  \begin{bmatrix}
+     \frac{a_y}{k} \\
+     \frac{a_x}{k} \\
      0 \\
-\end{bmatrix} * {v_2} +  \begin{bmatrix}
+\end{bmatrix} * {v_y} +  \begin{bmatrix}
       0 \\
       0 \\
       1 \\
-\end{bmatrix} * {v_3}
+\end{bmatrix} * {v_z}
 \end{flalign}
 
 
@@ -110,60 +110,60 @@
 
 \begin{flalign}
   \vec{f}_{a'}^x(\vec{v}) & \triangleq     \begin{bmatrix}
-     \frac{k_1}{\norm{\vec{a}}} \\
+     \frac{k}{\norm{\vec{a}}} \\
      0 \\
-     \frac{-a_3}{\norm{\vec{a}}} \\
-    \end{bmatrix} * {v_1} +
+     \frac{-a_z}{\norm{\vec{a}}} \\
+    \end{bmatrix} * {v_x} +
     \begin{bmatrix}
      0   \\
      1  \\
      0 \\
-    \end{bmatrix} * {v_2} +
+    \end{bmatrix} * {v_y} +
     \begin{bmatrix}
-     \frac{a_3}{\norm{\vec{a}}} \\
+     \frac{a_z}{\norm{\vec{a}}} \\
      0 \\
-     \frac{k_1}{\norm{\vec{a}}}\\
-    \end{bmatrix}  * {v_3}
+     \frac{k}{\norm{\vec{a}}}\\
+    \end{bmatrix}  * {v_z}
 \end{flalign}
 
 
 \begin{flalign}
 \vec{a''}  \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{v}) & = \begin{bmatrix}
-     \frac{k_1}{\norm{\vec{a}}} & 0  & \frac{a_3}{\norm{\vec{a}}} \\
+     \frac{k}{\norm{\vec{a}}} & 0  & \frac{a_z}{\norm{\vec{a}}} \\
      0 & 1  & 0 \\
-     \frac{-a_3}{\norm{\vec{a}}} & 0 & \frac{k_1}{\norm{\vec{a}}}\\
+     \frac{-a_z}{\norm{\vec{a}}} & 0 & \frac{k}{\norm{\vec{a}}}\\
     \end{bmatrix} * (\begin{bmatrix}
-     \frac{a_1}{k_1} & \frac{a_2}{k_1} & 0 \\
-     \frac{-a_2}{k_1} & \frac{a_1}{k_1} & 0 \\
+     \frac{a_x}{k} & \frac{a_y}{k} & 0 \\
+     \frac{-a_y}{k} & \frac{a_x}{k} & 0 \\
      0 & 0 & 1 \\
 \end{bmatrix} * \vec{v}) \\
   & = \begin{bmatrix}
-     \frac{a_1}{\norm{\vec{a}}} & \frac{a_2}{\norm{\vec{a}}} & \frac{a_3}{\norm{\vec{a}}} \\
-     \frac{-a_2}{k_1} & \frac{a_1}{k_1} & 0 \\
-     \frac{-a_1a_3}{k_1\norm{\vec{a}}} & \frac{-a_2a_3}{k_1\norm{\vec{a}}} & \frac{k_1}{\norm{\vec{a}}} \\
+     \frac{a_x}{\norm{\vec{a}}} & \frac{a_y}{\norm{\vec{a}}} & \frac{a_z}{\norm{\vec{a}}} \\
+     \frac{-a_y}{k} & \frac{a_x}{k} & 0 \\
+     \frac{-a_xa_z}{k\norm{\vec{a}}} & \frac{-a_ya_z}{k\norm{\vec{a}}} & \frac{k}{\norm{\vec{a}}} \\
 \end{bmatrix} * \vec{v}
 \end{flalign}
 
 \begin{flalign}
 (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{a}) & = \begin{bmatrix}
-     \frac{a_1^2}{\norm{\vec{a}}} + \frac{a_2^2}{\norm{\vec{a}}} + \frac{a_3^2}{\norm{\vec{a}}}  \\
-     \frac{-a_2a_1}{k_1}  + \frac{a_1a_2}{k_1} \\
-     \frac{-a_1^2a_3}{k_1\norm{\vec{a}}} + \frac{-a_2^2a_3}{k_1\norm{\vec{a}}} + \frac{k_1a_3}{\norm{\vec{a}}} \\
+     \frac{a_x^2}{\norm{\vec{a}}} + \frac{a_y^2}{\norm{\vec{a}}} + \frac{a_z^2}{\norm{\vec{a}}}  \\
+     \frac{-a_ya_x}{k}  + \frac{a_xa_y}{k} \\
+     \frac{-a_x^2a_z}{k\norm{\vec{a}}} + \frac{-a_y^2a_z}{k\norm{\vec{a}}} + \frac{ka_z}{\norm{\vec{a}}} \\
 \end{bmatrix} \\
   & = \begin{bmatrix}
-     \frac{a_1^2 + a_2^2 + a_3^2}{\norm{\vec{a}}} \\
+     \frac{a_x^2 + a_y^2 + a_z^2}{\norm{\vec{a}}} \\
      0 \\
-     \frac{1}{\norm{\vec{a}}} * (\frac{-a_1^2a_3}{k_1} + \frac{-a_2^2a_3}{k_1} + {k_1a_3}) \\
+     \frac{1}{\norm{\vec{a}}} * (\frac{-a_x^2a_z}{k} + \frac{-a_y^2a_z}{k} + {ka_z}) \\
 \end{bmatrix} \\
   & = \begin{bmatrix}
      \frac{\norm{\vec{a}}^2}{\norm{\vec{a}}} \\
      0 \\
-     \frac{1}{\norm{\vec{a}}} * (\frac{-a_1^2a_3}{k_1} + \frac{-a_2^2a_3}{k_1} + \frac{k_1^2a_3}{k_1}) \\
+     \frac{1}{\norm{\vec{a}}} * (\frac{-a_x^2a_z}{k} + \frac{-a_y^2a_z}{k} + \frac{k^2a_z}{k}) \\
 \end{bmatrix} \\
   & = \begin{bmatrix}
      \norm{\vec{a}} \\
      0 \\
-     \frac{1}{\norm{\vec{a}}} * (\frac{-a_1^2a_3}{k_1} + \frac{-a_2^2a_3}{k_1} + \frac{((a_1^2 + a_2^2))a_3}{k_1}) \\
+     \frac{1}{\norm{\vec{a}}} * (\frac{-a_x^2a_z}{k} + \frac{-a_y^2a_z}{k} + \frac{((a_x^2 + a_y^2))a_z}{k}) \\
   \end{bmatrix}  \\
   & = \begin{bmatrix}
      \norm{\vec{a}} \\
@@ -175,9 +175,9 @@
 
 \begin{flalign}
 \vec{b''} \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{b}) = \begin{bmatrix}
-     \frac{a_1b_1}{\norm{\vec{a}}} + \frac{a_2b_2}{\norm{\vec{a}}} + \frac{a_3b_3}{\norm{\vec{a}}} \\
-     \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
-     \frac{-a_1a_3b_1}{k_1\norm{\vec{a}}} + \frac{-a_2a_3b_2}{k_1\norm{\vec{a}}} + \frac{k_1b_3}{\norm{\vec{a}}} \\
+     \frac{a_xb_x}{\norm{\vec{a}}} + \frac{a_yb_y}{\norm{\vec{a}}} + \frac{a_zb_z}{\norm{\vec{a}}} \\
+     \frac{-a_yb_x}{k}  + \frac{a_xb_y}{k} \\
+     \frac{-a_xa_zb_x}{k\norm{\vec{a}}} + \frac{-a_ya_zb_y}{k\norm{\vec{a}}} + \frac{kb_z}{\norm{\vec{a}}} \\
 \end{bmatrix}
 \end{flalign}
 
@@ -185,26 +185,26 @@
 \textbf{Rotate $\vec{b''} \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{b}) $ onto the $xy$ plane }
 
 
-  let $k_2 \triangleq \sqrt{{b''_2}^2 + {b''_3}^2}$.
+  let $c \triangleq \sqrt{{b''_y}^2 + {b''_z}^2}$.
 
 \begin{flalign}
   \vec{f}_{b''}^{xy}(\vec{v}) & \triangleq \begin{bmatrix}
      1 \\
      0 \\
      0 \\
-\end{bmatrix} * {v_1} +  \begin{bmatrix}
+\end{bmatrix} * {v_x} +  \begin{bmatrix}
      0 \\
-     \frac{b''_2}{k_2} \\
-     \frac{-b''_3}{k_2} \\
-\end{bmatrix} * {v_2} +  \begin{bmatrix}
+     \frac{b''_y}{c} \\
+     \frac{-b''_z}{c} \\
+\end{bmatrix} * {v_y} +  \begin{bmatrix}
      0 \\
-     \frac{b''_3}{k_2} \\
-     \frac{b''_2}{k_2} \\
-\end{bmatrix} * {v_3} \\
+     \frac{b''_z}{c} \\
+     \frac{b''_y}{c} \\
+\end{bmatrix} * {v_z} \\
   & = \begin{bmatrix}
      1 & 0 & 0 \\
-     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
-     0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
+     0 & \frac{b''_y}{c} & \frac{b''_z}{c} \\
+     0 & \frac{-b''_z}{c} & \frac{b''_y}{c} \\
 \end{bmatrix} * \vec{v}
 \end{flalign}
 
@@ -215,8 +215,8 @@
 \begin{flalign}
 \vec{b'''}  \triangleq ( \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      1 & 0 & 0 \\
-     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
-     0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
+     0 & \frac{b''_y}{c} & \frac{b''_z}{c} \\
+     0 & \frac{-b''_z}{c} & \frac{b''_y}{c} \\
 \end{bmatrix} * (\vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b})
 \end{flalign}
 
@@ -234,15 +234,15 @@ Define $\vec{f}_{b'''}^{y}(\vec{v})$ to project any vector $v$ onto the $y$ axis
      0 \\
      0 \\
      0 \\
-\end{bmatrix} * {v_1} +  \begin{bmatrix}
+\end{bmatrix} * {v_x} +  \begin{bmatrix}
      0 \\
      1 \\
      0 \\
-\end{bmatrix} * {v_2} +  \begin{bmatrix}
+\end{bmatrix} * {v_y} +  \begin{bmatrix}
       0 \\
       0 \\
       0 \\
-\end{bmatrix} * {v_3} \\
+\end{bmatrix} * {v_z} \\
   & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 1 & 0 \\
@@ -257,12 +257,12 @@ Define $\vec{f}_{b'''}^{y}(\vec{v})$ to project any vector $v$ onto the $y$ axis
      0 & 0 & 0 \\
 \end{bmatrix} *  \begin{bmatrix}
      1 & 0 & 0 \\
-     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
-     0 & \frac{-b''_3}{k_2} & \frac{b''_2}{k_2} \\
+     0 & \frac{b''_y}{c} & \frac{b''_z}{c} \\
+     0 & \frac{-b''_z}{c} & \frac{b''_y}{c} \\
   \end{bmatrix} * (\vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
   & = \begin{bmatrix}
      0 & 0 & 0 \\
-     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+     0 & \frac{b''_y}{c} & \frac{b''_z}{c} \\
      0 & 0 & 0 \\
 \end{bmatrix} * (\vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b})
 \end{flalign}
@@ -279,15 +279,15 @@ Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
      1 \\
      0 \\
      0 \\
-\end{bmatrix} * {v_1} +  \begin{bmatrix}
+\end{bmatrix} * {v_x} +  \begin{bmatrix}
      0 \\
      0 \\
      1 \\
-\end{bmatrix} * {v_2} +  \begin{bmatrix}
+\end{bmatrix} * {v_y} +  \begin{bmatrix}
       0 \\
       -1 \\
       0 \\
-\end{bmatrix} * {v_3} \\
+\end{bmatrix} * {v_z} \\
   & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & 0 & -1 \\
@@ -302,32 +302,32 @@ Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
      0 & 1 & 0 \\
 \end{bmatrix} * \begin{bmatrix}
      0 & 0 & 0 \\
-     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+     0 & \frac{b''_y}{c} & \frac{b''_z}{c} \\
      0 & 0 & 0 \\
   \end{bmatrix} * (\vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
   & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 0 & 0 \\
-     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+     0 & \frac{b''_y}{c} & \frac{b''_z}{c} \\
   \end{bmatrix} * (\vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
   & = \begin{bmatrix}
      0 & 0 & 0 \\
      0 & 0 & 0 \\
-     0 & \frac{b''_2}{k_2} & \frac{b''_3}{k_2} \\
+     0 & \frac{b''_y}{c} & \frac{b''_z}{c} \\
   \end{bmatrix} *  \begin{bmatrix}
-    b''_1 \\
-    b''_2 \\
-    b''_3 \\
+    b''_x \\
+    b''_y \\
+    b''_z \\
             \end{bmatrix} \\
   & =  \begin{bmatrix}
     0 \\
     0 \\
-    \frac{{b''_2}^2 + {b''_3}^2}{\sqrt{{b''_2}^2 + {b''_3}^2}} \\
+    \frac{{b''_y}^2 + {b''_z}^2}{\sqrt{{b''_y}^2 + {b''_z}^2}} \\
             \end{bmatrix} \\
   & =  \begin{bmatrix}
     0 \\
     0 \\
-    k_2 \\
+    c \\
             \end{bmatrix}
 \end{flalign}
 
@@ -337,27 +337,27 @@ Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 \begin{flalign}
   ( (\vec{f}_{b''}^{xy})^{-1} \circ \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      1 & 0 & 0 \\
-     0 & \frac{b''_2}{k_2} & \frac{-b''_3}{k_2}  \\
-     0 & \frac{b''_3}{k_2} & \frac{b''_2}{k_2}  \\
+     0 & \frac{b''_y}{c} & \frac{-b''_z}{c}  \\
+     0 & \frac{b''_z}{c} & \frac{b''_y}{c}  \\
 \end{bmatrix} *   \begin{bmatrix}
     0 \\
     0 \\
-    k_2 \\
+    c \\
             \end{bmatrix} \\
   & = \begin{bmatrix}
     0 \\
-    -b''_3 \\
-    b''_2 \\
+    -b''_z \\
+    b''_y \\
   \end{bmatrix} \\
   & = \begin{bmatrix}
      0 \\
-     \frac{a_1a_3b_1}{k_1\norm{\vec{a}}} + \frac{a_2a_3b_2}{k_1\norm{\vec{a}}} + \frac{-k_1b_3}{\norm{\vec{a}}} \\
-     \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
+     \frac{a_xa_zb_x}{k\norm{\vec{a}}} + \frac{a_ya_zb_y}{k\norm{\vec{a}}} + \frac{-kb_z}{\norm{\vec{a}}} \\
+     \frac{-a_yb_x}{k}  + \frac{a_xb_y}{k} \\
 \end{bmatrix}  \\
-  & = \frac{1}{k_1\norm{\vec{a}}} * \begin{bmatrix}
+  & = \frac{1}{k\norm{\vec{a}}} * \begin{bmatrix}
      0 \\
-     {a_1a_3b_1} + {a_2a_3b_2} + {-k_1^2b_3} \\
-     {-a_2b_1{\norm{\vec{a}}}}  + {a_1b_2{\norm{\vec{a}}}} \\
+     {a_xa_zb_x} + {a_ya_zb_y} + {-k^2b_z} \\
+     {-a_yb_x{\norm{\vec{a}}}}  + {a_xb_y{\norm{\vec{a}}}} \\
 \end{bmatrix}
 \end{flalign}
 
@@ -367,52 +367,52 @@ Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 \begin{flalign}
   f  & \triangleq ( (\vec{f}_a^{zx})^{-1} \circ (\vec{f}_{a'}^x)^{-1} \circ (\vec{f}_{b''}^{xy})^{-1} \circ \vec{f}_y^{z} \circ \vec{f}_{b'''}^{y} \circ \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) \\
      & = \begin{bmatrix}
-  \frac{a_1}{\norm{\vec{a}}} & \frac{-a_2}{k_1} & \frac{-a_1a_3}{k_1\norm{\vec{a}}}\\
-  \frac{a_2}{\norm{\vec{a}}} & \frac{a_1}{k_1} & \frac{-a_2a_3}{k_1\norm{\vec{a}}}  \\
-  \frac{a_3}{\norm{\vec{a}}} & 0 & \frac{k_1}{\norm{\vec{a}}} \\
+  \frac{a_x}{\norm{\vec{a}}} & \frac{-a_y}{k} & \frac{-a_xa_z}{k\norm{\vec{a}}}\\
+  \frac{a_y}{\norm{\vec{a}}} & \frac{a_x}{k} & \frac{-a_ya_z}{k\norm{\vec{a}}}  \\
+  \frac{a_z}{\norm{\vec{a}}} & 0 & \frac{k}{\norm{\vec{a}}} \\
 \end{bmatrix} * \begin{bmatrix}
      0 \\
-     \frac{a_1a_3b_1}{k_1\norm{\vec{a}}} + \frac{a_2a_3b_2}{k_1\norm{\vec{a}}} + \frac{-k_1b_3}{\norm{\vec{a}}} \\
-     \frac{-a_2b_1}{k_1}  + \frac{a_1b_2}{k_1} \\
+     \frac{a_xa_zb_x}{k\norm{\vec{a}}} + \frac{a_ya_zb_y}{k\norm{\vec{a}}} + \frac{-kb_z}{\norm{\vec{a}}} \\
+     \frac{-a_yb_x}{k}  + \frac{a_xb_y}{k} \\
 \end{bmatrix} \\
-& = \frac{1}{k_1^2\norm{\vec{a}}^2} * \begin{bmatrix}
-  {a_1k_1} & {-a_2\norm{\vec{a}}} & {-a_1a_3} \\
-  {a_2k_1} & {a_1\norm{\vec{a}}} & {-a_2a_3}  \\
-  {a_3k_1} & 0 & {k_1^2} \\
+& = \frac{1}{k^2\norm{\vec{a}}^2} * \begin{bmatrix}
+  {a_xk} & {-a_y\norm{\vec{a}}} & {-a_xa_z} \\
+  {a_yk} & {a_x\norm{\vec{a}}} & {-a_ya_z}  \\
+  {a_zk} & 0 & {k^2} \\
 \end{bmatrix} * \begin{bmatrix}
      0 \\
-     {a_1a_3b_1} + {a_2a_3b_2} + {-k_1^2b_3} \\
-     {-a_2b_1{\norm{\vec{a}}}}  + {a_1b_2{\norm{\vec{a}}}} \\
+     {a_xa_zb_x} + {a_ya_zb_y} + {-k^2b_z} \\
+     {-a_yb_x{\norm{\vec{a}}}}  + {a_xb_y{\norm{\vec{a}}}} \\
 \end{bmatrix} \\
-& = \frac{1}{k_1^2\norm{\vec{a}}^2} * \begin{bmatrix}
-     \norm{\vec{a}} *({-a_1a_2a_3b_1} + {-a_2^2a_3b_2} + {k_1^2a_2b_3} + {a_1a_2a_3b_1}  + {-a_1^2a_3b_2}) \\
-     \norm{\vec{a}} * ({a_1^2a_3b_1} + {a_1a_2a_3b_2} + {-k_1^2a_1b_3} + {a_2^2a_3b_1}  + {-a_1a_2a_3b_2}) \\
-     {k_1^2\norm{\vec{a}} * ({-a_2b_1}  + {a_1b_2})} \\
+& = \frac{1}{k^2\norm{\vec{a}}^2} * \begin{bmatrix}
+     \norm{\vec{a}} *({-a_xa_ya_zb_x} + {-a_y^2a_zb_y} + {k^2a_yb_z} + {a_xa_ya_zb_x}  + {-a_x^2a_zb_y}) \\
+     \norm{\vec{a}} * ({a_x^2a_zb_x} + {a_xa_ya_zb_y} + {-k^2a_xb_z} + {a_y^2a_zb_x}  + {-a_xa_ya_zb_y}) \\
+     {k^2\norm{\vec{a}} * ({-a_yb_x}  + {a_xb_y})} \\
 \end{bmatrix} \\
-& = \frac{1}{k_1^2\norm{\vec{a}}} * \begin{bmatrix}
-     {-a_2^2a_3b_2} + {k_1^2a_2b_3}  + {-a_1^2a_3b_2} \\
-     {a_1^2a_3b_1} + {-k_1^2a_1b_3} + {a_2^2a_3b_1} \\
-     {k_1^2\norm{\vec{a}} * ({-a_2b_1}  + {a_1b_2})} \\
-\end{bmatrix} \\
-& = \frac{1}{\norm{\vec{a}}} * \begin{bmatrix}
-     {a_2b_3} + \frac{-a_2^2a_3b_2 -a_1^2a_3b_2}{k_1^2} \\
-     {-a_1b_3} + \frac{a_1^2a_3b_1 + a_2^2a_3b_1}{k_1^2} \\
-     {-a_2b_1}  + {a_1b_2} \\
+& = \frac{1}{k^2\norm{\vec{a}}} * \begin{bmatrix}
+     {-a_y^2a_zb_y} + {k^2a_yb_z}  + {-a_x^2a_zb_y} \\
+     {a_x^2a_zb_x} + {-k^2a_xb_z} + {a_y^2a_zb_x} \\
+     {k^2\norm{\vec{a}} * ({-a_yb_x}  + {a_xb_y})} \\
 \end{bmatrix} \\
 & = \frac{1}{\norm{\vec{a}}} * \begin{bmatrix}
-     {a_2b_3} + \frac{-(a_1^2 + a_2^2)a_3b_2}{k_1^2} \\
-     {-a_1b_3} + \frac{(a_1^2 + a_2^2)a_3b_1}{k_1^2} \\
-     {-a_2b_1}  + {a_1b_2} \\
+     {a_yb_z} + \frac{-a_y^2a_zb_y -a_x^2a_zb_y}{k^2} \\
+     {-a_xb_z} + \frac{a_x^2a_zb_x + a_y^2a_zb_x}{k^2} \\
+     {-a_yb_x}  + {a_xb_y} \\
 \end{bmatrix} \\
 & = \frac{1}{\norm{\vec{a}}} * \begin{bmatrix}
-     {a_2b_3} + \frac{-k_1^2a_3b_2}{k_1^2} \\
-     {-a_1b_3} + \frac{k_1^2a_3b_1}{k_1^2} \\
-     {-a_2b_1}  + {a_1b_2} \\
+     {a_yb_z} + \frac{-(a_x^2 + a_y^2)a_zb_y}{k^2} \\
+     {-a_xb_z} + \frac{(a_x^2 + a_y^2)a_zb_x}{k^2} \\
+     {-a_yb_x}  + {a_xb_y} \\
 \end{bmatrix} \\
 & = \frac{1}{\norm{\vec{a}}} * \begin{bmatrix}
-     {a_2b_3} - {a_3b_2} \\
-     {-a_1b_3} + a_3b_1 \\
-     {a_1b_2} - {a_2b_1}  \\
+     {a_yb_z} + \frac{-k^2a_zb_y}{k^2} \\
+     {-a_xb_z} + \frac{k^2a_zb_x}{k^2} \\
+     {-a_yb_x}  + {a_xb_y} \\
+\end{bmatrix} \\
+& = \frac{1}{\norm{\vec{a}}} * \begin{bmatrix}
+     {a_yb_z} - {a_zb_y} \\
+     {-a_xb_z} + a_zb_x \\
+     {a_xb_y} - {a_yb_x}  \\
 \end{bmatrix} \\
 \end{flalign}
 
@@ -421,14 +421,14 @@ Define $\vec{f}_y^{z}(\vec{v})$ rotate any vector $v$ around the $yz$ plane.
 \begin{flalign}
   \norm{\vec{a}} * \vec{f} (\vec{b})
   & = \norm{\vec{a}} *  \frac{1}{\norm{\vec{a}}} * \begin{bmatrix}
-     {a_2b_3} - {a_3b_2} \\
-     {-a_1b_3} + a_3b_1 \\
-     {a_1b_2} - {a_2b_1}  \\
+     {a_yb_z} - {a_zb_y} \\
+     {-a_xb_z} + a_zb_x \\
+     {a_xb_y} - {a_yb_x}  \\
 \end{bmatrix} \\
   & =  \begin{bmatrix}
-     {a_2b_3} - {a_3b_2} \\
-     {-a_1b_3} + a_3b_1 \\
-     {a_1b_2} - {a_2b_1}  \\
+     {a_yb_z} - {a_zb_y} \\
+     {-a_xb_z} + a_zb_x \\
+     {a_xb_y} - {a_yb_x}  \\
 \end{bmatrix} \\
   & = a \times b
 \end{flalign}
