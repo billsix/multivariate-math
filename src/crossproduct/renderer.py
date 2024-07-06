@@ -89,13 +89,17 @@ def compile_shader(vert: str, frag: str, geom: str) -> Iterator[ShaderProgram]:
     with open(os.path.join(pwd, frag), "r") as f:
         fs = shaders.compileShader(f.read(), GL_FRAGMENT_SHADER)
 
-    with open(os.path.join(pwd, geom), "r") as f:
-        gs = shaders.compileShader(f.read(), GL_GEOMETRY_SHADER)
+    if geom:
+        with open(os.path.join(pwd, geom), "r") as f:
+            gs = shaders.compileShader(f.read(), GL_GEOMETRY_SHADER)
+        compiled_shaders = [vs, gs, fs]
+    else:
+        compiled_shaders = [vs, fs]
 
     vao = glGenVertexArrays(1)
     glBindVertexArray(vao)
 
-    shader = shaders.compileProgram(vs, gs, fs)
+    shader = shaders.compileProgram(*compiled_shaders)
     try:
         yield shader
     finally:

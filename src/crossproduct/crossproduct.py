@@ -19,44 +19,49 @@
 # SOFTWARE.
 
 
-import sys
-import numpy as np
+import functools
 import math
+import sys
+from dataclasses import dataclass
+from enum import Enum, auto
+
+import glfw
+import imgui
+import numpy as np
+import pyMatrixStack as ms
+from imgui.integrations.glfw import GlfwRenderer
+from numpy import ndarray
 from OpenGL.GL import (
-    glClear,
     GL_COLOR_BUFFER_BIT,
     GL_DEPTH_BUFFER_BIT,
-    glViewport,
+    GL_DEPTH_TEST,
+    GL_LESS,
+    GL_LINEAR,
+    GL_RED,
+    GL_REPEAT,
+    GL_TEXTURE_2D,
+    GL_TEXTURE_MAG_FILTER,
+    GL_TEXTURE_MIN_FILTER,
+    GL_TEXTURE_WRAP_S,
+    GL_TEXTURE_WRAP_T,
+    GL_TRUE,
+    GL_UNSIGNED_BYTE,
+    glBindTexture,
+    glClear,
     glClearColor,
-    glEnable,
-    glDisable,
     glClearDepth,
     glDepthFunc,
-    GL_DEPTH_TEST,
-    GL_TRUE,
-    GL_LESS,
+    glDisable,
+    glEnable,
+    glGenerateMipmap,
+    glGenTextures,
+    glTexImage2D,
+    glTexParameteri,
+    glViewport,
 )
+from PIL import Image, ImageOps
 
-from enum import Enum, auto
-from dataclasses import dataclass
-import glfw
-import pyMatrixStack as ms
-import imgui
-from imgui.integrations.glfw import GlfwRenderer
-
-import functools
-
-
-from renderer import (
-    do_draw_axis,
-    do_draw_lines,
-    do_draw_vector,
-    Vector,
-    Camera,
-    compile_shader,
-)
-from numpy import ndarray
-
+from renderer import Camera, Vector, compile_shader, do_draw_axis, do_draw_lines, do_draw_vector
 
 if not glfw.init():
     sys.exit()
@@ -357,6 +362,39 @@ def restart() -> None:
 restart()
 
 
+# Load a math image, and make the black white, and white black
+def load_and_flip_image(image_path):
+    image = Image.open(image_path).convert("L")
+    inverted_image = ImageOps.invert(image)
+    return inverted_image
+
+
+# Function to bind the image to an OpenGL texture
+def generate_texture(image):
+    image_data = np.array(list(image.getdata()), np.uint8)
+    texture_id = glGenTextures(1)
+    glBindTexture(GL_TEXTURE_2D, texture_id)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, image.width, image.height, 0, GL_RED, GL_UNSIGNED_BYTE, image_data)
+    glGenerateMipmap(GL_TEXTURE_2D)
+    return texture_id
+
+
+x_image = load_and_flip_image("./images/x.png")
+y_image = load_and_flip_image("./images/y.png")
+z_image = load_and_flip_image("./images/z.png")
+
+a_image = load_and_flip_image("./images/a.png")
+aprime_image = load_and_flip_image("./images/aprime.png")
+aprimeprime_image = load_and_flip_image("./images/aprimeprime.png")
+b_image = load_and_flip_image("./images/b.png")
+bprimeprime_image = load_and_flip_image("./images/bprimeprime.png")
+bprimeprimeprime_image = load_and_flip_image("./images/bprimeprimeprime.png")
+
+
 def current_animation_ratio() -> float:
     if g.step_number == StepNumber.beginning:
         return 0.0
@@ -366,7 +404,9 @@ def current_animation_ratio() -> float:
     )
 
 
-with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader:
+with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader, compile_shader(
+    "image.vert", "image.frag", None
+) as image_shader:
 
     def draw_ground(
         time: float,
