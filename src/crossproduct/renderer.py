@@ -19,54 +19,51 @@
 # SOFTWARE.
 
 
-import os
-import numpy as np
+import ctypes
 import math
+import os
+from contextlib import contextmanager
+from dataclasses import dataclass
+from typing import Iterator
+
+import numpy as np
+import OpenGL.GL.shaders as shaders
+import pyMatrixStack as ms
+from numpy import ndarray
 from OpenGL.GL import (
-    glEnable,
-    glDisable,
+    GL_ARRAY_BUFFER,
     GL_DEPTH_TEST,
-    GL_TRUE,
-    glGenVertexArrays,
-    glBindVertexArray,
-    GL_VERTEX_SHADER,
+    GL_ELEMENT_ARRAY_BUFFER,
+    GL_FALSE,
+    GL_FLOAT,
     GL_FRAGMENT_SHADER,
     GL_GEOMETRY_SHADER,
-    glGenBuffers,
-    glBindBuffer,
-    GL_ARRAY_BUFFER,
-    glGetAttribLocation,
-    glEnableVertexAttribArray,
-    glVertexAttribPointer,
-    GL_FLOAT,
-    glBufferData,
-    GL_STATIC_DRAW,
-    glUseProgram,
-    glGetUniformLocation,
-    glUniformMatrix4fv,
-    glDrawArrays,
     GL_LINES,
+    GL_STATIC_DRAW,
+    GL_TRUE,
+    GL_VERTEX_SHADER,
+    glBindBuffer,
+    glBindVertexArray,
+    glBufferData,
     glDeleteBuffers,
     glDeleteProgram,
+    glDeleteVertexArrays,
+    glDisable,
+    glDrawArrays,
+    glEnable,
+    glEnableVertexAttribArray,
+    glGenBuffers,
+    glGenVertexArrays,
+    glGetAttribLocation,
+    glGetUniformLocation,
     glUniform1f,
     glUniform2f,
     glUniform3f,
-    glDeleteVertexArrays,
+    glUniformMatrix4fv,
+    glUseProgram,
+    glVertexAttribPointer,
 )
-
-
-import OpenGL.GL.shaders as shaders
-import pyMatrixStack as ms
-
-from dataclasses import dataclass
-
-from contextlib import contextmanager
-
-import ctypes
 from OpenGL.GL.shaders import ShaderProgram
-from numpy import ndarray
-from typing import Iterator
-
 
 # NEW - for shader location
 pwd = os.path.dirname(os.path.abspath(__file__))
@@ -472,6 +469,62 @@ def do_draw_axis(
     glEnable(GL_DEPTH_TEST)
 
     # clean up
+
+    glDeleteBuffers(1, [vbo])
+
+
+def do_draw_image(shader: ShaderProgram, v) -> None:
+    glUseProgram(shader)
+
+    vertices = np.array(
+        [
+            # Positions      # Texture Coords
+            -0.5,
+            0.5,
+            0.0,
+            0.0,
+            1.0,  # Top-left
+            0.5,
+            0.5,
+            0.0,
+            1.0,
+            1.0,  # Top-right
+            0.5,
+            -0.5,
+            0.0,
+            1.0,
+            0.0,  # Bottom-right
+            -0.5,
+            -0.5,
+            0.0,
+            0.0,
+            0.0,  # Bottom-left
+        ],
+        dtype=np.float32,
+    )
+
+    indices = np.array([0, 1, 2, 2, 3, 0], dtype=np.uint32)
+
+    vao = glGenVertexArrays(1)
+    vbo = glGenBuffers(1)
+    ebo = glGenBuffers(1)
+
+    glBindVertexArray(vao)
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo)
+    glBufferData(GL_ARRAY_BUFFER, vertices.nbytes, vertices, GL_STATIC_DRAW)
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo)
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.nbytes, indices, GL_STATIC_DRAW)
+
+    # Position attribute
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * vertices.itemsize, None)
+    glEnableVertexAttribArray(0)
+    # Texture coord attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * vertices.itemsize, ctypes.c_void_p(3 * vertices.itemsize))
+    glEnableVertexAttribArray(1)
+
+    glBindVertexArray(0)
 
     glDeleteBuffers(1, [vbo])
 
