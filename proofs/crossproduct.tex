@@ -84,7 +84,7 @@
   Define $\vec{f}_a^{zx}(\vec{v})$ such that $\vec{f}_a^{zx}(\vec{a})$ is rotated onto the $xz$ plane.
 
 \begin{flalign}
-  \vec{a'}  \triangleq
+  \vec{a}\,'  \triangleq
   \vec{f}_a^{zx}(\begin{bmatrix}
      {v_x} \\
      {v_y} \\
@@ -128,7 +128,7 @@
 
 
 \begin{flalign}
-\vec{a''}  \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{v}) & = \begin{bmatrix}
+\vec{a}\,''  \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{v}) & = \begin{bmatrix}
      \frac{k}{\norm{\vec{a}}} & 0  & \frac{a_z}{\norm{\vec{a}}} \\
      0 & 1  & 0 \\
      \frac{-a_z}{\norm{\vec{a}}} & 0 & \frac{k}{\norm{\vec{a}}}\\
@@ -174,7 +174,7 @@
 
 
 \begin{flalign}
-\vec{b''} \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{b}) = \begin{bmatrix}
+\vec{b}\,'' \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{b}) = \begin{bmatrix}
      \frac{a_xb_x}{\norm{\vec{a}}} + \frac{a_yb_y}{\norm{\vec{a}}} + \frac{a_zb_z}{\norm{\vec{a}}} \\
      \frac{-a_yb_x}{k}  + \frac{a_xb_y}{k} \\
      \frac{-a_xa_zb_x}{k\norm{\vec{a}}} + \frac{-a_ya_zb_y}{k\norm{\vec{a}}} + \frac{kb_z}{\norm{\vec{a}}} \\
@@ -182,7 +182,7 @@
 \end{flalign}
 
 
-\textbf{Rotate $\vec{b''} \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{b}) $ onto the $xy$ plane }
+\textbf{Rotate $\vec{b}\,'' \triangleq (\vec{f}_{a'}^x \circ \vec{f}_a^{zx})(\vec{b}) $ onto the $xy$ plane }
 
 
   let $c \triangleq \sqrt{{b''_y}^2 + {b''_z}^2}$.
@@ -213,7 +213,7 @@
 
 
 \begin{flalign}
-\vec{b'''}  \triangleq ( \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
+\vec{b}\,'''  \triangleq ( \vec{f}_{b''}^{xy} \circ \vec{f}_{a'}^x \circ \vec{f}_a^{zx}) (\vec{b}) & = \begin{bmatrix}
      1 & 0 & 0 \\
      0 & \frac{b''_y}{c} & \frac{b''_z}{c} \\
      0 & \frac{-b''_z}{c} & \frac{b''_y}{c} \\
