@@ -476,6 +476,8 @@ def do_draw_axis(
 def do_draw_image(shader: ShaderProgram, v) -> None:
     glUseProgram(shader)
 
+    mvpMatrixLoc = glGetUniformLocation(shader, "mvpMatrix")
+
     vertices = np.array(
         [
             # Positions      # Texture Coords

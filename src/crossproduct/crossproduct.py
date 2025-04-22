@@ -404,9 +404,10 @@ def current_animation_ratio() -> float:
     )
 
 
-with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader, compile_shader(
-    "image.vert", "image.frag", None
-) as image_shader:
+with (
+    compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader,
+    compile_shader("image.vert", "image.frag", None) as image_shader,
+):
 
     def draw_ground(
         time: float,
@@ -483,10 +484,10 @@ with compile_shader("lines.vert", "lines.frag", "lines.geom") as lines_shader, c
         else:
             # set the projection matrix to be perspective
             ms.perspective(
-                fov=45.0,
-                aspectRatio=float(width) / float(height),
-                nearZ=0.1,
-                farZ=10000.0,
+                field_of_view=45.0,
+                aspect_ratio=float(width) / float(height),
+                near_z=0.1,
+                far_z=10000.0,
             )
 
             # note - opengl matricies use degrees
