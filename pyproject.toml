@@ -1,0 +1,37 @@
+[project]
+name = "multivariatemath"
+version = "0.0.1"
+authors = [{name="William Emerison Six", email="billsix@gmail.com"}]
+description = "Animations and proofs for multivariate math"
+
+dependencies = [
+    "glfw",
+    "autoflake8",
+    "galgebra",
+    "glfw",
+    "imgui",
+    "jupyter",
+    "jupyter-lsp",
+    "jupyter-ydoc",
+    "jupyterlab",
+    "jupyterlab-mathjax3",
+    "jupytext",
+    "mathjax",
+    "matplotlib",
+    "numpy",
+    "pillow",
+    "pyMatrixStack",
+    "PyOpenGL",
+    "removestar",
+    "ruff",
+    "sympy",
+]
+
+
+
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
