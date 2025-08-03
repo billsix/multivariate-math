@@ -13,8 +13,8 @@ RUN apt install -y \
     gcc \
     g++ \
     mesa-va-drivers \
-    mesa-vdpau-drivers
-
+    mesa-vdpau-drivers \
+    texlive-latex-base texlive-latex-recommended texlive-science 
 
 
 # Set a default command to keep the container running for interaction

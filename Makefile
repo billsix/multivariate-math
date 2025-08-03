@@ -44,6 +44,18 @@ crossproduct: image ## Run Crossproduct
 
 
 
+.PHONY: pdfs
+pdfs: image ## Run Crossproduct
+	$(PODMAN_CMD) run -it --rm \
+		--entrypoint /bin/bash \
+		$(FILES_TO_MOUNT) \
+		-v ./entrypoint/pdfs.sh:/pdfs.sh:Z \
+		$(USE_X) \
+		$(CONTAINER_NAME) \
+		/pdfs.sh
+
+
+
 .PHONY: help
 help:
 	@grep --extended-regexp '^[a-zA-Z0-9_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
