@@ -13,7 +13,7 @@ USE_X = -e DISPLAY=$(DISPLAY) \
 	-v /tmp/.X11-unix:/tmp/.X11-unix
 
 .PHONY: all
-all: clean image ## Build the HTML and PDF from scratch in Debian Bulleye
+all: clean image ## Build the image
 
 .PHONY: image
 image: image  ## Build a podman image in which to run the demos
@@ -23,6 +23,16 @@ image: image  ## Build a podman image in which to run the demos
 clean: ## Delete the output directory, cleaning out the HTML and the PDF
 	rm -rf output/*
 
+.PHONY: shell
+shell: image ## Run shell
+	$(PODMAN_CMD) run -it --rm \
+		$(FILES_TO_MOUNT) \
+		-v ./entrypoint/crossproduct.sh:/crossproduct.sh:Z \
+		$(USE_X) \
+		$(CONTAINER_NAME) 
+
+
+.PHONY: crossproduct
 crossproduct: image ## Run Crossproduct
 	$(PODMAN_CMD) run -it --rm \
 		--entrypoint /bin/bash \
