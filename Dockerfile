@@ -51,6 +51,13 @@ RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && \
         python3 -m pip install ty --root-user-action=ignore
 
 
+RUN apt install -y jupyter \
+             jupyterlab \
+             python3-jupytext \
+             fonts-mathjax \
+             python3-jupyter-server-mathjax
+
+
 
 
 
