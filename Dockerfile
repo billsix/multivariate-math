@@ -1,5 +1,4 @@
-# Dockerfile for fedora-demos
-FROM docker.io/debian:bookworm
+FROM docker.io/debian:trixie
 
 ARG USE_JUPYTER=1
 ARG USE_SPYDER=1
