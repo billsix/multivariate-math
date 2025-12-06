@@ -61,7 +61,14 @@ from OpenGL.GL import (
 )
 from PIL import Image, ImageOps
 
-from renderer import Camera, Vector, compile_shader, do_draw_axis, do_draw_lines, do_draw_vector
+from renderer import (
+    Camera,
+    Vector,
+    compile_shader,
+    do_draw_axis,
+    do_draw_lines,
+    do_draw_vector,
+)
 
 if not glfw.init():
     sys.exit()
@@ -292,8 +299,12 @@ def handle_inputs(previous_mouse_position) -> None:
     return_none = False
     if glfw.PRESS == glfw.get_mouse_button(window, glfw.MOUSE_BUTTON_LEFT):
         if previous_mouse_position:
-            g.camera.rot_y -= 0.2 * math.radians(new_mouse_position[0] - previous_mouse_position[0])
-            g.camera.rot_x += 0.2 * math.radians(new_mouse_position[1] - previous_mouse_position[1])
+            g.camera.rot_y -= 0.2 * math.radians(
+                new_mouse_position[0] - previous_mouse_position[0]
+            )
+            g.camera.rot_x += 0.2 * math.radians(
+                new_mouse_position[1] - previous_mouse_position[1]
+            )
             g.use_ortho = False
     else:
         return_none = True
@@ -378,21 +389,31 @@ def generate_texture(image):
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, image.width, image.height, 0, GL_RED, GL_UNSIGNED_BYTE, image_data)
+    glTexImage2D(
+        GL_TEXTURE_2D,
+        0,
+        GL_RED,
+        image.width,
+        image.height,
+        0,
+        GL_RED,
+        GL_UNSIGNED_BYTE,
+        image_data,
+    )
     glGenerateMipmap(GL_TEXTURE_2D)
     return texture_id
 
 
-x_image = load_and_flip_image("./images/x.png")
-y_image = load_and_flip_image("./images/y.png")
-z_image = load_and_flip_image("./images/z.png")
+# x_image = load_and_flip_image("./images/x.png")
+# y_image = load_and_flip_image("./images/y.png")
+# z_image = load_and_flip_image("./images/z.png")
 
-a_image = load_and_flip_image("./images/a.png")
-aprime_image = load_and_flip_image("./images/aprime.png")
-aprimeprime_image = load_and_flip_image("./images/aprimeprime.png")
-b_image = load_and_flip_image("./images/b.png")
-bprimeprime_image = load_and_flip_image("./images/bprimeprime.png")
-bprimeprimeprime_image = load_and_flip_image("./images/bprimeprimeprime.png")
+# a_image = load_and_flip_image("./images/a.png")
+# aprime_image = load_and_flip_image("./images/aprime.png")
+# aprimeprime_image = load_and_flip_image("./images/aprimeprime.png")
+# b_image = load_and_flip_image("./images/b.png")
+# bprimeprime_image = load_and_flip_image("./images/bprimeprime.png")
+# bprimeprimeprime_image = load_and_flip_image("./images/bprimeprimeprime.png")
 
 
 def current_animation_ratio() -> float:
@@ -427,7 +448,9 @@ with (
         yz: bool = False,
         zx: bool = False,
     ) -> None:
-        do_draw_lines(lines_shader, unit_circle_vertices(), time, width, height, xy, yz, zx)
+        do_draw_lines(
+            lines_shader, unit_circle_vertices(), time, width, height, xy, yz, zx
+        )
 
     def draw_vector(v: Vector, width: int, height: int) -> None:
         do_draw_vector(lines_shader, v, width, height)
@@ -446,7 +469,10 @@ with (
     # Loop until the user closes the window
     while not glfw.window_should_close(window):
         # poll the time to try to get a constant framerate
-        while glfw.get_time() < g.time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE:
+        while (
+            glfw.get_time()
+            < g.time_at_beginning_of_previous_frame + 1.0 / TARGET_FRAMERATE
+        ):
             pass
         # set for comparison on the next frame
         g.time_at_beginning_of_previous_frame = glfw.get_time()
@@ -503,7 +529,9 @@ with (
             if not g.do_remove_ground:
                 draw_ground(g.animation_time, width, height)
                 draw_ground(g.animation_time, width, height, xy=False, zx=True)
-                draw_unit_circle(g.animation_time, width, height, xy=True, yz=True, zx=True)
+                draw_unit_circle(
+                    g.animation_time, width, height, xy=True, yz=True, zx=True
+                )
 
         draw_axis(
             width,
@@ -547,7 +575,9 @@ with (
                 case StepNumber.show_plane:
                     return ""
 
-        show, _ = imgui.collapsing_header("Input Vectors", flags=imgui.TREE_NODE_DEFAULT_OPEN)
+        show, _ = imgui.collapsing_header(
+            "Input Vectors", flags=imgui.TREE_NODE_DEFAULT_OPEN
+        )
         if show:
             imgui.text("a x b")
             imgui.label_text("label", "Value")
@@ -595,13 +625,17 @@ with (
 
         show, _ = imgui.collapsing_header("Camera", flags=imgui.TREE_NODE_DEFAULT_OPEN)
         if show:
-            changed, g.auto_rotate_camera = imgui.checkbox(label="Auto Rotate G.Camera", state=g.auto_rotate_camera)
+            changed, g.auto_rotate_camera = imgui.checkbox(
+                label="Auto Rotate G.Camera", state=g.auto_rotate_camera
+            )
 
             if g.auto_rotate_camera:
                 g.camera.rot_y += math.radians(0.1)
 
             if not g.use_ortho:
-                clicked, g.camera.r = imgui.slider_float("Camera Radius", g.camera.r, 3, 130.0)
+                clicked, g.camera.r = imgui.slider_float(
+                    "Camera Radius", g.camera.r, 3, 130.0
+                )
 
             if imgui.button("View Down x Axis"):
                 g.camera.rot_x = 0.0
@@ -631,7 +665,9 @@ with (
                 restart()
 
             imgui.label_text("label", "Value")
-            changed, (g.seconds_per_operation) = imgui.input_float("Seconds Per Operation", g.seconds_per_operation)
+            changed, (g.seconds_per_operation) = imgui.input_float(
+                "Seconds Per Operation", g.seconds_per_operation
+            )
 
             if g.step_number == StepNumber.beginning:
                 if imgui.button("Rotate Z") or g.auto_play:
@@ -650,11 +686,15 @@ with (
                         else:
                             b_doubleprime_2 = (-a2 * b1) / k1 + (a1 * b2) / k1
                             b_doubleprime_3 = (
-                                (-a1 * a3 * b1) / (k1 * mag_a) + (-a2 * a3 * b2) / (k1 * mag_a) + (k1 * b3) / mag_a
+                                (-a1 * a3 * b1) / (k1 * mag_a)
+                                + (-a2 * a3 * b2) / (k1 * mag_a)
+                                + (k1 * b3) / mag_a
                             )
 
                             angle = math.atan2(b_doubleprime_3, b_doubleprime_2)
-                        return angle if abs(angle) <= np.pi / 2.0 else (angle - 2 * np.pi)
+                        return (
+                            angle if abs(angle) <= np.pi / 2.0 else (angle - 2 * np.pi)
+                        )
 
                     g.angle_x = calc_angle_x()
                 imgui.same_line()
@@ -721,7 +761,11 @@ with (
                         g.highlight_relative_z = not g.highlight_relative_z
 
             if g.do_third_rotate:
-                ratio = current_animation_ratio() if g.step_number == StepNumber.rotate_x else 1.0
+                ratio = (
+                    current_animation_ratio()
+                    if g.step_number == StepNumber.rotate_x
+                    else 1.0
+                )
                 ms.rotate_x(ms.MatrixStack.model, -g.angle_x * ratio)
                 if ratio > 0.9999:
                     g.draw_third_relative_coordinates = False
@@ -745,7 +789,11 @@ with (
 
             if g.draw_third_relative_coordinates:
                 with ms.push_matrix(ms.MatrixStack.model):
-                    ratio = current_animation_ratio() if g.step_number == StepNumber.show_triangle.value else 1.0
+                    ratio = (
+                        current_animation_ratio()
+                        if g.step_number == StepNumber.show_triangle.value
+                        else 1.0
+                    )
                     ms.rotate_x(ms.MatrixStack.model, g.angle_x * ratio)
 
                     draw_ground(g.animation_time, width, height, xy=False, yz=True)
@@ -758,7 +806,11 @@ with (
                     )
 
             if g.do_second_rotate:
-                ratio = current_animation_ratio() if g.step_number == StepNumber.rotate_y else 1.0
+                ratio = (
+                    current_animation_ratio()
+                    if g.step_number == StepNumber.rotate_y
+                    else 1.0
+                )
                 ms.rotate_y(ms.MatrixStack.model, -g.vec1.angle_y * ratio)
                 if ratio > 0.99:
                     g.draw_second_relative_coordinates = False
@@ -782,7 +834,11 @@ with (
 
             if g.draw_second_relative_coordinates:
                 with ms.push_matrix(ms.MatrixStack.model):
-                    ratio = current_animation_ratio() if g.step_number == StepNumber.rotate_x else 1.0
+                    ratio = (
+                        current_animation_ratio()
+                        if g.step_number == StepNumber.rotate_x
+                        else 1.0
+                    )
                     ms.rotate_y(ms.MatrixStack.model, g.vec1.angle_y * ratio)
                     draw_ground(g.animation_time, width, height, xy=False, zx=True)
                     draw_axis(
@@ -794,7 +850,11 @@ with (
                     )
 
             if g.do_first_rotate:
-                ratio = current_animation_ratio() if g.step_number == StepNumber.rotate_z else 1.0
+                ratio = (
+                    current_animation_ratio()
+                    if g.step_number == StepNumber.rotate_z
+                    else 1.0
+                )
                 ms.rotate_z(ms.MatrixStack.model, -g.vec1.angle_z * ratio)
                 if ratio > 0.99:
                     g.draw_first_relative_coordinates = False
@@ -818,7 +878,11 @@ with (
 
             if g.draw_first_relative_coordinates:
                 with ms.push_matrix(ms.MatrixStack.model):
-                    ratio = current_animation_ratio() if g.step_number == StepNumber.rotate_y else 1.0
+                    ratio = (
+                        current_animation_ratio()
+                        if g.step_number == StepNumber.rotate_y
+                        else 1.0
+                    )
                     ms.rotate_z(ms.MatrixStack.model, g.vec1.angle_z * ratio)
                     draw_ground(g.animation_time, width, height)
                     draw_axis(
@@ -835,7 +899,9 @@ with (
                         g.vec3_after_rotate = np.ascontiguousarray(
                             ms.get_current_matrix(ms.MatrixStack.model),
                             dtype=np.float32,
-                        ) @ np.array([g.vec2.x, g.vec2.y, g.vec2.z, 1.0], dtype=np.float32)
+                        ) @ np.array(
+                            [g.vec2.x, g.vec2.y, g.vec2.z, 1.0], dtype=np.float32
+                        )
 
                         g.vec3 = Vector(
                             x=0.0,
@@ -899,13 +965,19 @@ with (
 
             if g.step_number == StepNumber.undo_rotate_z:
                 if current_animation_ratio() >= 0.999999:
-                    if imgui.button("Scale By Magnitude of first vector") or g.auto_play:
+                    if (
+                        imgui.button("Scale By Magnitude of first vector")
+                        or g.auto_play
+                    ):
                         g.do_scale = True
                         g.step_number = StepNumber.scale_by_mag_a
 
             if g.step_number == StepNumber.scale_by_mag_a:
                 if current_animation_ratio() >= 0.999999:
-                    if imgui.button("Show Plane spanned by vec a and vec b") or g.auto_play:
+                    if (
+                        imgui.button("Show Plane spanned by vec a and vec b")
+                        or g.auto_play
+                    ):
                         g.do_remove_ground = True
 
             imgui.text("Highlight:")

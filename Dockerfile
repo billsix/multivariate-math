@@ -35,6 +35,24 @@ COPY entrypoint/dotfiles/ /root/
 
 RUN echo "/usr/local/bin/jupyter.sh" >> ~/.bash_history
 
+RUN apt install -y  git
+
+
+RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && \
+       . /venv/bin/activate && \
+        cd ~/ && \
+        git clone https://github.com/billsix/pyimgui.git && \
+        cd pyimgui && \
+        git submodule init && git submodule update && \
+        python3 -m pip install . --root-user-action=ignore
+
+RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && \
+       . /venv/bin/activate && \
+        python3 -m pip install ty --root-user-action=ignore
+
+
+
+
 
 
 ENTRYPOINT ["/entrypoint.sh"]

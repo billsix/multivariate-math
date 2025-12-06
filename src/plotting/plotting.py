@@ -114,6 +114,8 @@ if not is_notebook():
             line.set_ydata(np.sin(x + i / 50))  # update the data.
             return (line,)
 
-        ani = animation.FuncAnimation(fig, animate, interval=20, blit=True, save_count=50)
+        ani = animation.FuncAnimation(
+            fig, animate, interval=20, blit=True, save_count=50
+        )
 
         plt.show()

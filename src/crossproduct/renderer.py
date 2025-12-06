@@ -130,7 +130,9 @@ def do_draw_lines(
     position = glGetAttribLocation(shader, "position")
     glEnableVertexAttribArray(position)
 
-    glVertexAttribPointer(position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0))
+    glVertexAttribPointer(
+        position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0)
+    )
 
     glBufferData(
         GL_ARRAY_BUFFER,
@@ -280,7 +282,9 @@ def do_draw_vector(shader: ShaderProgram, v: Vector, width: int, height: int) ->
     position = glGetAttribLocation(shader, "position")
     glEnableVertexAttribArray(position)
 
-    glVertexAttribPointer(position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0))
+    glVertexAttribPointer(
+        position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0)
+    )
 
     glBufferData(
         GL_ARRAY_BUFFER,
@@ -383,7 +387,9 @@ def do_draw_axis(
     position = glGetAttribLocation(shader, "position")
     glEnableVertexAttribArray(position)
 
-    glVertexAttribPointer(position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0))
+    glVertexAttribPointer(
+        position, floatsPerVertex, GL_FLOAT, False, 0, ctypes.c_void_p(0)
+    )
 
     glBufferData(
         GL_ARRAY_BUFFER,
@@ -523,7 +529,14 @@ def do_draw_image(shader: ShaderProgram, v) -> None:
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * vertices.itemsize, None)
     glEnableVertexAttribArray(0)
     # Texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * vertices.itemsize, ctypes.c_void_p(3 * vertices.itemsize))
+    glVertexAttribPointer(
+        1,
+        2,
+        GL_FLOAT,
+        GL_FALSE,
+        5 * vertices.itemsize,
+        ctypes.c_void_p(3 * vertices.itemsize),
+    )
     glEnableVertexAttribArray(1)
 
     glBindVertexArray(0)
