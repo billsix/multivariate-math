@@ -1,0 +1,1 @@
+exec spyder -p /mvm/
