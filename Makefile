@@ -48,6 +48,16 @@ shell:  ## Get Shell into a ephermeral container made from the image
 		/shell.sh
 
 
+.PHONY: format
+format: image ## Format the Python source with ruff + ty (entrypoint/format.sh)
+	$(CONTAINER_CMD) run -it --rm \
+		--entrypoint /bin/bash \
+		$(FILES_TO_MOUNT) \
+		$(CONTAINER_NAME) \
+		-c 'export VIRTUAL_ENV_DISABLE_PROMPT=1; \
+		    source /venv/bin/activate; \
+		    cd /mvm; python3 -m pip install -e .; \
+		    bash /format.sh'
 
 
 
