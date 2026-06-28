@@ -48,6 +48,18 @@ shell:  ## Get Shell into a ephermeral container made from the image
 		/shell.sh
 
 
+.PHONY: jupyter
+jupyter: image ## Launch JupyterLab (mvm kernel) on http://127.0.0.1:8888/lab
+	$(CONTAINER_CMD) run -it --rm \
+		--entrypoint /bin/bash \
+		$(FILES_TO_MOUNT) \
+		$(X_FLAGS_FOR_CONTAINER) \
+		$(WAYLAND_FLAGS_FOR_CONTAINER) \
+		$(EXPOSE_PORT) \
+		$(CONTAINER_NAME) \
+		/usr/local/bin/jupyter.sh
+
+
 .PHONY: format
 format: image ## Format the Python source with ruff + ty (entrypoint/format.sh)
 	$(CONTAINER_CMD) run -it --rm \

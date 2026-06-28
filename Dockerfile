@@ -33,7 +33,7 @@ RUN echo FOO && python3 -m venv /venv --system-site-packages  && \
 
 COPY entrypoint/dotfiles/ /root/
 
-RUN echo "/usr/local/bin/jupyter.sh" >> ~/.bash_history
+RUN echo "/usr/local/bin/jupyter.sh # JupyterLab on http://127.0.0.1:8888/lab" >> ~/.bash_history
 
 RUN apt install -y  git
 
