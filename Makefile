@@ -27,7 +27,7 @@ EXPOSE_PORT = -p 8888:8888
 all: clean image ## Build the image
 
 .PHONY: image
-image: image  ## Build a podman image in which to run the demos
+image: ## Build a podman image in which to run the demos
 	$(CONTAINER_CMD) build -t $(CONTAINER_NAME) -f Dockerfile
 
 .PHONY: clean
