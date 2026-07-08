@@ -1,7 +1,59 @@
 # Migrate the container from Debian trixie to Fedora 44, on the gacalc model
 
-**Status:** proposed — needs go-ahead
+**Status:** implemented 2026-07-08 — gate results in the "Implementation notes" section below
 **Created:** 2026-07-08
+
+## Implementation notes (2026-07-08)
+
+**Round 2 fix — venv shadowing (Bill's on-display run caught it):** the first
+build used `uv pip install ".[extras]"`, and **uv ignores system-site-packages
+when resolving** (unlike pip), so it installed PyPI copies of numpy/
+matplotlib/pillow/**pyopengl 3.1.10** into the venv — shadowing Fedora's
+patched python3-pyopengl. Combined with Fedora's bundled `OpenGL_accelerate`
+(which resolves EGL at import time) and no EGL runtime lib in the image, the
+demo crashed at `import OpenGL.GL` with
+`'NoneType' object has no attribute 'eglGetCurrentContext'`. Fixes: the
+dependency-resolving install now uses **pip** (`python -m pip install
+--no-build-isolation ".[dev,notebooks,jupyter]"`; python3-pip added to dnf);
+uv remains only for the runtime `--no-deps` editable installs;
+**mesa-libEGL/mesa-libGL/mesa-dri-drivers installed unconditionally**; gate 2
+now imports `OpenGL.GL` headless under wayland env and asserts OpenGL/numpy
+resolve from /usr, not /venv. Also added this round: gacalc's `.extrabashrc`
+ported (prompt + format-on-exit trap; Dockerfile sources it) and build
+artifacts gitignored (output/, proofs/*.{aux,log,pdf}, __pycache__/,
+src/*.egg-info/, imgui.ini, *.tar).
+
+Landed as specified, with these concrete choices:
+
+- **pyproject.toml**: runtime `dependencies` = galgebra, glfw, imgui-bundle,
+  matplotlib, numpy, pillow, pyMatrixStack, PyOpenGL, sympy; extras
+  `notebooks` (jupytext), `jupyter` (jupyterlab/jupyter/jupyter-lsp/
+  jupyter-ydoc/jupyterlab-mathjax3/mathjax), `dev` (autoflake8, removestar,
+  ruff). autoflake8/removestar kept from the old flat list.
+- **Dockerfile**: gacalc shape — dnf upgrade layer; toolchain layer (dnf
+  python3-numpy/matplotlib/pillow/pyopengl/sympy/setuptools/wheel + ruff/ty/
+  uv/tmux/git/gcc/meson/ninja-build/pkgconfig/glib2-devel/glfw) with
+  `USE_EMACS` (installs emacs + runs install-melpa-packages.el at build —
+  mvm has no vendored elpa, unlike gacalc) and `USE_SPYDER` gates, both
+  defaulting 0 (Makefile also 0, matching gacalc rather than the template's
+  usual 1); venv `--system-site-packages`; gacalc's verified nbconvert-PDF
+  XeLaTeX block verbatim + this repo's four TeX additions (anyfontsize,
+  commath [proofs], dvipng + standalone [texExpToPng]); COPY project files +
+  `uv pip install --no-build-isolation ".[dev,notebooks,jupyter]"`;
+  SHA-pinned texExpToPng clone unchanged (`fbbd9a3f…`).
+- **Makefile**: gacalc shape (conditional TMUX/GITCONFIG/GNUPG mounts,
+  containerized `format`, `image-export`/`image-import`, help) + mvm
+  keepers: `clean`, `pdfs`, output/ mount, X/Wayland/DRI blocks with
+  `PYGLFW_LIBRARY=/usr/lib64/libglfw.so.3` and `PYOPENGL_PLATFORM=egl`
+  (redundant on Fedora's patched python3-pyopengl; kept as documentation).
+  The old broken `entrypoint/.bashrc` mount is gone.
+- **entrypoint/**: entrypoint.sh/shell.sh/jupyter.sh/format.sh moved to the
+  gacalc idiom (venv activate + `uv pip install --no-deps --no-index
+  --no-build-isolation -e .`); **pdfs.sh created** (was referenced by the
+  Makefile but never existed) — runs `make -C proofs` and copies PDFs to
+  /output. `.gitignore` gained `*.tar` for image-export.
+- Old `USE_JUPYTER` ARG dropped (was declared but never referenced; jupyter
+  now comes unconditionally from the pip extras).
 
 ## Goal (Bill, 2026-07-08)
 

@@ -6,3 +6,15 @@ derivationofcrossproduct.aux
 derivationofcrossproduct.log
 derivationofcrossproduct.pdf
 
+
+# image-export artifacts -- large, never commit
+*.tar
+
+# build artifacts
+output/
+proofs/*.aux
+proofs/*.log
+proofs/*.pdf
+__pycache__/
+src/*.egg-info/
+imgui.ini

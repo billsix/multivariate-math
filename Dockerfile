@@ -1,81 +1,123 @@
-FROM docker.io/debian:trixie
+FROM registry.fedoraproject.org/fedora:44
 
-ARG USE_JUPYTER=1
-ARG USE_SPYDER=1
+ARG USE_SPYDER=0
+ARG USE_EMACS=0
 
-
-# Keep downloaded .debs (the apt analog of dnf's keepcache=True) so the
-# --mount=type=cache mounts below accumulate packages across builds.
-RUN rm -f /etc/apt/apt.conf.d/docker-clean && \
-    echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
-
-# Install necessary packages for OpenGL
-RUN --mount=type=cache,target=/var/cache/apt \
-    --mount=type=cache,target=/var/lib/apt \
-    apt update -y && \
-    apt install -y \
-    python3 \
-    python3-dev \
-    python3-pip \
-    libglfw3 \
-    python3-opengl \
-    python3-pyglfw \
-    gcc \
-    g++ \
-    mesa-va-drivers \
-    mesa-vdpau-drivers \
-    texlive-latex-base texlive-latex-recommended texlive-science  \
-    texlive-latex-extra \
-    dvipng \
-    meson \
-    ninja-build \
-    pkg-config \
-    libglib2.0-dev \
-    emacs \
-    tmux \
-    which \
-    python3-venv
-
-RUN echo FOO && python3 -m venv /venv --system-site-packages  && \
-    . /venv/bin/activate && \
-    python -m pip install --upgrade pip setuptools
-
-
+RUN --mount=type=cache,target=/var/cache/libdnf5 \
+    --mount=type=cache,target=/var/lib/dnf \
+    echo "keepcache=True" >> /etc/dnf/dnf.conf && \
+    dnf upgrade -y
 
 COPY entrypoint/dotfiles/ /root/
 
-RUN echo "/usr/local/bin/jupyter.sh # JupyterLab on http://127.0.0.1:8888/lab" >> ~/.bash_history
+# Toolchain + the heavy/native Python packages from dnf (the venv below is
+# --system-site-packages, so uv sees these as satisfied and doesn't re-download
+# them from PyPI).  python3-pyopengl in particular SHOULD come from dnf: Fedora
+# patches PyOpenGL to auto-select the EGL platform under Wayland, which is how
+# the GL demos find the context GLFW creates (the Makefile's PYOPENGL_PLATFORM
+# comment has the full story).  gcc/meson/ninja/pkgconfig/glib2-devel build
+# texExpToPng below; git clones it.  libwayland-cursor/libwayland-egl/
+# libxkbcommon are dlopen'd by GLFW's Wayland backend at window-open time --
+# the glfw rpm doesn't Require them, and only a real display exercises them
+# (found by running the demo on-screen, 2026-07-08).
+RUN --mount=type=cache,target=/var/cache/libdnf5 \
+    --mount=type=cache,target=/var/lib/dnf \
+    dnf install -y \
+                   gcc \
+                   git \
+                   glfw \
+                   glib2-devel \
+                   libwayland-cursor \
+                   libwayland-egl \
+                   libxkbcommon \
+                   mesa-dri-drivers \
+                   mesa-libEGL \
+                   mesa-libGL \
+                   meson \
+                   ninja-build \
+                   pkgconfig \
+                   python3 \
+                   python3-matplotlib \
+                   python3-numpy \
+                   python3-pillow \
+                   python3-pip \
+                   python3-pyopengl \
+                   python3-setuptools \
+                   python3-sympy \
+                   python3-wheel \
+                   ruff \
+                   tmux \
+                   ty \
+                   uv \
+                   which ; \
+    if [ "$USE_EMACS" = "1" ]; then \
+      dnf install -y emacs && \
+      emacs --batch --load /root/.emacs.d/install-melpa-packages.el && \
+      echo "alias ls='ls --color=auto'" >> ~/.bashrc ; \
+    fi ; \
+    if [ "$USE_SPYDER" = "1" ]; then \
+      dnf install -y \
+                   mesa-dri-drivers \
+                   mesa-libGLU-devel && \
+      dnf install -y python3-spyder ; \
+    fi ; \
+    echo "/usr/local/bin/jupyter.sh # JupyterLab on http://127.0.0.1:8888/lab" >> ~/.bash_history && \
+    echo "source ~/.extrabashrc" >> ~/.bashrc && \
+    python3 -m venv --system-site-packages /venv/
 
-RUN --mount=type=cache,target=/var/cache/apt \
-    --mount=type=cache,target=/var/lib/apt \
-    apt update -y && apt install -y git
+# Notebook "Export to PDF": nbconvert's PDF path renders the notebook through
+# pandoc -> XeLaTeX, so the image needs pandoc plus a XeLaTeX toolchain with the
+# packages nbconvert's default LaTeX template pulls in.  This set was verified
+# end to end in geometricalgebra against a math-heavy notebook
+# (`jupyter nbconvert --to pdf --execute`) -- copied from its Dockerfile.
+# The last four packages are this repo's own TeX consumers beyond nbconvert:
+# the pdflatex proofs (proofs/*.tex use commath on top of the recommended
+# collections) and texExpToPng (\documentclass{standalone} + amsmath rendered
+# via latex + dvipng; anyfontsize for the DPI scaling).
+RUN --mount=type=cache,target=/var/cache/libdnf5 \
+    --mount=type=cache,target=/var/lib/dnf \
+    dnf install -y \
+                   pandoc \
+                   texlive-xetex \
+                   texlive-collection-fontsrecommended \
+                   texlive-collection-latexrecommended \
+                   texlive-adjustbox \
+                   texlive-tcolorbox \
+                   texlive-collectbox \
+                   texlive-ucs \
+                   texlive-titling \
+                   texlive-enumitem \
+                   texlive-rsfs \
+                   texlive-jknapltx \
+                   texlive-upquote \
+                   texlive-ulem \
+                   texlive-soul \
+                   texlive-eurosym \
+                   texlive-pgf \
+                   texlive-environ \
+                   texlive-trimspaces \
+                   texlive-parskip \
+                   texlive-anyfontsize \
+                   texlive-commath \
+                   texlive-dvipng \
+                   texlive-standalone
 
-
-# imgui-bundle preinstalled in the venv so the ephemeral container's
-# `pip install -e .` (shell.sh/jupyter.sh) doesn't re-download it every run.
-# [glfw] also pins the PyPI glfw binding the demos import.
-RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && \
-       . /venv/bin/activate && \
-        python3 -m pip install 'imgui-bundle[glfw]' --root-user-action=ignore
-
-RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && \
-       . /venv/bin/activate && \
-        python3 -m pip install ty --root-user-action=ignore
-
-
-RUN --mount=type=cache,target=/var/cache/apt \
-    --mount=type=cache,target=/var/lib/apt \
-    apt update -y && \
-    apt install -y jupyter \
-             jupyterlab \
-             python3-jupytext \
-             fonts-mathjax \
-             python3-jupyter-server-mathjax
-
-
-
-
-
+# Install the package + ALL its optional extras from pyproject's own
+# [project.optional-dependencies] -- the single source of truth (no
+# requirements.txt, no hardcoded package list).  At runtime `make shell`'s bind
+# mount overlays /mvm with the live host tree, so this copy only feeds this
+# build step.
+COPY pyproject.toml setup.py LICENSE /mvm/
+COPY src /mvm/src
+# pip, NOT uv, for this dependency-RESOLVING install: pip treats the dnf
+# packages visible through the --system-site-packages venv as already
+# satisfied, while uv resolves in isolation and installs PyPI copies into the
+# venv -- which shadow the system ones on sys.path.  That must not happen to
+# python3-pyopengl (Fedora's carries the auto-EGL-under-Wayland patch the GL
+# demos rely on).  The runtime editable installs (shell.sh/jupyter.sh) keep
+# using uv: with --no-deps there is nothing to resolve.
+RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && source /venv/bin/activate && \
+    cd /mvm && python -m pip install --no-build-isolation ".[dev,notebooks,jupyter]"
 
 # texExpToPng: renders LaTeX expressions to PNG (latex + dvipng); used by the
 # crossproduct demo's billboard labels at runtime (the demo no-ops without it).

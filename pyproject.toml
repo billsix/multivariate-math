@@ -4,28 +4,32 @@ version = "0.0.1"
 authors = [{name="William Emerison Six", email="billsix@gmail.com"}]
 description = "Animations and proofs for multivariate math"
 
+# Runtime dependencies -- what the demos need to import and run.  The heavy
+# native ones (numpy, pillow, PyOpenGL, sympy, matplotlib) are satisfied by
+# dnf packages through the --system-site-packages venv (see Dockerfile), so
+# uv only downloads the rest from PyPI.
 dependencies = [
-    "glfw",
-    "autoflake8",
     "galgebra",
+    "glfw",
     "imgui-bundle",
-    "jupyter",
-    "jupyter-lsp",
-    "jupyter-ydoc",
-    "jupyterlab",
-    "jupyterlab-mathjax3",
-    "jupytext",
-    "mathjax",
     "matplotlib",
     "numpy",
     "pillow",
     "pyMatrixStack",
     "PyOpenGL",
-    "removestar",
-    "ruff",
     "sympy",
 ]
 
+# Optional feature groups, gacalc-style -- the dev container installs all of
+# them (see Dockerfile); they are the single source of truth (no
+# requirements.txt, no package lists hardcoded in the Dockerfile).
+[project.optional-dependencies]
+# the percent-format notebooks
+notebooks = ["jupytext"]
+# the interactive JupyterLab environment to run those notebooks
+jupyter = ["jupyterlab", "jupyter", "jupyter-lsp", "jupyter-ydoc", "jupyterlab-mathjax3", "mathjax"]
+# lint/format tooling -- not needed at runtime
+dev = ["autoflake8", "removestar", "ruff"]
 
 
 [build-system]
