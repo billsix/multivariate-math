@@ -16,9 +16,22 @@ X_FLAGS_FOR_CONTAINER = -e DISPLAY=$(DISPLAY) \
 	-v /tmp/.X11-unix:/tmp/.X11-unix \
 	--security-opt label=type:container_runtime_t
 
-WAYLAND_FLAGS_FOR_CONTAINER = -e "WAYLAND_DISPLAY=${WAYLAND_DISPLAY}" \
+# GPU render node for hardware GL (Wayland EGL / X11); skipped if /dev/dri is absent.
+DRI_DEVICE := $(shell [ -d /dev/dri ] && echo "--device /dev/dri")
+
+# Wayland for the GUI demos, WITHOUT breaking imgui_bundle (same setup as mvp).
+# The demos' `import glfw` (PyPI) loads first, then imgui_bundle's native lib --
+# and BOTH bind the same soname `libglfw.so.3`.  PyPI glfw's *Wayland-only*
+# build lacks `glfwGetX11Window` (which imgui_bundle needs), so forcing that
+# variant crashes imgui_bundle.  Instead point PyPI glfw at the SYSTEM Debian
+# libglfw3 (a DUAL X11+Wayland build); it loads first, so imgui_bundle binds
+# the same dual lib and GLFW picks Wayland at runtime via WAYLAND_DISPLAY.
+WAYLAND_FLAGS_FOR_CONTAINER = -e "XDG_SESSION_TYPE=wayland" \
+                              -e "WAYLAND_DISPLAY=${WAYLAND_DISPLAY}" \
                               -e "XDG_RUNTIME_DIR=${XDG_RUNTIME_DIR}" \
-                              -v "${XDG_RUNTIME_DIR}:${XDG_RUNTIME_DIR}"
+                              -e "PYGLFW_LIBRARY=/usr/lib/x86_64-linux-gnu/libglfw.so.3" \
+                              -v "${XDG_RUNTIME_DIR}:${XDG_RUNTIME_DIR}" \
+                              $(DRI_DEVICE)
 
 EXPOSE_PORT = -p 8888:8888
 
@@ -79,7 +92,7 @@ pdfs: image ## Run Crossproduct
 		--entrypoint /bin/bash \
 		$(FILES_TO_MOUNT) \
 		-v ./entrypoint/pdfs.sh:/pdfs.sh:Z \
-		$(USE_X) \
+		$(X_FLAGS_FOR_CONTAINER) \
 		$(CONTAINER_NAME) \
 		/pdfs.sh
 

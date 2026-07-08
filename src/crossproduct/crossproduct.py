@@ -25,11 +25,15 @@ import sys
 from dataclasses import dataclass
 from enum import Enum, auto
 
+# When using a pure python backend, prefer to import glfw before
+# imgui_bundle (so that you end up using the standard glfw, not the
+# one provided by imgui_bundle)
+# (see https://github.com/pthom/imgui_bundle/issues/321)
 import glfw
-import imgui
 import numpy as np
 import pyMatrixStack as ms
-from imgui.integrations.glfw import GlfwRenderer
+from imgui_bundle import imgui
+from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 from numpy import ndarray
 from OpenGL.GL import (
     GL_COLOR_BUFFER_BIT,
@@ -544,8 +548,8 @@ with (
         imgui.new_frame()
 
         imgui.set_next_window_bg_alpha(0.05)
-        imgui.set_next_window_size(300, 175, imgui.FIRST_USE_EVER)
-        imgui.set_next_window_position(0, 0, imgui.FIRST_USE_EVER)
+        imgui.set_next_window_size(imgui.ImVec2(300, 175), imgui.Cond_.first_use_ever)
+        imgui.set_next_window_pos(imgui.ImVec2(0, 0), imgui.Cond_.first_use_ever)
         imgui.begin("Cross Product", True)
 
         def a_extra_text():
@@ -575,9 +579,8 @@ with (
                 case StepNumber.show_plane:
                     return ""
 
-        show, _ = imgui.collapsing_header(
-            "Input Vectors", flags=imgui.TREE_NODE_DEFAULT_OPEN
-        )
+        imgui.set_next_item_open(True, imgui.Cond_.once)
+        show = imgui.collapsing_header("Input Vectors")
         if show:
             imgui.text("a x b")
             imgui.label_text("label", "Value")
@@ -590,10 +593,8 @@ with (
                         g.vec1.z,
                     ),
                 ) = imgui.input_float3(
-                    label="vec a" + a_extra_text(),
-                    value0=g.vec1.x,
-                    value1=g.vec1.y,
-                    value2=g.vec1.z,
+                    "vec a" + a_extra_text(),
+                    [g.vec1.x, g.vec1.y, g.vec1.z],
                 )
 
                 if changed:
@@ -608,10 +609,8 @@ with (
                         g.vec2.z,
                     ),
                 ) = imgui.input_float3(
-                    label="vec b" + a_extra_text(),
-                    value0=g.vec2.x,
-                    value1=g.vec2.y,
-                    value2=g.vec2.z,
+                    "vec b" + a_extra_text(),
+                    [g.vec2.x, g.vec2.y, g.vec2.z],
                 )
 
                 clicked = imgui.button("G.Swap vectors")
@@ -623,10 +622,11 @@ with (
                     g.animation_time = 0.0
                     g.step_number = StepNumber.beginning
 
-        show, _ = imgui.collapsing_header("Camera", flags=imgui.TREE_NODE_DEFAULT_OPEN)
+        imgui.set_next_item_open(True, imgui.Cond_.once)
+        show = imgui.collapsing_header("Camera")
         if show:
             changed, g.auto_rotate_camera = imgui.checkbox(
-                label="Auto Rotate G.Camera", state=g.auto_rotate_camera
+                "Auto Rotate G.Camera", g.auto_rotate_camera
             )
 
             if g.auto_rotate_camera:
@@ -653,13 +653,14 @@ with (
                 g.use_ortho = True
 
             changed, g.draw_coordinate_system_of_natural_basis = imgui.checkbox(
-                label="Draw Coordinate System of Natural Basis",
-                state=g.draw_coordinate_system_of_natural_basis,
+                "Draw Coordinate System of Natural Basis",
+                g.draw_coordinate_system_of_natural_basis,
             )
 
-        show, _ = imgui.collapsing_header("Time", flags=imgui.TREE_NODE_DEFAULT_OPEN)
+        imgui.set_next_item_open(True, imgui.Cond_.once)
+        show = imgui.collapsing_header("Time")
         if show:
-            changed, g.auto_play = imgui.checkbox(label="AutoPlay", state=g.auto_play)
+            changed, g.auto_play = imgui.checkbox("AutoPlay", g.auto_play)
 
             if imgui.button("Restart"):
                 restart()
@@ -699,8 +700,8 @@ with (
                     g.angle_x = calc_angle_x()
                 imgui.same_line()
                 changed, g.draw_first_relative_coordinates = imgui.checkbox(
-                    label="Draw Relative Coordinates",
-                    state=g.draw_first_relative_coordinates,
+                    "Draw Relative Coordinates",
+                    g.draw_first_relative_coordinates,
                 )
                 if g.draw_first_relative_coordinates:
                     imgui.text("Highlight:")
@@ -722,8 +723,8 @@ with (
                         g.current_animation_start_time = g.animation_time
                     imgui.same_line()
                     changed, g.draw_second_relative_coordinates = imgui.checkbox(
-                        label="Draw Second Relative Coordinates",
-                        state=g.draw_second_relative_coordinates,
+                        "Draw Second Relative Coordinates",
+                        g.draw_second_relative_coordinates,
                     )
                 if g.draw_second_relative_coordinates:
                     imgui.text("Highlight:")
@@ -745,8 +746,8 @@ with (
                         g.current_animation_start_time = g.animation_time
                     imgui.same_line()
                     changed, g.draw_third_relative_coordinates = imgui.checkbox(
-                        label="Draw Third Relative Coordinates",
-                        state=g.draw_third_relative_coordinates,
+                        "Draw Third Relative Coordinates",
+                        g.draw_third_relative_coordinates,
                     )
                 if g.draw_third_relative_coordinates:
                     imgui.text("Highlight:")
@@ -935,8 +936,8 @@ with (
                         g.current_animation_start_time = g.animation_time
                     imgui.same_line()
                     changed, g.draw_undo_rotate_x_relative_coordinates = imgui.checkbox(
-                        label="Draw Relative Coordinates",
-                        state=g.draw_undo_rotate_x_relative_coordinates,
+                        "Draw Relative Coordinates",
+                        g.draw_undo_rotate_x_relative_coordinates,
                     )
 
             if g.step_number == StepNumber.undo_rotate_x:
@@ -947,8 +948,8 @@ with (
                         g.current_animation_start_time = g.animation_time
                     imgui.same_line()
                     changed, g.draw_undo_rotate_y_relative_coordinates = imgui.checkbox(
-                        label="Draw Relative Coordinates",
-                        state=g.draw_undo_rotate_y_relative_coordinates,
+                        "Draw Relative Coordinates",
+                        g.draw_undo_rotate_y_relative_coordinates,
                     )
 
             if g.step_number == StepNumber.undo_rotate_y:
@@ -959,8 +960,8 @@ with (
                         g.current_animation_start_time = g.animation_time
                     imgui.same_line()
                     changed, g.draw_undo_rotate_z_relative_coordinates = imgui.checkbox(
-                        label="Draw Relative Coordinates",
-                        state=g.draw_undo_rotate_z_relative_coordinates,
+                        "Draw Relative Coordinates",
+                        g.draw_undo_rotate_z_relative_coordinates,
                     )
 
             if g.step_number == StepNumber.undo_rotate_z:

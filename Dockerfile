@@ -45,13 +45,12 @@ RUN --mount=type=cache,target=/var/cache/apt \
     apt update -y && apt install -y git
 
 
+# imgui-bundle preinstalled in the venv so the ephemeral container's
+# `pip install -e .` (shell.sh/jupyter.sh) doesn't re-download it every run.
+# [glfw] also pins the PyPI glfw binding the demos import.
 RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && \
        . /venv/bin/activate && \
-        cd ~/ && \
-        git clone https://github.com/billsix/pyimgui.git && \
-        cd pyimgui && \
-        git submodule init && git submodule update && \
-        python3 -m pip install . --root-user-action=ignore
+        python3 -m pip install 'imgui-bundle[glfw]' --root-user-action=ignore
 
 RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && \
        . /venv/bin/activate && \
