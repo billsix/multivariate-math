@@ -51,9 +51,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
                    uv \
                    which ; \
     if [ "$USE_EMACS" = "1" ]; then \
-      dnf install -y emacs && \
-      emacs --batch --load /root/.emacs.d/install-melpa-packages.el && \
-      echo "alias ls='ls --color=auto'" >> ~/.bashrc ; \
+      dnf install -y emacs ; \
     fi ; \
     if [ "$USE_SPYDER" = "1" ]; then \
       dnf install -y \

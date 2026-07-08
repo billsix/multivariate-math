@@ -18,3 +18,7 @@ proofs/*.pdf
 __pycache__/
 src/*.egg-info/
 imgui.ini
+
+# compiled emacs artifacts (regenerated; update-emacs-packages strips them)
+*.elc
+*.eln
