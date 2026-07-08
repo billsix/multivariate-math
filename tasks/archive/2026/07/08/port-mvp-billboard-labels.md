@@ -1,9 +1,52 @@
 # Port mvp's TeX billboard labels into the crossproduct demo
 
-**Status:** in progress — texExpToPng built in the image from a SHA-pinned
-clone (2026-07-08); the label renderer port + demo integration are proposed
-and need go-ahead
+**Status:** COMPLETE 2026-07-08 — implemented, gated (image build, all 14
+label strings render, ty at 45 diagnostics vs 46 baseline, ruff clean), and
+**display-verified by Bill** ("looks pretty good"). Follow-ups spun out:
+label-content tweaks → tasks/crossproduct-label-fixes.md; the two mvp
+backports (Pillow Transpose enum, VAO save/restore) →
+modelviewprojection tasks/backport-labels-fixes-from-mvm.md.
 **Created:** 2026-07-08
+
+## Implementation notes (2026-07-08)
+
+- **`src/crossproduct/_labels.py`** — ported from mvp with two fixes worth
+  BACKPORTING to mvp's copy: `Image.Transpose.FLIP_TOP_BOTTOM` instead of the
+  module-level `Image.FLIP_TOP_BOTTOM` (removed in Pillow 10 — mvp's copy
+  would crash on a modern Pillow when it next regenerates a texture), and a
+  `TEXEXP is None` guard in `_generate` (ty cleanliness). Billboard shader
+  pair copied verbatim.
+- **Menubar** (File / Animation / Camera / Vectors / Highlight / View) per
+  the spec below; the floating "Cross Product" window is gone. Keyboard:
+  Space = next step, R = restart, P = autoplay, F11 = fullscreen, Esc = quit;
+  shortcuts respect `want_capture_keyboard`, and orbit/scroll respect
+  `want_capture_mouse` (required for menubar usability).
+- **The step machine**: `STEP_NEXT_LABEL`/`REL_FLAG` dicts + a single
+  "Next: <action>" menu item (disabled until the current stage's animation
+  completes). Transition side effects moved verbatim into
+  `process_pre_step_transitions()` / `process_post_step_transitions()`,
+  called at the exact points in the frame where the old in-window buttons
+  executed — position matters because the Show Triangle transition reads the
+  model matrix AFTER the frame's rotation blocks. One deliberate state
+  change vs the old code: the final action now sets
+  `step_number = show_plane` (the old code left it at `scale_by_mag_a` and
+  only set `do_remove_ground`; all ratio/gate expressions verified
+  equivalent).
+- **Labels**: proof-derived, per-step (`a_label()`/`b_label()`/`c_label()`
+  `match` functions — x/y/z at axis tips, `\vec{a}` → `\vec{a}'` →
+  `\vec{a}''`, `\vec{b}` → `\vec{f}_a^{zx}(\vec{b})` → `\vec{b}''` →
+  `\vec{b}'''`, and on the derived vector
+  `c = \lVert\vec{b}\rVert\sin(\theta)` → `c` → `\vec{f}(\vec{b})` →
+  `\vec{a}\times\vec{b}`), walking back down through the undo steps. Tip
+  positions use the matrices captured at each vector's actual draw frame
+  (`coords_M` / `model_M` / `vec3_label_M`).
+- Behaviour notes: vector edits and Swap now work mid-derivation (they
+  restart the derivation, preserving vectors/camera — the old UI only
+  exposed them at the beginning step); the relative-coordinate x'/y'/z'
+  highlight toggles are always visible in the Highlight menu (previously
+  step-conditional); auto-rotate-camera now advances every frame (previously
+  only while the Camera header was expanded — a quirk of UI/scene
+  interleaving in the old window).
 
 ## Goal
 
