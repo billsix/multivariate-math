@@ -1,6 +1,10 @@
 # Install ALL Python packages into the venv at image-build time
 
-**Status:** proposed — needs go-ahead
+**Status:** superseded 2026-07-08 by [[debian-to-fedora44-gacalc-model]] —
+Bill chose gacalc's pyproject-extras + uv model (on Fedora 44) over the
+mvp-style requirements.txt mechanism proposed here; that task absorbs this
+one's goal (all deps installed at image build, into the venv). The
+current-state survey below is still accurate background.
 **Created:** 2026-07-08
 
 ## Goal
