@@ -1,7 +1,25 @@
 # Migrate from pyimgui (billsix fork) to imgui-bundle
 
-**Status:** implemented 2026-07-07 — image + static gates pass; GUI needs Bill's on-display verification
+**Status:** implemented 2026-07-07 (+ EGL fix 2026-07-08) — image + static gates pass; GUI needs Bill's on-display re-test
 **Created:** 2026-07-07
+
+## Follow-up fix (2026-07-08): "Attempt to retrieve context when no valid context"
+
+Bill's first in-container run crashed in `GlfwRenderer(window)` →
+`OpenGL.error.Error: Attempt to retrieve context when no valid context`.
+Diagnosis: NOT missing drivers — the image already carries the full GL stack
+(libEGL, libOpenGL/glvnd, libgl1-mesa-dri + mesa-libgallium DRI drivers,
+libwayland-egl1, libxkbcommon0, even mesa-vulkan-drivers; verified with dpkg
+in the built image), and GLFW had already created the window+context. The
+real cause: under Wayland GLFW makes an **EGL** context, but Debian's
+PyOpenGL defaults to the **GLX** platform (verified in-image: default
+`GLXPlatform`), so `contextdata.getContext()` finds nothing. Fedora patches
+PyOpenGL to auto-select EGL when `XDG_SESSION_TYPE=wayland` — that patch is
+why mvp works without doing anything; Debian has no such patch. Fix:
+`-e PYOPENGL_PLATFORM=egl` added to `WAYLAND_FLAGS_FOR_CONTAINER` (verified
+in-image: loads `EGLPlatform`, `GetCurrentContext` resolves). Note if the
+demo is ever run on a Debian *host* under Wayland, the same
+`PYOPENGL_PLATFORM=egl` export is needed there too.
 
 ## Why
 
