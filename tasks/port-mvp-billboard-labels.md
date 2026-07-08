@@ -51,7 +51,40 @@ infrastructure only**. Two constraints from Bill (2026-07-08):
    nothing Cayley-related is in `_labels.py` itself).
 2. **Per-step label calls** in the demo loop (drawn last, over the scene, at
    slightly-extended vector tips — mvp's ~line-1109 block shows the begin/
-   draw/end shape and is the only part of mvp's demo worth reading).
+   draw/end shape).
+3. **Menubar UI, mvp-style (Bill, 2026-07-08)** — replace the floating
+   "Cross Product" window (collapsing headers + inline step buttons) with a
+   main menubar like mvp's `mathdemos/crossproduct.py` `menubar()`
+   (~lines 1189–1310), **without any Cayley machinery**. What to copy:
+   - **Menu layout:** `File` (Quit / Esc) · `Animation` ("Next: <step name>"
+     action, Restart / R, AutoPlay / P with checkmark, "Seconds / step"
+     `slider_float` inline in the menu, and a step-conditional "Draw Relative
+     Coordinates" toggle) · `Camera` (Auto-Rotate checkmark, Camera Radius
+     slider when not ortho, View Down X / −Y / Z actions) · `Vectors`
+     (`input_float3` for a and b inline — edits restart the derivation —
+     plus Swap and Highlight a/b) · `Highlight` (x y z x' y' z' checkmark
+     toggles) · `View` (Fullscreen / F11, Draw Natural Basis).
+   - **Local helpers to write in mvm** (small, no mvp imports):
+     `menu_action(label, key, action, *, selected=False)` — a 5-line
+     `imgui.menu_item` wrapper (cayley_gl.py:508, copy verbatim);
+     a `_STEP_NEXT_LABEL: dict[StepNumber, str | None]` mapping each stage to
+     the "Next:" action name (replaces the per-step buttons scattered through
+     the old Time section — "Rotate Z", "Undo Rotate X", … become one menu
+     item that always shows the current step's successor); a
+     `_REL_FLAG: dict[StepNumber, str]` for which draw-relative-coordinates
+     flag the current step exposes; optionally `WindowState` +
+     `toggle_fullscreen` (cayley_gl.py:495/517, ~15 lines, saves/restores
+     windowed geometry).
+   - **No `cayley_gl.run_loop`:** mvm's existing while-loop stays; call
+     `menubar()` between `imgui.new_frame()` and `imgui.render()` where the
+     `imgui.begin("Cross Product")` window used to be.
+   - **Keyboard shortcuts** shown in the menu right column and handled in the
+     existing `on_key`: Esc (already), Space = next step, R = restart,
+     P = autoplay, F11 = fullscreen.
+   - Optional niceties seen in mvp's frame loop, Bill's call (behaviour
+     tweaks): wall-clock `dt`-based animation (clamped, fps-independent)
+     instead of the fixed `1/60` increment; skip orbit/scroll input when
+     `imgui.get_io().want_capture_mouse` (cursor over a menu).
 
 ## Label table — derived from `proofs/crossproduct.tex`
 

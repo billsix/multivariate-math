@@ -5,6 +5,14 @@
 
 ## Implementation notes (2026-07-08)
 
+**Round 3 fix — GLFW's dlopen'd Wayland libs (found by Bill on-display):**
+`libwayland-cursor`, `libwayland-egl`, `libxkbcommon` added to dnf. GLFW's
+Wayland backend dlopens them at window-open time; the glfw rpm doesn't
+Require them, and no headless gate can exercise that path (mvp never noticed
+because its image's GTK/wxGTK chain pulls them in transitively). After
+installing the three in a live container the crossproduct demo ran on Bill's
+display — the migration's final verification.
+
 **Round 2 fix — venv shadowing (Bill's on-display run caught it):** the first
 build used `uv pip install ".[extras]"`, and **uv ignores system-site-packages
 when resolving** (unlike pip), so it installed PyPI copies of numpy/

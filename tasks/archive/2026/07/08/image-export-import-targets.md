@@ -59,3 +59,7 @@ image-import: ## import an OCI image tar: make image-import FILE=foo.tar
 - `make help` lists `image-export` and `image-import` with `##` descriptions.
 - `make image-export` writes `multivariate-math-<timestamp>.tar`; `make image-import FILE=…` reloads it.
 - The exported tar pattern is gitignored.
+
+## Resolution (2026-07-08)
+
+Delivered as part of the Debian->Fedora 44 migration (debian-to-fedora44-gacalc-model.md): the rewritten Makefile carries the standard pair — .PHONY, $(CONTAINER_CMD), ##-documented — and .gitignore covers *.tar.
