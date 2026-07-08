@@ -25,6 +25,12 @@ RUN --mount=type=cache,target=/var/cache/apt \
     mesa-va-drivers \
     mesa-vdpau-drivers \
     texlive-latex-base texlive-latex-recommended texlive-science  \
+    texlive-latex-extra \
+    dvipng \
+    meson \
+    ninja-build \
+    pkg-config \
+    libglib2.0-dev \
     emacs \
     tmux \
     which \
@@ -69,6 +75,19 @@ RUN --mount=type=cache,target=/var/cache/apt \
 
 
 
+
+
+# texExpToPng: renders LaTeX expressions to PNG (latex + dvipng); used by the
+# crossproduct demo's billboard labels at runtime (the demo no-ops without it).
+# Pinned to the upstream HEAD as of 2026-07-08 so image builds stay
+# reproducible even if upstream moves; bump the SHA deliberately.
+RUN git clone https://github.com/billsix/tex-expression-to-png.git /tmp/tex_exp_to_png && \
+    cd /tmp/tex_exp_to_png && \
+    git checkout fbbd9a3fefa48ab86136ca4fba9861553289c5ee && \
+    meson setup builddir && \
+    meson compile -C builddir && \
+    meson install -C builddir && \
+    rm -rf /tmp/tex_exp_to_png
 
 
 ENTRYPOINT ["/entrypoint.sh"]
