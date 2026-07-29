@@ -22,3 +22,4 @@ imgui.ini
 # compiled emacs artifacts (regenerated; update-emacs-packages strips them)
 *.elc
 *.eln
+.ipynb_checkpoints/
