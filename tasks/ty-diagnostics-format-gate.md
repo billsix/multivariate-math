@@ -50,7 +50,7 @@ order around glfw/OpenGL/imgui can be **semantically load-bearing**, and the
 GL demos couldn't be eyeball-verified at that hour. The next `make format`
 run will re-apply them deterministically — review them then (run the
 crossproduct demo before trusting the reorder), or pin the intended order
-with an isort-suppression comment if it IS load-bearing.
+with an isort-suppression comment if the order IS required.
 
 ## Interim state
 

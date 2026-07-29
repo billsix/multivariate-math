@@ -45,7 +45,7 @@ second, overlapping set comes from **apt** (`python3-opengl`,
    there). apt keeps only non-Python things: `libglfw3`, mesa, texlive,
    emacs, tmux, gcc/g++ (build deps for any sdist), fonts-mathjax.
    - The venv can then drop `--system-site-packages` entirely → fully
-     isolated, reproducible venv. (If anything turns out to genuinely need a
+     isolated, reproducible venv. (If anything turns out to need a
      distro Python package, keep `--system-site-packages` and document why.)
 4. **shell.sh / jupyter.sh**: change `python3 -m pip install -e .` to
    `python3 -m pip install --no-deps -e .` so startup can't re-resolve or
