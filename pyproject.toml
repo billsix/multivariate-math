@@ -38,3 +38,12 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.ruff]
+# The intentionally-vendored Emacs tree under entrypoint/ (.emacs.d/elpa/) is
+# third-party code we must never lint or reformat.  Excluded here so both
+# `ruff check` and `ruff format` skip it however they're invoked (CLI,
+# format.sh, editor).  (Same rationale and mechanism as gacalc's pyproject.
+# Before format.sh propagated failures, 2026-07-29, ruff had been failing on
+# these vendored files on every run -- masked by the gate's green exit.)
+extend-exclude = ["entrypoint"]
