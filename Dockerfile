@@ -115,7 +115,8 @@ COPY src /mvm/src
 # demos rely on).  The runtime editable installs (shell.sh/jupyter.sh) keep
 # using uv: with --no-deps there is nothing to resolve.
 RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && source /venv/bin/activate && \
-    cd /mvm && python -m pip install --no-build-isolation ".[dev,notebooks,jupyter]"
+    cd /mvm && python -m pip install --no-build-isolation ".[dev,notebooks,jupyter]" && \
+    jupytext-config set-default-viewer python
 
 # texExpToPng: renders LaTeX expressions to PNG (latex + dvipng); used by the
 # crossproduct demo's billboard labels at runtime (the demo no-ops without it).

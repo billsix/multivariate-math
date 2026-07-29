@@ -1,6 +1,6 @@
 # Make JupyterLab open py:percent files as notebooks by default
 
-**Status:** proposed — needs go-ahead to implement
+**Status:** DONE 2026-07-29 — implemented and gate-verified; ready to archive
 
 ## Goal
 
@@ -41,15 +41,15 @@ shadowing Fedora's patched python3-pyopengl.)
 - No `jupytext-config` / `set-default-viewer` call exists anywhere in the
   repo today (grepped Dockerfile, Makefile, entrypoint/*.sh).
 
-## Verification
+## Verification (ran 2026-07-29)
 
-1. `make image` (nested podman: transient `--cgroups=disabled` per standing
-   arrangement).
-2. In the built image:
-   `source /venv/bin/activate && jupytext-config list-default-viewer`
-   → should print `python`.
-3. Confirm `/root/.jupyter/labconfig/default_setting_overrides.json` exists
-   and names `@jupyterlab/docmanager-extension` → `defaultViewers` →
-   `python: "Jupytext Notebook"`.
-4. Real check: `make jupyter`, open http://127.0.0.1:8888/lab, single-click
-   a py:percent notebook file — it must open in the notebook editor.
+1. `make image` — PASSED (nested podman).
+2. In the built image, `jupytext-config list-default-viewer` printed
+   `python: Jupytext Notebook`. PASSED.
+3. `/root/.jupyter/labconfig/default_setting_overrides.json` exists and sets
+   `@jupyterlab/docmanager-extension:plugin` → `defaultViewers` →
+   `python: "Jupytext Notebook"` (note the `:plugin` suffix on the real key,
+   which this doc originally omitted). PASSED.
+4. Remaining human check: `make jupyter`, open http://127.0.0.1:8888/lab,
+   single-click a py:percent notebook file — it should open in the notebook
+   editor.
