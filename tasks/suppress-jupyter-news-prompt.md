@@ -1,6 +1,15 @@
 # Suppress JupyterLab's "official Jupyter news" notification prompt
 
-**Status:** proposed — needs go-ahead to implement
+**Status:** DONE 2026-07-29 — implemented and gate-verified; ready to archive
+
+Outcome: `make image` PASSED; in the built image the plugin lists under
+"Disabled extensions", `/venv/etc/jupyter/labconfig/page_config.json` has the
+entry, and the jupytext default-viewer setting survived (regression check).
+One better-than-planned detail: this JupyterLab version **auto-locks** the
+plugin when disabling at sys-prefix level (`lockedExtensions` written
+alongside `disabledExtensions`), so no separate `lock` step was needed —
+users cannot re-enable it from the UI. Remaining human check: `make jupyter`
+in a fresh browser profile shows no news prompt.
 
 ## Goal
 

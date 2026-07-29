@@ -116,7 +116,8 @@ COPY src /mvm/src
 # using uv: with --no-deps there is nothing to resolve.
 RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && source /venv/bin/activate && \
     cd /mvm && python -m pip install --no-build-isolation ".[dev,notebooks,jupyter]" && \
-    jupytext-config set-default-viewer python
+    jupytext-config set-default-viewer python && \
+    jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
 # texExpToPng: renders LaTeX expressions to PNG (latex + dvipng); used by the
 # crossproduct demo's billboard labels at runtime (the demo no-ops without it).
