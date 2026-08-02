@@ -1,6 +1,8 @@
 # Crossproduct demo: fix some of the billboard labels
 
 **Status:** proposed — awaiting Bill's specifics (he'll say what needs fixing)
+**Priority:** 6
+**Difficulty:** 3
 **Created:** 2026-07-08
 
 ## Context

@@ -3,6 +3,9 @@
 **Status:** proposed — needs go-ahead (found 2026-07-29; NOT fixed that night —
 out of scope of the gate-honesty fix that surfaced it)
 
+**Priority:** 4
+**Difficulty:** 6
+
 ## How this surfaced
 
 On 2026-07-29 `entrypoint/format.sh` was fixed to **propagate every step's
