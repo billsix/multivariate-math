@@ -10,6 +10,16 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
 
 COPY entrypoint/dotfiles/ /root/
 
+# System-package installation lives in per-group scripts (entrypoint/0N-install-*.sh),
+# host-runnable with no container runtime; the scripts take no options -- WHICH optional
+# groups run is decided here by the ARG `if` blocks. base + notebook-tex are always
+# installed; emacs/spyder are flag-gated. The dnf cache mount + keepcache stay in the
+# Dockerfile (build plumbing); `dnf upgrade` ran in the earlier layer above.
+COPY entrypoint/01-install-base.sh \
+     entrypoint/02-install-emacs.sh \
+     entrypoint/03-install-spyder.sh \
+     entrypoint/04-install-notebook-tex.sh /usr/local/bin/
+
 # Toolchain + the heavy/native Python packages from dnf (the venv below is
 # --system-site-packages, so uv sees these as satisfied and doesn't re-download
 # them from PyPI).  python3-pyopengl in particular SHOULD come from dnf: Fedora
@@ -22,43 +32,9 @@ COPY entrypoint/dotfiles/ /root/
 # (found by running the demo on-screen, 2026-07-08).
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
     --mount=type=cache,target=/var/lib/dnf \
-    dnf install -y \
-                   gcc \
-                   git \
-                   glfw \
-                   glib2-devel \
-                   libwayland-cursor \
-                   libwayland-egl \
-                   libxkbcommon \
-                   mesa-dri-drivers \
-                   mesa-libEGL \
-                   mesa-libGL \
-                   meson \
-                   ninja-build \
-                   pkgconfig \
-                   python3 \
-                   python3-matplotlib \
-                   python3-numpy \
-                   python3-pillow \
-                   python3-pip \
-                   python3-pyopengl \
-                   python3-setuptools \
-                   python3-sympy \
-                   python3-wheel \
-                   ruff \
-                   tmux \
-                   ty \
-                   uv \
-                   which ; \
-    if [ "$USE_EMACS" = "1" ]; then \
-      dnf install -y emacs ; \
-    fi ; \
-    if [ "$USE_SPYDER" = "1" ]; then \
-      dnf install -y \
-                   mesa-dri-drivers \
-                   mesa-libGLU-devel && \
-      dnf install -y python3-spyder ; \
-    fi ; \
+    /usr/local/bin/01-install-base.sh && \
+    if [ "$USE_EMACS" = "1" ];  then /usr/local/bin/02-install-emacs.sh;  fi && \
+    if [ "$USE_SPYDER" = "1" ]; then /usr/local/bin/03-install-spyder.sh; fi && \
     echo "/usr/local/bin/jupyter.sh # JupyterLab on http://127.0.0.1:8888/lab" >> ~/.bash_history && \
     echo "source ~/.extrabashrc" >> ~/.bashrc && \
     python3 -m venv --system-site-packages /venv/
@@ -74,31 +50,7 @@ RUN --mount=type=cache,target=/var/cache/libdnf5 \
 # via latex + dvipng; anyfontsize for the DPI scaling).
 RUN --mount=type=cache,target=/var/cache/libdnf5 \
     --mount=type=cache,target=/var/lib/dnf \
-    dnf install -y \
-                   pandoc \
-                   texlive-xetex \
-                   texlive-collection-fontsrecommended \
-                   texlive-collection-latexrecommended \
-                   texlive-adjustbox \
-                   texlive-tcolorbox \
-                   texlive-collectbox \
-                   texlive-ucs \
-                   texlive-titling \
-                   texlive-enumitem \
-                   texlive-rsfs \
-                   texlive-jknapltx \
-                   texlive-upquote \
-                   texlive-ulem \
-                   texlive-soul \
-                   texlive-eurosym \
-                   texlive-pgf \
-                   texlive-environ \
-                   texlive-trimspaces \
-                   texlive-parskip \
-                   texlive-anyfontsize \
-                   texlive-commath \
-                   texlive-dvipng \
-                   texlive-standalone
+    /usr/local/bin/04-install-notebook-tex.sh
 
 # Install the package + ALL its optional extras from pyproject's own
 # [project.optional-dependencies] -- the single source of truth (no
