@@ -3,9 +3,9 @@
 # Activate the venv so ty/ruff resolve deps from it (the venv is
 # --system-site-packages, so it also sees the dnf-installed base packages).
 export VIRTUAL_ENV_DISABLE_PROMPT=1
-source /venv/bin/activate
+[ -f /venv/bin/activate ] && source /venv/bin/activate
 
-cd /mvm/ || exit 1
+[ -d /mvm ] && cd /mvm
 
 # Every step runs (one pass reports all the red), but the script exits
 # nonzero if ANY step failed -- otherwise the exit code is the LAST
