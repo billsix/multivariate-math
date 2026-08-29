@@ -87,18 +87,33 @@ image: ## Build the OCI image
 clean: ## Delete the output directory, cleaning out the built PDFs
 	rm -rf output/*
 
-.PHONY: shell
-shell: ## Get Shell into a ephermeral container made from the image
-	$(CONTAINER_CMD) run -it --rm \
+# --- shell / shell-exec share ONE container invocation, defined here so the two
+# targets can never drift. Scoped to this pair ONLY. See runClaudeInContainer
+# tasks/add-shell-exec-target.md for the design.
+SHELL_RUN_FLAGS = \
 		--entrypoint /bin/bash \
 		$(FILES_TO_MOUNT) \
 		-v ./entrypoint/shell.sh:/shell.sh:Z \
 		$(X_FLAGS_FOR_CONTAINER) \
 		$(WAYLAND_FLAGS_FOR_CONTAINER) \
 		$(EXPOSE_PORT) \
-		$(ELPA_MOUNT) \
-		$(CONTAINER_NAME) \
-		/shell.sh
+		$(ELPA_MOUNT)
+
+# In-container repo mount path (matches FILES_TO_MOUNT: -v $(pwd):/mvm/).
+REPO_MOUNT = /mvm
+
+# shell-exec payload: cd to the repo root (independent of shell.sh's own cd), then
+# run the inline CMD, else the repo-relative SCRIPT. Prefers CMD when both are set.
+SHELL_EXEC_ARGS = -c 'cd $(REPO_MOUNT) && $(if $(CMD),$(CMD),exec bash $(SCRIPT))'
+
+.PHONY: shell
+shell: ## Get Shell into a ephermeral container made from the image
+	$(CONTAINER_CMD) run -it --rm $(SHELL_RUN_FLAGS) $(CONTAINER_NAME) /shell.sh
+
+.PHONY: shell-exec
+shell-exec: ## Run a script/command in the container env (no TTY): make shell-exec SCRIPT=path | CMD='...'
+	@[ -n "$(SCRIPT)$(CMD)" ] || { echo 'usage: make shell-exec SCRIPT=<repo-relative path> | CMD="..."'; exit 2; }
+	$(CONTAINER_CMD) run --rm $(SHELL_RUN_FLAGS) $(CONTAINER_NAME) /shell.sh $(SHELL_EXEC_ARGS)
 
 .PHONY: jupyter
 jupyter: image ## Launch JupyterLab (mvm kernel) on http://127.0.0.1:8888/lab
