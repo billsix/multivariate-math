@@ -3,7 +3,7 @@
 USE_SPYDER ?= 0
 USE_EMACS ?= 0
 
-CONTAINER_CMD = podman
+CONTAINER_CMD ?= $(shell command -v podman >/dev/null 2>&1 && echo podman || echo docker)
 CONTAINER_NAME = multivariate-math
 
 # Extra flags for every container `run`. Auto-set when running nested inside a
