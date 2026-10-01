@@ -66,7 +66,8 @@ COPY src /mvm/src
 # python3-pyopengl (Fedora's carries the auto-EGL-under-Wayland patch the GL
 # demos rely on).  The runtime editable installs (shell.sh/jupyter.sh) keep
 # using uv: with --no-deps there is nothing to resolve.
-RUN export VIRTUAL_ENV_DISABLE_PROMPT=1 && source /venv/bin/activate && \
+RUN --mount=type=cache,target=/root/.cache/pip \
+    export VIRTUAL_ENV_DISABLE_PROMPT=1 && source /venv/bin/activate && \
     cd /mvm && python -m pip install --no-build-isolation ".[dev,notebooks,jupyter]" && \
     jupytext-config set-default-viewer python && \
     jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
