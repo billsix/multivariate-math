@@ -33,6 +33,7 @@ from enum import Enum, auto
 import glfw
 import numpy as np
 import pyMatrixStack as ms
+from _labels import LabelRenderer
 from imgui_bundle import imgui
 from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 from numpy import ndarray
@@ -65,8 +66,6 @@ from OpenGL.GL import (
     glViewport,
 )
 from PIL import Image, ImageOps
-
-from _labels import LabelRenderer
 from renderer import (
     Camera,
     Vector,
@@ -179,8 +178,7 @@ def scroll_callback(window, xoffset, yoffset):
     if imgui.get_io().want_capture_mouse:
         return
     g.camera.r = g.camera.r + -1 * (yoffset * math.log(g.camera.r))
-    if g.camera.r < 3.0:
-        g.camera.r = 3.0
+    g.camera.r = max(g.camera.r, 3.0)
 
 
 glfw.set_scroll_callback(window, scroll_callback)
@@ -201,17 +199,17 @@ def ground_vertices() -> ndarray:
         for y in range(-10, 11, 1):
             verts.append(float(-x))
             verts.append(float(y))
-            verts.append(float(0.0))
+            verts.append(0.0)
             verts.append(float(x))
             verts.append(float(y))
-            verts.append(float(0.0))
+            verts.append(0.0)
 
             verts.append(float(x))
             verts.append(float(-y))
-            verts.append(float(0.0))
+            verts.append(0.0)
             verts.append(float(x))
             verts.append(float(y))
-            verts.append(float(0.0))
+            verts.append(0.0)
     return np.array(verts, dtype=np.float32)
 
 
@@ -224,10 +222,10 @@ def unit_circle_vertices() -> ndarray:
     for x in range(the_range - 1):
         verts.append(math.cos(the_list[x]))
         verts.append(math.sin(the_list[x]))
-        verts.append(float(0.0))
+        verts.append(0.0)
         verts.append(math.cos(the_list[x + 1]))
         verts.append(math.sin(the_list[x + 1]))
-        verts.append(float(0.0))
+        verts.append(0.0)
     return np.array(verts, dtype=np.float32)
 
 
@@ -393,10 +391,8 @@ def handle_inputs(previous_mouse_position) -> None:
     else:
         return_none = True
 
-    if g.camera.rot_x > math.pi / 2.0:
-        g.camera.rot_x = math.pi / 2.0
-    if g.camera.rot_x < -math.pi / 2.0:
-        g.camera.rot_x = -math.pi / 2.0
+    g.camera.rot_x = min(g.camera.rot_x, math.pi / 2.0)
+    g.camera.rot_x = max(g.camera.rot_x, -math.pi / 2.0)
 
     return None if return_none else new_mouse_position
 
@@ -600,7 +596,7 @@ def c_label() -> str:
 # (the Show Triangle transition reads the model matrix AFTER this frame's
 # rotation blocks, so position matters).
 # ---------------------------------------------------------------------------
-STEP_NEXT_LABEL: dict = {
+STEP_NEXT_LABEL: dict[StepNumber, str | None] = {
     StepNumber.beginning: "Rotate Z",
     StepNumber.rotate_z: "Rotate Y",
     StepNumber.rotate_y: "Rotate X",
@@ -617,7 +613,7 @@ STEP_NEXT_LABEL: dict = {
 
 # Which draw-relative-coordinates flag the current step exposes (the old UI
 # showed the matching checkbox next to each rotation's button).
-REL_FLAG: dict = {
+REL_FLAG: dict[StepNumber, str] = {
     StepNumber.beginning: "draw_first_relative_coordinates",
     StepNumber.rotate_z: "draw_second_relative_coordinates",
     StepNumber.rotate_y: "draw_third_relative_coordinates",

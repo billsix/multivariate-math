@@ -42,7 +42,7 @@ import subprocess
 import tempfile
 
 import numpy as np
-import OpenGL.GL as GL
+from OpenGL import GL
 from OpenGL.GL import shaders as gl_shaders
 from PIL import Image
 
@@ -70,7 +70,9 @@ class LabelRenderer:
         self.available = AVAILABLE
         self._dpi = dpi
         self._fg = fg
-        self._tex_cache: dict = {}  # latex -> (tex_id, w, h) | None (gen failed)
+        self._tex_cache: dict[
+            str, tuple[int, int, int] | None
+        ] = {}  # latex -> (tex_id, w, h) | None (gen failed)
         self._cachedir = None
         if not self.available:
             return
