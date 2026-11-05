@@ -47,3 +47,9 @@ where = ["src"]
 # Before format.sh propagated failures, 2026-07-29, ruff had been failing on
 # these vendored files on every run -- masked by the gate's green exit.)
 extend-exclude = ["entrypoint"]
+
+[tool.ty.src]
+# `ty check` (format.sh) also skips entrypoint/: the vendored Emacs package tree
+# under entrypoint/dotfiles/.emacs.d/elpa ships third-party Python (elpy) that
+# is not ours to type-check.
+exclude = ["entrypoint"]

@@ -20,6 +20,12 @@ visible in this repo:
 2. **`ty check` reports 302 diagnostics** — real, pre-existing, and NOT fixed.
    `make format` is honestly RED until they're triaged. That is this task.
 
+> **Update (William Emerison Six <billsix@gmail.com>, 2026-11-05):** `ty check` now excludes
+> `entrypoint/` (`[tool.ty.src]` in `pyproject.toml`). Before that, most of the count came from the
+> vendored elpy package under `entrypoint/dotfiles/.emacs.d/elpa`: 249 of 348 diagnostics on
+> 2026-11-05. With it excluded, 99 remain, all in `src/`. Re-triage against the 99; the table below is
+> the 2026-07-29 snapshot, which included the elpa noise.
+
 ## The 302, by class (from the 2026-07-29 `make format` log)
 
 | count | class |

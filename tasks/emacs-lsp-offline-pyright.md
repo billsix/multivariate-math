@@ -1,62 +1,45 @@
-# Emacs Python LSP: install pyright from npm so lsp-pyright attaches offline
+# Emacs Python LSP: install pyright from npm so lsp-pyright attaches offline — done-record
 
-**Status:** proposed — needs go-ahead (William Emerison Six <billsix@gmail.com>, 2026-11-05)
+**Completed:** 2026-11-05. William Emerison Six <billsix@gmail.com> gave the go-ahead ("go on
+multivariate-math"). The setup follows github.com/billsix/geometricalgebra's
+(`tasks/reference/emacs-lsp-setup.md` there), which the maintainer confirmed on 2026-11-05 works as wanted.
 
-**Priority:** 3
-**Difficulty:** 2
+## What was found
 
-## BLUF
+- `init.el` was already configured for lsp-pyright, and `lsp-pyright` was vendored, but the image never
+  installed pyright. lsp-mode therefore fell back to its built-in `ty-ls` client, plus ruff. A headless
+  probe on 2026-11-04 showed `PROBE servers: (ruff ty-ls)`.
+- Installing pyright alone was not enough. The vendored lsp-mode (2026-07-02) registers `ty-ls` as an
+  **add-on**, so ty ran alongside pyright, because `ty` is on PATH from dnf. The result was duplicated
+  completions, and signature help returned nothing. gacalc's newer lsp-mode (2026-10-09) dropped the
+  add-on flag.
+- `ty check` (in `format.sh`) was type-checking the vendored elpy under elpa. That was 249 of its 348
+  diagnostics.
 
-Emacs here is configured for pyright, but the image never installs pyright, so lsp-mode quietly
-falls back to `ty server` (ty-ls). Completion and parameter hints are weaker as a result. The fix is
-the one that worked in github.com/billsix/geometricalgebra on 2026-11-04: install the npm pyright in
-the Emacs package-group script. Done means that offline, with `--network=none`, a headless Emacs
-attaches pyright and ruff and answers both completion and signature help.
+## What changed
 
-## Context
+- **`entrypoint/02-install-emacs.sh`** installs `emacs`, `nodejs` and `npm`, then runs
+  `npm install -g pyright`, accumulating the exit status. The mode stays `100755`.
+- **`elpa/` refreshed** with `make update-emacs-packages`. lsp-mode moved from 20260702.527 to
+  20261020.1728, in which `ty-ls` is no longer an add-on.
+- **`pyproject.toml`:** `[tool.ty.src] exclude = ["entrypoint"]`, matching the existing ruff exclude.
+  The backlog note in `tasks/ty-diagnostics-format-gate.md` was updated with the new count.
+- No `init.el` change was needed.
 
-- **What is configured.** `entrypoint/dotfiles/.emacs.d/init.el` matches gacalc's: `lsp-mode`, then a
-  `use-package lsp-pyright` block with `typechecking-mode "basic"`, then the root pinned to `/mvm/`.
-  `lsp-pyright` is vendored in `entrypoint/dotfiles/.emacs.d/elpa/`, so no elisp change is needed.
-- **What is installed.** `entrypoint/02-install-emacs.sh` runs only `dnf install -y emacs`. Nothing in
-  the image provides `pyright-langserver`. `01-install-base.sh` dnf-installs `ty`.
-- **What happens.** lsp-mode picks the highest-priority client whose server binary exists. lsp-pyright
-  has priority 2 but no binary, so the client that wins is lsp-mode's built-in `ty-ls` (priority -1),
-  plus ruff as an add-on. Measured on 2026-11-04 with a headless probe of this repo's image: `PROBE
-  servers: (ruff ty-ls)`.
-- **How gacalc fixed it.** Read `tasks/reference/emacs-lsp-setup.md` and
-  `tasks/archive/2026/11/04/dockerfile-lean-layers-first.md` in github.com/billsix/geometricalgebra.
-  Until the maintainer merges it, that work is on the `emacs-python-lsp-investigation` branch. The rules
-  it settled:
-  - Install pyright with **npm** (`npm install -g pyright` puts `pyright-langserver` in
-    `/usr/local/bin`). The npm package is self-contained.
-  - **Never use the pip `pyright` package.** It is only a launcher: on first use in each fresh
-    container it downloads Node and the real server into `~/.cache`, so it fails offline.
-  - lsp-mode shows parameter hints when you type `(` or `,`, and on demand with
-    `M-x lsp-signature-activate`.
+## Verification (2026-11-05)
 
-## Plan
+- `make image USE_EMACS=1` exited 0. The image has `/usr/local/bin/pyright-langserver`, pyright 1.1.414.
+- **Offline headless probe** with the real `init.el`, under `--network=none`, with the repo mounted
+  `:ro` and elpa `:O`:
+  - lsp-mode attached `(pyright ruff)`.
+  - Completion of `math.sq` returned `isqrt` and `sqrt`.
+  - Signature help inside `math.isclose(` returned the full signature.
+- **`make format USE_EMACS=1`** still fails, on the pre-existing `ty` backlog: 99 diagnostics, all in
+  `src/`, tracked in `tasks/ty-diagnostics-format-gate.md`.
+  - Ruff's run reformatted four `src/` files that were already unformatted. Those edits were reverted,
+    since they are not part of this change.
 
-1. **`entrypoint/02-install-emacs.sh`:** install `nodejs npm` alongside `emacs`, then
-   `npm install -g pyright`. That makes the script two commands, so accumulate their exit statuses
-   (`s=0; … || s=1; …; exit $s`), as github.com/billsix/towersofhanoi `python/entrypoint/04-install-emacs.sh`
-   already does. Update the header comment to name the LSP backend.
-   - The npm install belongs in the Emacs script, not the base one, because only Emacs uses pyright
-     here. gacalc put it in its base script only because its `make check-notebooks` also runs pyright.
-   - Restore `+x` after rewriting the script (`git add --chmod=+x`).
-2. **`make image`**, with `USE_EMACS=1`, the Makefile default.
-3. **Verify offline.** Run a headless Emacs that loads the real `init.el` in the image, using the probe
-   pattern from gacalc's history (`tasks/adhoc/emacs-python-lsp-investigation/`, removed when that task
-   was archived):
-   - Mount the repo `:ro` and the elpa tree `:O` (overlay), so the probe writes nothing back to the host.
-   - Run under `--network=none`.
-   - Open a `.py` file and require `lsp-mode` to report servers `(pyright ruff)`.
-   - Check that completion after a module attribute returns members.
-   - Check that `lsp-signature-activate` inside a call returns a signature.
-4. **Run the gates:** `make format` (ruff + ty) and the tests. Nothing in `src/` should change.
-5. **Record the setup** here in a short `tasks/reference/` doc, or as a `CLAUDE.md` line, whichever the
-   maintainer prefers, in the same staging.
+## Note
 
-## Open questions
-
-None. The maintainer confirmed the gacalc setup works as wanted on 2026-11-05.
+- `USE_EMACS` defaults to `0` in this repo's `Makefile`, unlike the template's `1`. Pass
+  `make image USE_EMACS=1` to get Emacs and pyright. This was left as it was.
