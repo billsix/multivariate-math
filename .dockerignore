@@ -9,12 +9,14 @@ entrypoint/dotfiles/.emacs.d/elpa
 
 # VCS metadata, Python caches and build metadata -- `COPY src /mvm/src` must bake
 # only clean source.
+# Patterns are anchored at the context root (unlike .gitignore), so anything that
+# can appear below the root needs a leading **/.
 .git
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.ruff_cache/
-*.egg-info/
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.ruff_cache/
+**/*.egg-info/
 
 # Built book/proof output (regenerated into /output) and image-export tarballs.
 output/
