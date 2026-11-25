@@ -78,11 +78,10 @@ galgebra.mv.Mv.reject = reject
 def rotate(self: Mv, from_vec: Mv, to_vec: Mv) -> Mv:
     plane = from_vec ^ to_vec
 
-    parallel = self.project(onto=plane)
-    perp = self.reject(away_from=plane)
-
-    rotated_parallel = parallel * from_vec * to_vec / abs(from_vec) / abs(to_vec)
-    return rotated_parallel + perp
+    # the part of self in the plane is rotated; the part perpendicular to it stays
+    return self.project(onto=plane) * from_vec * to_vec / abs(from_vec) / abs(
+        to_vec
+    ) + self.reject(away_from=plane)
 
 
 galgebra.mv.Mv.rotate = rotate
