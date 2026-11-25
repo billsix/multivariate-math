@@ -128,8 +128,12 @@ class LabelRenderer:
     def _generate(self, latex: str):
         if TEXEXP is None or self._cachedir is None:
             return None
-        key = hashlib.sha1(f"{latex}|{self._dpi}|{self._fg}".encode()).hexdigest()[:16]
-        out = os.path.join(self._cachedir, key + ".png")
+        # the cache file is named by a short hash of the label, its dpi and its colour
+        out = os.path.join(
+            self._cachedir,
+            hashlib.sha1(f"{latex}|{self._dpi}|{self._fg}".encode()).hexdigest()[:16]
+            + ".png",
+        )
         if os.path.exists(out):
             return out
         try:
@@ -162,7 +166,6 @@ class LabelRenderer:
         # removed in Pillow 10.)
         img = Image.open(png).convert("RGBA").transpose(Image.Transpose.FLIP_TOP_BOTTOM)
         w, h = img.size
-        data = img.tobytes()
         tex = GL.glGenTextures(1)
         GL.glBindTexture(GL.GL_TEXTURE_2D, tex)
         GL.glTexParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR)
@@ -178,7 +181,7 @@ class LabelRenderer:
             0,
             GL.GL_RGBA,
             GL.GL_UNSIGNED_BYTE,
-            data,
+            img.tobytes(),  # the pixels, bottom row first
         )
         GL.glBindTexture(GL.GL_TEXTURE_2D, 0)
         return (tex, w, h)
@@ -219,9 +222,9 @@ class LabelRenderer:
             return
         tex_id, iw, ih = tex
         c = np.asarray(center_world, dtype=float).reshape(-1)[:3]
-        clip = self._vp @ np.array([c[0], c[1], c[2], 1.0])
-        if clip[3] <= 1e-6:
-            return  # behind the camera
+        # the clip-space w of the point: not positive means behind the camera
+        if (self._vp @ np.array([c[0], c[1], c[2], 1.0]))[3] <= 1e-6:
+            return
         hh = height_px / self._vh  # half-height in NDC
         hw = (height_px * (iw / ih)) / self._vw  # half-width (pixel aspect)
         corners = (

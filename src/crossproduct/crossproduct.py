@@ -455,9 +455,7 @@ restart()
 
 # Load a math image, and make the black white, and white black
 def load_and_flip_image(image_path):
-    image = Image.open(image_path).convert("L")
-    inverted_image = ImageOps.invert(image)
-    return inverted_image
+    return ImageOps.invert(Image.open(image_path).convert("L"))
 
 
 # Function to bind the image to an OpenGL texture
@@ -491,34 +489,6 @@ def current_animation_ratio() -> float:
         1.0,
         (g.animation_time - g.current_animation_start_time) / g.seconds_per_operation,
     )
-
-
-def a_extra_text():
-    match g.step_number:
-        case StepNumber.beginning:
-            return ""
-        case StepNumber.rotate_z:
-            return "'"
-        case StepNumber.rotate_y:
-            return "''"
-        case StepNumber.rotate_x:
-            return "'''"
-        case StepNumber.show_triangle:
-            return "'''"
-        case StepNumber.project_onto_y:
-            return "'''"
-        case StepNumber.rotate_to_z:
-            return "'''"
-        case StepNumber.undo_rotate_x:
-            return "''"
-        case StepNumber.undo_rotate_y:
-            return "'"
-        case StepNumber.undo_rotate_z:
-            return ""
-        case StepNumber.scale_by_mag_a:
-            return ""
-        case StepNumber.show_plane:
-            return ""
 
 
 # ---------------------------------------------------------------------------
@@ -621,14 +591,6 @@ REL_FLAG: dict[StepNumber, str] = {
     StepNumber.undo_rotate_x: "draw_undo_rotate_y_relative_coordinates",
     StepNumber.undo_rotate_y: "draw_undo_rotate_z_relative_coordinates",
 }
-
-
-def can_advance() -> bool:
-    if STEP_NEXT_LABEL[g.step_number] is None:
-        return False
-    if g.step_number == StepNumber.beginning:
-        return True
-    return current_animation_ratio() >= 0.999999
 
 
 def process_pre_step_transitions() -> None:
@@ -736,44 +698,75 @@ def process_post_step_transitions() -> None:
         g.step_number = StepNumber.show_plane
 
 
-# ---------------------------------------------------------------------------
-# Menubar (mvp's mathdemos pattern): all controls live in the main menu bar;
-# there is no floating window.
-# ---------------------------------------------------------------------------
-def menu_action(label, key, action, *, selected=False) -> None:
-    """A menubar item that also shows its keyboard shortcut (``key``, in the
-    right-hand column) and an optional check mark (``selected``).  Runs
-    ``action()`` once on click.  Call inside a ``begin_menu`` block."""
-    clicked, _ = imgui.menu_item(label, key, selected, True)
-    if clicked:
-        action()
-
-
-def restart_derivation() -> None:
-    # restart() rebuilds Globals (which resets swap); the vectors and camera
-    # are preserved by restart itself, so only swap needs saving.
-    sw = g.swap
-    restart()
-    g.swap = sw
-
-
-def swap_vectors() -> None:
-    g.swap = not g.swap
-    initiliaze_vecs()
-    restart_derivation()
-
-
-def view_down(rot_x, rot_y) -> None:
-    g.camera.rot_x = rot_x
-    g.camera.rot_y = rot_y
-    g.use_ortho = True
-
-
-def toggle(attr) -> None:
-    setattr(g, attr, not getattr(g, attr))
-
-
 def menubar() -> None:
+
+    # ---------------------------------------------------------------------------
+    # Menubar (mvp's mathdemos pattern): all controls live in the main menu bar;
+    # there is no floating window.
+    # ---------------------------------------------------------------------------
+
+    def toggle(attr) -> None:
+        setattr(g, attr, not getattr(g, attr))
+
+    def view_down(rot_x, rot_y) -> None:
+        g.camera.rot_x = rot_x
+        g.camera.rot_y = rot_y
+        g.use_ortho = True
+
+    def restart_derivation() -> None:
+        # restart() rebuilds Globals (which resets swap); the vectors and camera
+        # are preserved by restart itself, so only swap needs saving.
+        sw = g.swap
+        restart()
+        g.swap = sw
+
+    def swap_vectors() -> None:
+        g.swap = not g.swap
+        initiliaze_vecs()
+        restart_derivation()
+
+    def menu_action(label, key, action, *, selected=False) -> None:
+        """A menubar item that also shows its keyboard shortcut (``key``, in the
+        right-hand column) and an optional check mark (``selected``).  Runs
+        ``action()`` once on click.  Call inside a ``begin_menu`` block."""
+        clicked, _ = imgui.menu_item(label, key, selected, True)
+        if clicked:
+            action()
+
+    def can_advance() -> bool:
+        if STEP_NEXT_LABEL[g.step_number] is None:
+            return False
+        if g.step_number == StepNumber.beginning:
+            return True
+        return current_animation_ratio() >= 0.999999
+
+    def a_extra_text():
+        match g.step_number:
+            case StepNumber.beginning:
+                return ""
+            case StepNumber.rotate_z:
+                return "'"
+            case StepNumber.rotate_y:
+                return "''"
+            case StepNumber.rotate_x:
+                return "'''"
+            case StepNumber.show_triangle:
+                return "'''"
+            case StepNumber.project_onto_y:
+                return "'''"
+            case StepNumber.rotate_to_z:
+                return "'''"
+            case StepNumber.undo_rotate_x:
+                return "''"
+            case StepNumber.undo_rotate_y:
+                return "'"
+            case StepNumber.undo_rotate_z:
+                return ""
+            case StepNumber.scale_by_mag_a:
+                return ""
+            case StepNumber.show_plane:
+                return ""
+
     global advance_requested
     if not imgui.begin_main_menu_bar():
         return
